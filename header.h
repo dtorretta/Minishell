@@ -28,7 +28,7 @@ typedef struct s_lexer
 typedef struct s_simple_cmds
 {
 	char					**str;
-	int						(*builtin)(t_tools *, struct s_simple_cmds *);
+	int						(*builtin)(t_mshell *, struct s_simple_cmds *);
 	int						num_redirections;
 	char					*hd_file_name;
 	t_lexer					*redirections;
@@ -38,7 +38,7 @@ typedef struct s_simple_cmds
 
 
 //ESTA ES LA ESTRUCTURA FINAL QUE SE PASA AL EXECUTABLE
-typedef struct s_tools
+typedef struct s_mshell
 {
 	char					*args;
 	char					**paths;
@@ -47,8 +47,8 @@ typedef struct s_tools
 	t_lexer					*lexer_list;
 	char					*pwd;
 	char					*old_pwd;
-	int						pipes;
+	int						pipes; //ver si es necesario
 	int						*pid;
 	bool					heredoc;
 	bool					reset;
-}	t_tools;
+}	t_mshell;
