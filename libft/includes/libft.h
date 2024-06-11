@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 16:51:40 by miguandr          #+#    #+#             */
-/*   Updated: 2023/12/05 21:09:32 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/11 15:38:42 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ int					ft_isdigit(int c);
 int					ft_isalnum(int c);
 int					ft_isascii(int c);
 int					ft_isprint(int c);
+int					ft_iswhitespace(char c);
 size_t				ft_strlen(const char *str);
 void				*ft_memset(void *pointer, int value, size_t count);
 void				ft_bzero(void *s, size_t n);

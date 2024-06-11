@@ -5,51 +5,75 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/08 17:19:25 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/08 20:45:56 by miguandr         ###   ########.fr       */
+/*   Created: 2024/06/08 22:44:12 by miguandr          #+#    #+#             */
+/*   Updated: 2024/06/11 16:50:14 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/header_mig.h"
 
-int	find_next_quote(char *str, int start, char target)
+int	skip_space(char *str, int i)
 {
-	int	i;
-
-	i = start;
-	while (str[i])
-	{
-		if (str[i] == target && (i == 0 || str[i - 1] != '\\'))
-			return (i);
+	while (str[i] == ' ' || (str[i] > 8 && str[i] < 14))
 		i++;
-	}
-	return (-1);
+	return (i);
 }
 
-int	count_quotes(char *str)
+t_lexer	*list_last(t_lexer *list)
 {
-	int		i;
-	int		single_quote;
-	int		double_quote;
+	t_lexer	*temp;
 
-	i = -1;
-	single_quote = 0;
-	double_quote = 0;
-	while (str[++i])
+	if (!list)
+		return (NULL);
+	temp = list;
+	while (temp->next)
+		temp = temp->next;
+	return (temp);
+}
+
+t_lexer	*lexer_new_node(char *str, int token)
+{
+	static int	index = 0;
+	t_lexer		*new_node;
+
+	new_node = (t_lexer *)malloc(sizeof(t_lexer));
+	if (!new_node)
+		return (NULL);
+	new_node->str = str;
+	new_node->token = token;
+	new_node->i = index++;
+	new_node->next = NULL;
+	new_node->prev = NULL;
+	return (new_node);
+}
+
+void	lexer_add_last(t_lexer **list, t_lexer *new_node)
+{
+	t_lexer	*last;
+
+	last = NULL;
+	if (!list || !new_node)
+		return ;
+	if (*list == NULL)
+		*list = new_node;
+	else
 	{
-		if (str[i] == '\'' || str[i] == '"')
-		{
-			i = find_next_quote(str, i + 1, str[i]);
-			if (i == -1)
-				return (0);
-			if (str[i] == '\'')
-				single_quote += 2;
-			else if (str[i] == '"')
-				double_quote += 2;
-		}
+		last = list_last(*list);
+		last->next = new_node;
+		new_node->prev = last;
 	}
-	if ((single_quote > 0 && single_quote % 2 == 0)
-		|| (double_quote > 0 && double_quote % 2 == 0))
-		return (1);
-	return (0);
+}
+
+int	add_node(char *str, t_tokens token, t_lexer **lexer_list)
+{
+	t_lexer	*node;
+
+	node = lexer_new_node(str, token);
+	if (!node)
+		return (0);
+	if (*lexer_list == NULL)
+		*lexer_list = node;
+	else
+		lexer_add_last(lexer_list, node);
+	return (1);
 }

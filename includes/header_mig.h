@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:29:16 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/08 16:56:29 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/11 16:47:39 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
+/*******STRUCTURES*******/
 typedef enum s_tokens
 {
 	WORD,
@@ -62,6 +63,7 @@ typedef struct s_mshell
 	int						*pid;
 	bool					heredoc;
 	bool					reset;
+	int error_code;
 }	t_mshell;
 
 typedef struct s_simple_cmds
@@ -75,4 +77,25 @@ typedef struct s_simple_cmds
 	struct s_simple_cmds	*prev;
 }	t_simple_cmds;
 
-# endif
+/*******LEXER*******/
+
+/*-Token handling-*/
+t_tokens	check_token(int c);
+int			tokenizer(t_mshell *data);
+int			handle_token(char *str, int i, t_lexer **lexer_list);
+int			handle_word(char *str, int start, t_lexer **lexer_list);
+/*-Quote handling-*/
+int			count_quotes(char *str);
+int			skip_quotes(const char *str, int start, char quote);
+/*-Utils-*/
+int			skip_space(char *str, int i);
+int			add_node(char *str, t_tokens token, t_lexer **lexer_list);
+t_lexer		*list_last(t_lexer *list);
+void		lexer_error_check(t_lexer *lexer_list, t_mshell *data);
+t_lexer		*lexer_new_node(char *str, int token);
+void		lexer_add_last(t_lexer **list, t_lexer *new_node);
+
+/*******ERROR HANDLING*******/
+int			handle_error(t_mshell *data, int error);
+
+#endif

@@ -6,11 +6,32 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:43:09 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/08 20:46:18 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/11 15:32:14 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/header_mig.h"
+
+int	tokenizer(t_mshell *data)
+{
+	int	i;
+	int	handled;
+
+	i = 0;
+	while (data->args[i])
+	{
+		i = skip_space(data->args, i);
+		handled = 0;
+		if (check_token(data->args[i]))
+			handled = handle_token(data->args, i, &data->lexer_list);
+		else
+			handled = handle_word(data->args, i, &data->lexer_list);
+		if (handled < 0)
+			return (0);
+		i += handled;
+	}
+	return (1);
+}
 
 int	lexer(t_mshell *data)
 {
@@ -28,12 +49,13 @@ int	lexer(t_mshell *data)
 		ft_putendl_fd("exit", 1);
 		exit(EXIT_SUCCESS);
 	}
-	if (data->args == '\0')
-		return (reset_data(data)); // DESARROLLAR reset_data
+	//if (*data->args == '\0')
+	//	return (reset_data(data)); // MAKE reset_data
 	add_history(data->args);
 	if (!count_quotes(data->args))
 		return (handle_error(data, 1));
-	if (!read_token(data->args)) // DESARROLLAR read_token
+	if (!tokenizer(data))
 		return (handle_error(data, 0));
+	lexer_error_check(data->lexer_list, data);
 	return (1);
 }
