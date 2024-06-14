@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 16:19:08 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/11 16:49:56 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/14 19:53:18 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ int	handle_error(t_mshell *data, int error)
 		"syntax error: unable to find closing quotation\n",
 		"syntax error: command line can not begin/end with a token\n",
 		"syntax error: too many consecutive tokens\n",
+		"syntax error: wrong token handling\n",
 	};
 
 	message = error_message[error];

@@ -1,15 +1,18 @@
 #ifndef HEADER_H
 # define HEADER_H //modifica el nombre
 
-# include <stdarg.h>
+# include "../libft/includes/libft.h"
+# include <stdarg.h> //?
 # include <stdio.h>
 # include <stdlib.h>
-# include <string.h>
+# include <stdbool.h>
+# include <string.h> //?
 # include <unistd.h>
-# include <fcntl.h>
-# include "libft/libft.h"
+# include <fcntl.h> //?
+# include <readline/readline.h>
+# include <readline/history.h>
 
-
+/*******STRUCTURES*******/
 typedef enum s_tokens
 {
 	WORD,
@@ -32,26 +35,17 @@ typedef struct s_lexer
 struct s_parser;
 struct s_mshell;
 
-// typedef struct s_parser_tools
-// {
-// 	t_lexer			*lexer_list;
-// 	t_lexer			*redirections;
-// 	int				num_redirections;
-// 	struct s_tools	*tools;
-// }	t_parser_tools;
-
 //ESTA ES LA ESTRUCTURA FINAL QUE SE PASA AL EXECUTABLE
 typedef struct s_mshell
 {
 	char					*args;
 	char					**paths;
 	char					**envp;
-	//t_parser	            *commands;
-	struct s_parser *commands;
+	struct s_parser         *commands;
 	t_lexer					*lexer_list;
 	char					*pwd;
 	char					*old_pwd;
-	int						pipes; //ver si es necesario. originalmente
+	int						pipes; //ver si es necesario.
 	int						*pid;
 	//bool					heredoc;
 	//bool					reset;
@@ -69,13 +63,37 @@ typedef struct s_parser
 }	t_parser; //t_simple_cmds;
 
 
-/*PARSER UTILS*/
+/*******LEXER*******/
+
+/*-Token handling-*/
+t_tokens	check_token(int c);
+int			tokenizer(t_mshell *data);
+int			handle_token(char *str, int i, t_lexer **lexer_list);
+int			handle_word(char *str, int start, t_lexer **lexer_list);
+/*-Quote handling-*/
+int			count_quotes(char *str);
+int			skip_quotes(const char *str, int start, char quote);
+/*-Utils-*/
+int			skip_space(char *str, int i);
+int			add_node(char *str, t_tokens token, t_lexer **lexer_list);
+t_lexer		*list_last(t_lexer *list);
+void		lexer_error_check(t_lexer *lexer_list, t_mshell *data);
+t_lexer		*lexer_new_node(char *str, int token);
+void		lexer_add_last(t_lexer **list, t_lexer *new_node);
+
+/*******ERROR HANDLING*******/
+int			handle_error(t_mshell *data, int error);
+
+/*******PARSER*******/
+static int count_args (t_lexer *head, t_mshell *minishell); //la dejo o no?
+static t_parser *add_redirection (t_parser *commands, t_mshell *minishell); //la dejo o no?
+void parser (t_mshell *minishell);
+
+/*******PARSER UTILS*******/
 void	ft_delnode(t_lexer *temp, t_lexer  **lexer_list);
-t_lexer	*ft_lexernew(char *str, int token); //en verdad es del lexer
-void	ft_lexeradd_back(t_lexer **lst, t_lexer *new); //en verdad es del lexer
 int (*command_handler (char *str))(t_mshell *minishell, t_parser *commands);
-void	ft_parseradd_back(t_parser **lst, t_parser *new);
-t_parser	*ft_parsernew();
+void	parser_add_last(t_parser **head, t_parser *new);
+t_parser	*parser_new_node(t_mshell *minishell)
 
 void free_lexer_list(t_lexer *list);
 void free_string_array(char **array);

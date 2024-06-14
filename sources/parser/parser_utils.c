@@ -12,27 +12,6 @@
 
 #include "header.h" //modifica el nombre
 
-void free_lexer_list(t_lexer *list) {
-    t_lexer *temp;
-    while (list) {
-        temp = list;
-        list = list->next;
-        free(temp->str);
-        free(temp);
-    }
-}
-
-void free_parser_list(t_parser *list) {
-    t_parser *temp;
-    while (list) {
-        temp = list;
-        list = list->next;
-        free(temp->str); //creo que no alazanza solo asi
-        free_lexer_list(temp->redirections);
-        free(temp);
-    }
-}
-
 //DEBERIMOS ARGEGAR UN CONTROL QUE NO PERMITA PONER COMADOS COMO LS?
 
 //void * es un tipo de dato especial que se utiliza como un "tipo genérico" o "tipo de puntero genérico". Esto significa que puede apuntar a cualquier tipo de dato
@@ -74,13 +53,13 @@ int (*command_handler(char *str))(t_mshell *minishell, t_parser *commands)
     return (NULL);
 }
 
-t_parser	*ft_parsernew()
+t_parser	*parser_new_node(t_mshell *minishell)
 {
     t_parser *new_node;
     
     new_node = (t_parser *)malloc(sizeof(t_parser));
 	if (!new_node)
-		return (0);
+		return (handle_error(minishell, 0)); //ese necesario poner el return aca? tal vez me genere error porque la funcion retorna un int y mi funcion aca no
     
 	new_node->num_redirections = 0;
 	new_node->redirections = NULL;
@@ -91,43 +70,7 @@ t_parser	*ft_parsernew()
     return(new_node);
 }
 
-//esta funcion es parte del lexer.
-//check con migue
-t_lexer	*ft_lexernew(char *str, int token)
-{
-	t_lexer		*new_element;
-	static int	i = 0;
-
-	new_element = (t_lexer *)malloc(sizeof(t_lexer));
-	if (!new_element)
-		return (0);
-	new_element->str = str;
-	new_element->token = token;
-	new_element->i = i++;
-	new_element->next = NULL;
-	new_element->prev = NULL;
-	return (new_element);
-}
-
-//esta funcion es parte del lexer.
-//check con migue
-void	ft_lexeradd_back(t_lexer **head, t_lexer *new)
-{
-	t_lexer	*tmp;
-
-	tmp = *head;
-	if (*head == NULL)
-	{
-		*head = new;
-		return ;
-	}
-	while (tmp->next != NULL)
-		tmp = tmp->next;
-	tmp->next = new;
-	new->prev = tmp;
-}
-
-void	ft_parseradd_back(t_parser **head, t_parser *new)
+void	parser_add_last(t_parser **head, t_parser *new)
 {
 	t_parser	*tmp;
 
@@ -188,7 +131,7 @@ void free_lexer_list(t_lexer *list)
 void free_string_array(char **array) 
 {
     if (array == NULL) {
-        return; // No hacer nada si el array es NULL
+        return;
     }
 
     int i = 0;
@@ -206,7 +149,6 @@ void free_parser_list(t_parser *list) {
         temp = list;
         list = list->next;
         free_string_array(temp->str);
-        //free(temp->str); //creo que no alazanza solo asi
         free_lexer_list(temp->redirections);
         free(temp);
     }
