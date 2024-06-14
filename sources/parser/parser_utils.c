@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "header.h" //modifica el nombre
+#include "../../includes/header.h" //modifica el nombre
 
 //DEBERIMOS ARGEGAR UN CONTROL QUE NO PERMITA PONER COMADOS COMO LS?
 
@@ -19,14 +19,14 @@
 //Al utilizar void *, el array puede contener punteros a funciones de diferentes tipos de retorno.
 //Cada elemento de la matriz commands_array es una combinación de una cadena (char*) y un puntero a una función.
 
-//command_handler es una funcion que toma un argumento (char *str) y devuelve un puntero a una funcion que toma dos argumentos (t_mshell *minishell) & (t_parser *commands)
+//builtins_handler es una funcion que toma un argumento (char *str) y devuelve un puntero a una funcion que toma dos argumentos (t_mshell *minishell) & (t_parser *commands)
 //es una función que, cuando se llama con un argumento char *str, devuelve un puntero a otra función. 
 //La función devuelta toma dos argumentos (ambos punteros a estructuras) y devuelve un entero
-int (*command_handler(char *str))(t_mshell *minishell, t_parser *commands)
+int (*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands)
 {
     //el puntero minishel y commands no se usa ahora, si no que es necesario dentro de las funciones 
     // ver si puedo pasar como parametro direecto el string
-    static void *commands_array [7][2] = {
+    static void *builtins_array [7][2] = {
         {"echo", mini_echo}, //TODO function
         {"cd", mini_cd}, //TODO function
         {"pwd", mini_pwd}, //TODO function
@@ -40,12 +40,12 @@ int (*command_handler(char *str))(t_mshell *minishell, t_parser *commands)
     i = 0;    
     while(i < 7)
     {
-        if (str && !ft_strncmp(commands_array[i][0], str, ft_strlen(commands_array[i][0])))
+        if (str && !ft_strncmp(builtins_array[i][0], str, ft_strlen(builtins_array[i][0])))
         {
-            if (ft_strlen(str) != ft_strlen(commands_array[i][0])) //ejemplo si tengo echoo.
+            if (ft_strlen(str) != ft_strlen(builtins_array[i][0])) //ejemplo si tengo echoo.
                 //add error y ver si contiene un return
                 return(NULL);
-            return (commands_array[i][1]);
+            return (builtins_array[i][1]);
 		}
 		else    
             i++;

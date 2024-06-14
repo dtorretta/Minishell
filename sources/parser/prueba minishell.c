@@ -1,8 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "header.h" 
+#include "../../includes/header.h"
 
+void	ft_putstr_fd(const char *s, int fd)
+{
+	while (*s)
+	{
+		write(fd, s, 1);
+		s++;
+	}
+}
+
+void	ft_putendl_fd(char *s, int fd)
+{
+	ft_putstr_fd(s, fd);
+	write(fd, "\n", 1);
+}
 
 //esta funcion es parte del lexer.
 //check con migue
@@ -54,148 +68,171 @@ void	ft_parseradd_back(t_parser **lst, t_parser *new)
 	new->prev = tmp;
 	//new->next = NULL; //porque es necesario? si ya por default next es null?
 }
-// t_lexer *create_node(char *str, t_tokens token, int index) {
-//     t_lexer *node = malloc(sizeof(t_lexer));
-//     if (!node) {
-//         perror("Failed to allocate memory");
+
+// t_lexer *create_lexer_list() {
+//     t_lexer *node_ls = (t_lexer *)malloc(sizeof(t_lexer));
+//     if (!node_ls) {
+//         perror("malloc");
 //         exit(EXIT_FAILURE);
 //     }
-//     node->str = strdup(str);
-//     if (!node->str) {
-//         perror("Failed to allocate memory for string");
-//         free(node);
+//     node_ls->str = strdup("ls");
+//     node_ls->token = WORD;
+//     node_ls->i = 0;
+//     node_ls->prev = NULL;
+//     node_ls->next = NULL;
+
+//     t_lexer *node_redirect = (t_lexer *)malloc(sizeof(t_lexer));
+//     if (!node_redirect) {
+//         perror("malloc");
 //         exit(EXIT_FAILURE);
 //     }
-//     node->token = token;
-//     node->i = index;
-//     node->next = NULL;
-//     node->prev = NULL;
-//     return node;
+//     node_redirect->str = strdup(">");
+//     node_redirect->token = GREAT;
+//     node_redirect->i = 1;
+//     node_redirect->prev = node_ls;
+//     node_redirect->next = NULL;
+
+//     t_lexer *node_filename = (t_lexer *)malloc(sizeof(t_lexer));
+//     if (!node_filename) {
+//         perror("malloc");
+//         exit(EXIT_FAILURE);
+//     }
+//     node_filename->str = strdup("salida.txt");
+//     node_filename->token = WORD;
+//     node_filename->i = 2;
+//     node_filename->prev = node_redirect;
+//     node_filename->next = NULL;
+
+//     t_lexer *node_pipe = (t_lexer *)malloc(sizeof(t_lexer));
+//     if (!node_pipe) {
+//         perror("malloc");
+//         exit(EXIT_FAILURE);
+//     }
+//     node_pipe->str = strdup("|");
+//     node_pipe->token = PIPE;
+//     node_pipe->i = 3;
+//     node_pipe->prev = node_filename;
+//     node_pipe->next = NULL;
+
+//     t_lexer *node_grep = (t_lexer *)malloc(sizeof(t_lexer));
+//     if (!node_grep) {
+//         perror("malloc");
+//         exit(EXIT_FAILURE);
+//     }
+//     node_grep->str = strdup("grep");
+//     node_grep->token = WORD;
+//     node_grep->i = 4;
+//     node_grep->prev = node_pipe;
+//     node_grep->next = NULL;
+
+//     t_lexer *node_palabra = (t_lexer *)malloc(sizeof(t_lexer));
+//     if (!node_palabra) {
+//         perror("malloc");
+//         exit(EXIT_FAILURE);
+//     }
+//     node_palabra->str = strdup("palabra");
+//     node_palabra->token = WORD;
+//     node_palabra->i = 5;
+//     node_palabra->prev = node_grep;
+//     node_palabra->next = NULL;
+
+//     t_lexer *node_input_redirect = (t_lexer *)malloc(sizeof(t_lexer));
+//     if (!node_input_redirect) {
+//         perror("malloc");
+//         exit(EXIT_FAILURE);
+//     }
+//     node_input_redirect->str = strdup("<");
+//     node_input_redirect->token = LESS;
+//     node_input_redirect->i = 6;
+//     node_input_redirect->prev = node_palabra;
+//     node_input_redirect->next = NULL;
+
+//     t_lexer *node_input_file = (t_lexer *)malloc(sizeof(t_lexer));
+//     if (!node_input_file) {
+//         perror("malloc");
+//         exit(EXIT_FAILURE);
+//     }
+//     node_input_file->str = strdup("entrada.txt");
+//     node_input_file->token = WORD;
+//     node_input_file->i = 7;
+//     node_input_file->prev = node_input_redirect;
+//     node_input_file->next = NULL;
+
+//     t_lexer *node_output_redirect = (t_lexer *)malloc(sizeof(t_lexer));
+//     if (!node_output_redirect) {
+//         perror("malloc");
+//         exit(EXIT_FAILURE);
+//     }
+//     node_output_redirect->str = strdup(">");
+//     node_output_redirect->token = GREAT;
+//     node_output_redirect->i = 8;
+//     node_output_redirect->prev = node_input_file;
+//     node_output_redirect->next = NULL;
+
+//     t_lexer *node_output_file = (t_lexer *)malloc(sizeof(t_lexer));
+//     if (!node_output_file) {
+//         perror("malloc");
+//         exit(EXIT_FAILURE);
+//     }
+//     node_output_file->str = strdup("salida_grep.txt");
+//     node_output_file->token = WORD;
+//     node_output_file->i = 9;
+//     node_output_file->prev = node_output_redirect;
+//     node_output_file->next = NULL;
+
+//     // Enlazar los nodos
+//     node_ls->next = node_redirect;
+//     node_redirect->next = node_filename;
+//     node_filename->next = node_pipe;
+//     node_pipe->next = node_grep;
+//     node_grep->next = node_palabra;
+//     node_palabra->next = node_input_redirect;
+//     node_input_redirect->next = node_input_file;
+//     node_input_file->next = node_output_redirect;
+//     node_output_redirect->next = node_output_file;
+
+//     return node_ls; // Devolvemos el primer nodo de la lista
 // }
 
 t_lexer *create_lexer_list() {
-    t_lexer *node_ls = (t_lexer *)malloc(sizeof(t_lexer));
-    if (!node_ls) {
+    t_lexer *node_echo = (t_lexer *)malloc(sizeof(t_lexer));
+    if (!node_echo) {
         perror("malloc");
         exit(EXIT_FAILURE);
     }
-    node_ls->str = strdup("ls");
-    node_ls->token = WORD;
-    node_ls->i = 0;
-    node_ls->prev = NULL;
-    node_ls->next = NULL;
+    node_echo->str = strdup("echo");
+    node_echo->token = WORD;
+    node_echo->i = 0;
+    node_echo->prev = NULL;
+    node_echo->next = NULL;
 
-    t_lexer *node_redirect = (t_lexer *)malloc(sizeof(t_lexer));
-    if (!node_redirect) {
+    t_lexer *node_dash_n1 = (t_lexer *)malloc(sizeof(t_lexer));
+    if (!node_dash_n1) {
         perror("malloc");
         exit(EXIT_FAILURE);
     }
-    node_redirect->str = strdup(">");
-    node_redirect->token = GREAT;
-    node_redirect->i = 1;
-    node_redirect->prev = node_ls;
-    node_redirect->next = NULL;
+    node_dash_n1->str = strdup("-n");
+    node_dash_n1->token = WORD;
+    node_dash_n1->i = 1;
+    node_dash_n1->prev = node_echo;
+    node_dash_n1->next = NULL;
 
-    t_lexer *node_filename = (t_lexer *)malloc(sizeof(t_lexer));
-    if (!node_filename) {
+    t_lexer *node_hello_world = (t_lexer *)malloc(sizeof(t_lexer));
+    if (!node_hello_world) {
         perror("malloc");
         exit(EXIT_FAILURE);
     }
-    node_filename->str = strdup("salida.txt");
-    node_filename->token = WORD;
-    node_filename->i = 2;
-    node_filename->prev = node_redirect;
-    node_filename->next = NULL;
-
-    t_lexer *node_pipe = (t_lexer *)malloc(sizeof(t_lexer));
-    if (!node_pipe) {
-        perror("malloc");
-        exit(EXIT_FAILURE);
-    }
-    node_pipe->str = strdup("|");
-    node_pipe->token = PIPE;
-    node_pipe->i = 3;
-    node_pipe->prev = node_filename;
-    node_pipe->next = NULL;
-
-    t_lexer *node_grep = (t_lexer *)malloc(sizeof(t_lexer));
-    if (!node_grep) {
-        perror("malloc");
-        exit(EXIT_FAILURE);
-    }
-    node_grep->str = strdup("grep");
-    node_grep->token = WORD;
-    node_grep->i = 4;
-    node_grep->prev = node_pipe;
-    node_grep->next = NULL;
-
-    t_lexer *node_palabra = (t_lexer *)malloc(sizeof(t_lexer));
-    if (!node_palabra) {
-        perror("malloc");
-        exit(EXIT_FAILURE);
-    }
-    node_palabra->str = strdup("palabra");
-    node_palabra->token = WORD;
-    node_palabra->i = 5;
-    node_palabra->prev = node_grep;
-    node_palabra->next = NULL;
-
-    t_lexer *node_input_redirect = (t_lexer *)malloc(sizeof(t_lexer));
-    if (!node_input_redirect) {
-        perror("malloc");
-        exit(EXIT_FAILURE);
-    }
-    node_input_redirect->str = strdup("<");
-    node_input_redirect->token = LESS;
-    node_input_redirect->i = 6;
-    node_input_redirect->prev = node_palabra;
-    node_input_redirect->next = NULL;
-
-    t_lexer *node_input_file = (t_lexer *)malloc(sizeof(t_lexer));
-    if (!node_input_file) {
-        perror("malloc");
-        exit(EXIT_FAILURE);
-    }
-    node_input_file->str = strdup("entrada.txt");
-    node_input_file->token = WORD;
-    node_input_file->i = 7;
-    node_input_file->prev = node_input_redirect;
-    node_input_file->next = NULL;
-
-    t_lexer *node_output_redirect = (t_lexer *)malloc(sizeof(t_lexer));
-    if (!node_output_redirect) {
-        perror("malloc");
-        exit(EXIT_FAILURE);
-    }
-    node_output_redirect->str = strdup(">");
-    node_output_redirect->token = GREAT;
-    node_output_redirect->i = 8;
-    node_output_redirect->prev = node_input_file;
-    node_output_redirect->next = NULL;
-
-    t_lexer *node_output_file = (t_lexer *)malloc(sizeof(t_lexer));
-    if (!node_output_file) {
-        perror("malloc");
-        exit(EXIT_FAILURE);
-    }
-    node_output_file->str = strdup("salida_grep.txt");
-    node_output_file->token = WORD;
-    node_output_file->i = 9;
-    node_output_file->prev = node_output_redirect;
-    node_output_file->next = NULL;
+    node_hello_world->str = strdup("hello world");
+    node_hello_world->token = WORD;
+    node_hello_world->i = 2;
+    node_hello_world->prev = node_dash_n1;
+    node_hello_world->next = NULL;
 
     // Enlazar los nodos
-    node_ls->next = node_redirect;
-    node_redirect->next = node_filename;
-    node_filename->next = node_pipe;
-    node_pipe->next = node_grep;
-    node_grep->next = node_palabra;
-    node_palabra->next = node_input_redirect;
-    node_input_redirect->next = node_input_file;
-    node_input_file->next = node_output_redirect;
-    node_output_redirect->next = node_output_file;
+    node_echo->next = node_dash_n1;
+    node_dash_n1->next = node_hello_world;
 
-    return node_ls; // Devolvemos el primer nodo de la lista
+    return node_echo; // Devolvemos el primer nodo de la lista
 }
 
 void print_lexer_list(t_lexer *head) {
@@ -437,17 +474,17 @@ void add_redirection (t_parser *commands, t_mshell *minishell)
 	while (i < arguments)
 	{
 		arg_array[i] = strdup(current->str);
+		next_node = current->next;
 		ft_delnode(current, &minishell->lexer_list);
 		i++;
-		current = current->next;
+		current = next_node; //aca esta el problema
 	}
-	
 	print_string_array (arg_array); //1 solo elemento ls
 	printf("\nLEXER LIST despues de array:\n"); //BORRAR
     print_lexer_list(minishell->lexer_list); //BORRAR
     
     commands->str = arg_array;
-	commands->command_handler = command_handler(arg_array[0]); //PROBAR !!!!!!!!!!!!!!!!!!!!!
+	commands->builtins_handler = command_handler(arg_array[0]);
     return;
 }
 
@@ -468,6 +505,59 @@ t_parser	*ft_parsernew()
     return(new_node);
 }
 
+int mini_echo (t_mshell *minishell, t_parser *commands)
+{
+    (void) minishell;
+    
+    //el array de string tiene en el primer elemento la palabra echo, y en el siguiente puede ser tanto "-n" como el string a imprimir
+    int i;
+    
+    i = 1;
+    if (commands->str)
+    {
+        if (!strncmp (commands->str[i], "-n", 3)) //esta bien 3? incluye el caracter nulo?
+        {
+            while (commands->str[i] && !strncmp (commands->str[i], "-n", 3))
+                i++;
+            ft_putstr_fd(commands->str[i], 1);
+        }
+        else
+            ft_putendl_fd(commands->str[i], 1);
+    }    
+    return (EXIT_SUCCESS);
+}
+
+int mini_exit (t_mshell *minishell, t_parser *commands)
+{
+    if (commands == NULL || minishell == NULL) 
+        return EXIT_FAILURE;
+       
+    ft_putendl_fd ("exit", 1);
+        
+    free_parser_list(commands);
+    free_lexer_list(minishell->lexer_list);
+    //free_string_array(minishell->paths);
+    //free_string_array(minishell->envp);
+    //free(minishell->pwd); //imposible que este vacio?
+    //free(minishell->old_pwd); //imposible que este vacio?
+    // if(minishell->pid)
+    //     free(minishell->pid);
+    // if(minishell->args)
+    //     free(minishell->args);
+    free(minishell);    
+}
+
+void initshell(t_mshell *minishell)
+{
+	minishell->commands = NULL;
+	minishell->paths = NULL;
+	minishell->envp = NULL;
+	minishell->pwd = NULL;
+	minishell->old_pwd = NULL;
+	minishell->pid = NULL;
+	
+}
+
 int main(void) 
 {
     t_mshell *minishell;
@@ -480,7 +570,8 @@ int main(void)
     }
           
     minishell->lexer_list = create_lexer_list(); //hard codding
-    minishell->commands = NULL;
+    initshell(minishell);
+    
     t_mshell *current = minishell;
     
     // Imprimir la lista de lexer
@@ -515,15 +606,15 @@ int main(void)
     
     
     
+    printf("\n************COMMANDS TESTERS****************\n"); //BORRAR
+    mini_exit(minishell, minishell->commands);
+    printf("CHECK");
+    
     /*************FREES**********************/
     
-    free_parser_list(minishell->commands); //no hay que ponerlo ahora, es solo a fin de chequeo de leaks
-    free(minishell); //no hay que ponerlo ahora, es solo a fin de chequeo de leaks
-    
-    //free(minishell->commands); //no es necesario porque es un double free
-    //free_lexer_list(minishell->lexer_list); //no es necesario;
-    
-    
+    //free_parser_list(minishell->commands); //no hay que ponerlo ahora, es solo a fin de chequeo de leaks
+    //free(minishell); //no hay que ponerlo ahora, es solo a fin de chequeo de leaks
+        
 
     return 0;
 }

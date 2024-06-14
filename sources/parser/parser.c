@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "header.h" //modifica el nombre
+#include "../../includes/header.h" //modifica el nombre
 
 //cuenta la cantidad de argumentos WORD que quedan antes del PIPE
 //no deberian quedar redirecciones
@@ -76,12 +76,13 @@ static t_parser *add_redirection (t_parser *commands, t_mshell *minishell)
 	while (i < arguments)
 	{
 		arg_array[i] = strdup(current->str);
+		next_node = current->next;
 		ft_delnode(current, &minishell->lexer_list);
 		i++;
-		current = current->next;
+		current = next_node;
 	}
 	commands->str = arg_array;
-	commands->command_handler = command_handler(arg_array[0]);
+	commands->builtins_handler = command_handler(arg_array[0]);
 	return;
 }
 
@@ -90,7 +91,7 @@ void parser (t_mshell *minishell)
     t_parser *node;          
     t_mshell *current = minishell;
     
-    minishell->commands = NULL;    
+    minishell->commands = NULL;   
     while(current->lexer_list)
 	{
 		node = parser_new_node(minishell);

@@ -9,8 +9,8 @@
 # include <string.h> //?
 # include <unistd.h>
 # include <fcntl.h> //?
-# include <readline/readline.h>
-# include <readline/history.h>
+//# include <readline/readline.h>
+//# include <readline/history.h>
 
 /*******STRUCTURES*******/
 typedef enum s_tokens
@@ -54,7 +54,7 @@ typedef struct s_mshell
 typedef struct s_parser
 {
 	char					**str;
-	int						(*command_handler)(t_mshell *, struct s_parser *); //Es un puntero a la funcion builtin que tiene 2 argumentos: Un puntero a t_mshell y Un puntero a t_parser
+	int						(*builtins_handler)(t_mshell *, struct s_parser *); //Es un puntero a la funcion builtin que tiene 2 argumentos: Un puntero a t_mshell y Un puntero a t_parser
 	int						num_redirections;
 	char					*hd_file_name; //?
 	t_lexer					*redirections;
@@ -85,18 +85,20 @@ void		lexer_add_last(t_lexer **list, t_lexer *new_node);
 int			handle_error(t_mshell *data, int error);
 
 /*******PARSER*******/
-static int count_args (t_lexer *head, t_mshell *minishell); //la dejo o no?
-static t_parser *add_redirection (t_parser *commands, t_mshell *minishell); //la dejo o no?
 void parser (t_mshell *minishell);
 
 /*******PARSER UTILS*******/
 void	ft_delnode(t_lexer *temp, t_lexer  **lexer_list);
 int (*command_handler (char *str))(t_mshell *minishell, t_parser *commands);
 void	parser_add_last(t_parser **head, t_parser *new);
-t_parser	*parser_new_node(t_mshell *minishell)
+t_parser	*parser_new_node(t_mshell *minishell);
 
 void free_lexer_list(t_lexer *list);
 void free_string_array(char **array);
 void free_parser_list(t_parser *list);
+
+/*******builtins*******/
+int mini_echo (t_mshell *minishell, t_parser *commands);
+int mini_exit (t_mshell *minishell, t_parser *commands);
 
 #endif // HEADER_H
