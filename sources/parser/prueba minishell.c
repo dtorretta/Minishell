@@ -3,6 +3,12 @@
 #include <string.h>
 #include "../../includes/header.h"
 
+
+int	ft_iswhitespace(char c)
+{
+	return (c == ' ' || (c > 8 && c < 14));
+}
+
 void	ft_putstr_fd(const char *s, int fd)
 {
 	while (*s)
@@ -11,6 +17,46 @@ void	ft_putstr_fd(const char *s, int fd)
 		s++;
 	}
 }
+
+size_t	ft_strlcpy(char *dest, const char *src, size_t size)
+{
+	size_t	i;
+	size_t	len;
+
+	len = strlen(src);
+	i = 0;
+	if (size != 0)
+	{
+		while (src[i] != '\0' && i < (size -1))
+		{
+			dest[i] = src[i];
+			i++;
+		}
+		dest[i] = '\0';
+	}
+	return (len);
+}
+
+
+char	*ft_substr(char const *s, unsigned int start, size_t len)
+{
+	char	*substring;
+	size_t	size;
+
+	if (!s)
+		return (NULL);
+	size = strlen(s);
+	if (start > size)
+		return (strdup(""));
+	else if (len > size - start)
+		len = size - start;
+	substring = calloc(len + 1, sizeof(char));
+	if (!substring)
+		return (NULL);
+	ft_strlcpy(substring, s + start, len + 1);
+	return (substring);
+}
+
 
 void	ft_putendl_fd(char *s, int fd)
 {
@@ -547,19 +593,77 @@ int mini_exit (t_mshell *minishell, t_parser *commands)
     free(minishell);    
 }
 
-void initshell(t_mshell *minishell)
+char	**ft_arrdup(char **arr)
+{
+	char	**rtn;
+	size_t	i;
+
+	i = 0;
+	while (arr[i] != NULL)
+		i++;
+	rtn = calloc(sizeof(char *), i + 1);
+	if (!rtn)
+		return (NULL);
+	i = 0;
+	while (arr[i] != NULL)
+	{
+		rtn[i] = strdup(arr[i]);
+		i++;
+	}
+	
+    return (rtn);
+}
+
+int mini_env (t_mshell *minishell, t_parser *commands)
+{
+    (void)commands;
+    int i = 0;
+    
+    printf("check⚠️\n");
+    // Recorrer el array hasta encontrar un NULL
+    while (minishell->envp[i])
+    {
+        //printf("%s\n", minishell->envp[i]);
+        ft_putendl_fd(minishell->envp[i], 1);
+        i++;
+    }   
+}
+
+int mini_pwd (t_mshell *minishell, t_parser *commands)
+{
+    (void)commands;
+    int i = 0;
+    char *pwd;
+
+    while (minishell->envp[i])
+    {
+        if (!strncmp(minishell->envp[i], "PWD=", 4))
+        {
+            pwd = ft_substr(minishell->envp[i], 4, strlen(minishell->envp[i]) - 4);
+            ft_putendl_fd(pwd, 1);
+            free (pwd);
+            return(EXIT_SUCCESS);
+        }
+        i++;
+    }
+    return(EXIT_FAILURE);
+}
+
+void initshell(t_mshell *minishell, char **env)
 {
 	minishell->commands = NULL;
 	minishell->paths = NULL;
-	minishell->envp = NULL;
+	minishell->envp = ft_arrdup(env);
 	minishell->pwd = NULL;
 	minishell->old_pwd = NULL;
 	minishell->pid = NULL;
 	
 }
 
-int main(void) 
+int main(int argc, char **argv, char **env) 
 {
+    (void)argc;
+    (void)argv;
     t_mshell *minishell;
     t_parser *node;
     
@@ -569,9 +673,9 @@ int main(void)
         exit(EXIT_FAILURE);
     }
           
-    minishell->lexer_list = create_lexer_list(); //hard codding
-    initshell(minishell);
     
+    minishell->lexer_list = create_lexer_list(); //hard codding
+    initshell(minishell, env);
     t_mshell *current = minishell;
     
     // Imprimir la lista de lexer
@@ -607,13 +711,15 @@ int main(void)
     
     
     printf("\n************COMMANDS TESTERS****************\n"); //BORRAR
-    mini_exit(minishell, minishell->commands);
-    printf("CHECK");
+    mini_pwd(minishell, minishell->commands);
+    printf("\nCHECK\n");
     
     /*************FREES**********************/
-    
-    //free_parser_list(minishell->commands); //no hay que ponerlo ahora, es solo a fin de chequeo de leaks
-    //free(minishell); //no hay que ponerlo ahora, es solo a fin de chequeo de leaks
+    //⚠️ no hay que ponerlo ahora, es solo a fin de chequeo de leaks. ponerlo al final de todo cuando este todo terminado
+    free_parser_list(minishell->commands); 
+    if(minishell->envp) 
+        free_string_array(minishell->envp);
+    free(minishell); 
         
 
     return 0;

@@ -27,13 +27,13 @@ int (*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands)
     //el puntero minishel y commands no se usa ahora, si no que es necesario dentro de las funciones 
     // ver si puedo pasar como parametro direecto el string
     static void *builtins_array [7][2] = {
-        {"echo", mini_echo}, //TODO function
+        {"echo", mini_echo},
         {"cd", mini_cd}, //TODO function
-        {"pwd", mini_pwd}, //TODO function
+        {"pwd", mini_pwd},
         {"export", mini_export}, //TODO function
         {"unset", mini_unset}, //TODO function
-        {"env", mini_env}, //TODO function
-        {"exit", mini_exit}, //TODO function    
+        {"env", mini_env},
+        {"exit", mini_exit},   
     };
     int i;
     

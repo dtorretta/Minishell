@@ -107,5 +107,8 @@ void parser (t_mshell *minishell)
     /*************FREES**********************/
     //no hay que ponerlo ahora, es solo a fin de chequeo de leaks
     //free_parser_list(minishell->commands);
+    // if(minishell->envp) 
+    //     free_string_array(minishell->envp);
     //free(minishell);
+    
 }
