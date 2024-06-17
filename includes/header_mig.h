@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:29:16 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/16 23:41:10 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/17 16:18:09 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ typedef enum s_tokens
 	GREAT,
 	GREAT_GREAT,
 	LESS,
-	LESS_LESS, //HERE_DOC?
+	HERE_DOC, // antes era LESS_LESS
 }	t_tokens;
 
 typedef struct s_lexer
@@ -42,13 +42,8 @@ typedef struct s_lexer
 	struct s_lexer	*prev;
 }	t_lexer;
 
-// typedef struct s_parser_tools
-// {
-// 	t_lexer			*lexer_list;
-// 	t_lexer			*redirections;
-// 	int				num_redirections;
-// 	struct s_tools	*tools;
-// }	t_parser_tools;
+struct s_parser;
+struct s_mshell;
 
 //ESTA ES LA ESTRUCTURA FINAL QUE SE PASA AL EXECUTABLE
 typedef struct s_mshell
@@ -56,26 +51,26 @@ typedef struct s_mshell
 	char					*args;
 	char					**paths;
 	char					**envp;
-	struct s_simple_cmds	*simple_cmds;
+	struct s_parser         *commands;
 	t_lexer					*lexer_list;
 	char					*pwd;
 	char					*old_pwd;
-	int						pipes; //ver si es necesario
+	int						pipes; //ver si es necesario. Hasta hoy 17.6 no ha sido utilizada
 	int						*pid;
 	bool					heredoc;
 	bool					reset;
-}	t_mshell;
+}	t_mshell; //t_tools;
 
-typedef struct s_simple_cmds // cambiamos el nombre a builtins?
+typedef struct s_parser
 {
 	char					**str;
-	int						(*builtin)(t_mshell *, struct s_simple_cmds *);
+	int						(*builtins_handler)(t_mshell *, struct s_parser *); //Es un puntero a la funcion builtin que tiene 2 argumentos: Un puntero a t_mshell y Un puntero a t_parser
 	int						num_redirections;
-	char					*hd_file_name;
+	char					*hd_file_name; //?
 	t_lexer					*redirections;
-	struct s_simple_cmds	*next;
-	struct s_simple_cmds	*prev;
-}	t_simple_cmds;
+	struct s_parser	   *next;
+	struct s_parser	   *prev;
+}	t_parser; //t_simple_cmds;
 
 /****INITIALIZATION****/
 

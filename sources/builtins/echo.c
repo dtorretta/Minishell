@@ -19,10 +19,10 @@
 int mini_echo (t_mshell *minishell, t_parser *commands)
 {
     (void) minishell;
-    
+
     //el array de string tiene en el primer elemento la palabra echo, y en el siguiente puede ser tanto "-n" como el string a imprimir
     int i;
-    
+
     i = 1;
     if (commands->str)
     {
@@ -34,6 +34,9 @@ int mini_echo (t_mshell *minishell, t_parser *commands)
         }
         else
             ft_putendl_fd(commands->str[i], 1);
-    }    
+    }
     return (EXIT_SUCCESS);
 }
+
+
+//HACER QUE IMPRIMA TOO EL ARRAY

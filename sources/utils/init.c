@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 21:10:52 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/16 21:20:09 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/17 16:19:07 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	init_data(t_mshell *data)
 {
-	data->simple_cmds = NULL;
+	data->commands = NULL;
 	data->lexer_list = NULL;
 	data->reset = false;
 	data->pid = NULL;
@@ -29,7 +29,7 @@ int	init_data(t_mshell *data)
 
 int	reset_data(t_mshell *data)
 {
-	ft_simple_cmds_clear(&data->simple_cmds); // MAKE
+	ft_commands_clear(&data->commands); // MAKE
 	free(data->args);
 	if (data->pid)
 		free(data->pid);
@@ -40,11 +40,12 @@ int	reset_data(t_mshell *data)
 	return (1);
 }
 
-void	builtins_clear(t_simple_cmds **list)
+/*BUILTIN CLEAR... Ver en donde recolocar*/
+void	builtins_clear(t_parser **list)
 {
-	t_simple_cmds	*current;
-	t_simple_cmds	*next;
-	t_lexer			*redirection_temp;
+	t_parser	*current;
+	t_parser	*next;
+	t_lexer		*redirection_temp;
 
 	if (!list || !*list)
 		return ;

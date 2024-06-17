@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 19:10:18 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/14 22:16:57 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/17 17:40:57 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,22 @@ static int	set_pwd(char *env_var, char **pwd, int prefix_len)
 	return (*pwd != NULL);
 }
 
-int	get_pwd(t_mshell *data)
+int	get_pwd(t_mshell *data) //cambiar a void
 {
 	int	i;
 
 	i = 0;
+	data->pwd = NULL;
+	data->old_pwd = NULL;
 	while (data->envp[i])
 	{
 		if (ft_strncmp(data->envp[i], "PWD=", 4) == 0)
-			return (set_pwd(data->envp[i], &(data->pwd), 4));
+			set_pwd(data->envp[i], &(data->pwd), 4);
 		if (ft_strncmp(data->envp[i], "OLDPWD=", 7) == 0)
-			return (set_pwd(data->envp[i], &(data->pwd), 7));
+			set_pwd(data->envp[i], &(data->pwd), 7);
 		i++;
 	}
-	return (0);
+	return (1);
 }
 
 char	*get_path(char **envp)
@@ -53,6 +55,7 @@ int	handle_envp(t_mshell *data)
 	size_t	len;
 	int		i;
 
+	i = 0;
 	path = get_path(data->envp);
 	if (!path)
 		return (EXIT_FAILURE);

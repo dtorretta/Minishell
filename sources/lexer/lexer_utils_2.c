@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 22:19:04 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/16 23:23:12 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/17 15:37:31 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ void	lexer_delete_first(t_lexer **list)
 	lexer_delete_one(&node);
 }
 
+/*Ver si realmente es necesaria, ya hay ft_delnode en pareser_utils
+Ver si en algun momento necesitamos el index realmente*/
 void	lexer_delete_specific(t_lexer **list, int node_index)
 {
 	t_lexer	*node;

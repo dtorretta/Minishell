@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:31:22 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/16 23:37:17 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/17 16:13:52 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,15 @@ int	main(int ac, char **av, char **envp)
 	if (ac != 1 || av[1])
 	{
 		printf("Minishell does not accept arguments\n");
-		exit (0);
+		exit(0);
 	}
 	data.envp = dup_str(envp);
 	get_pwd(&data);
 	init_data(&data);
-	//printf("MAKE WELCOME MESSAGE/n"); //MAKE
+	// printf("MAKE WELCOME MESSAGE/n"); //MAKE
 	lexer(&data);
 	parser(&data);
-	//prepare_executor(&data); // ??
-	//reset_data(&data); // almost finished
+	// prepare_executor(&data); // ??
+	reset_data(&data);
 	return (0);
 }

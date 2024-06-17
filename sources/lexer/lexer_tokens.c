@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 20:59:12 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/11 16:55:21 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/17 15:40:17 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	process_double(char *str, int i, t_tokens token, t_lexer **list)
 	if (token == GREAT && check_token(str[i + 1]) == GREAT)
 		double_token = GREAT_GREAT;
 	else if (token == LESS && check_token(str[i + 1]) == LESS)
-		double_token = LESS_LESS;
+		double_token = HERE_DOC;
 	else
 		return (0);
 	if (!add_node(NULL, double_token, list))

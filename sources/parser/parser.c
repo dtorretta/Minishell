@@ -18,9 +18,9 @@ static int count_args (t_lexer *head, t_mshell *minishell)
 {
 	int i;
 	t_lexer *current;
-	
+
 	i = 0;
-	current = head;	
+	current = head;
 	if (!current)
 		return (handle_error(minishell, 4)); //ese necesario poner el return aca?
 	while (current && current->token != PIPE)
@@ -48,8 +48,8 @@ static t_parser *add_redirection (t_parser *commands, t_mshell *minishell)
 	int arguments;
 	char **arg_array;
 	int i;
-		
-	current = minishell->lexer_list;	
+
+	current = minishell->lexer_list;
 	while(current && current->token != PIPE)
 	{
 		if(current->token != WORD)
@@ -65,14 +65,14 @@ static t_parser *add_redirection (t_parser *commands, t_mshell *minishell)
 		else
 			current = current->next;
 	}
-	
+
 	arguments = count_args(minishell->lexer_list, minishell); //al nodo general le a;ade los token WORD
 	arg_array = calloc ((arguments + 1), sizeof(char*));
 	if (!arg_array)
 		return (handle_error(minishell, 0)); //ese necesario poner el return aca?
-	
+
 	current = minishell->lexer_list; //devolvemos el puntero al primer elemento;
-	i = 0;  
+	i = 0;
 	while (i < arguments)
 	{
 		arg_array[i] = strdup(current->str);
@@ -88,27 +88,29 @@ static t_parser *add_redirection (t_parser *commands, t_mshell *minishell)
 
 void parser (t_mshell *minishell)
 {
-    t_parser *node;          
+    t_parser *node;
     t_mshell *current = minishell;
-    
-    minishell->commands = NULL;   
+
+    minishell->commands = NULL;
     while(current->lexer_list)
 	{
 		node = parser_new_node(minishell);
-		add_redirection (node, minishell);		
-		parser_add_last(&minishell->commands, node); 
-		
+		add_redirection (node, minishell);
+		parser_add_last(&minishell->commands, node);
+
 		if(current->lexer_list && current->lexer_list->token == PIPE)
 			ft_delnode(current->lexer_list, &minishell->lexer_list);
-			
+
 		//current = minishell; //es necesario??? parece que no
     }
-    
+
     /*************FREES**********************/
     //no hay que ponerlo ahora, es solo a fin de chequeo de leaks
     //free_parser_list(minishell->commands);
-    // if(minishell->envp) 
+    // if(minishell->envp)
     //     free_string_array(minishell->envp);
     //free(minishell);
-    
+
+
+	//free_string_array MIGUE YA TIENE ESTA FUNCION EN LIBFT
 }

@@ -1,7 +1,7 @@
 #ifndef HEADER_H
 # define HEADER_H //modifica el nombre
 
-# include "../libft/includes/libft.h"
+//# include "../libft/includes/libft.h"
 # include <stdarg.h> //?
 # include <stdio.h>
 # include <stdlib.h>
@@ -9,8 +9,9 @@
 # include <string.h> //?
 # include <unistd.h>
 # include <fcntl.h> //?
-//# include <readline/readline.h>
-//# include <readline/history.h>
+# include <signal.h>
+# include <readline/readline.h>
+# include <readline/history.h>
 
 /*******STRUCTURES*******/
 typedef enum s_tokens
@@ -20,7 +21,7 @@ typedef enum s_tokens
 	GREAT,
 	GREAT_GREAT,
 	LESS,
-	LESS_LESS,
+	HERE_DOC,
 }	t_tokens;
 
 typedef struct s_lexer
@@ -45,10 +46,10 @@ typedef struct s_mshell
 	t_lexer					*lexer_list;
 	char					*pwd;
 	char					*old_pwd;
-	int						pipes; //ver si es necesario.
+	int						pipes; //ver si es necesario. Hasta hoy 17.6 no ha sido utilizada
 	int						*pid;
-	//bool					heredoc;
-	//bool					reset;
+	bool					heredoc;
+	bool					reset;
 }	t_mshell; //t_tools;
 
 typedef struct s_parser

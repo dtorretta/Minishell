@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 17:19:25 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/11 17:38:59 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/17 17:47:50 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ int	count_quotes(char *str)
 				double_quote += 2;
 		}
 	}
-	if ((single_quote > 0 && single_quote % 2 == 0)
-		|| (double_quote > 0 && double_quote % 2 == 0))
+	if (single_quote == 0 || (single_quote > 0 && single_quote % 2 == 0)
+		|| (double_quote == 0 || (double_quote > 0 && double_quote % 2 == 0)))
 		return (1);
 	return (0);
 }

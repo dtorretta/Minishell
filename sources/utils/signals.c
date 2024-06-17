@@ -6,22 +6,57 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 18:31:02 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/16 20:29:26 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/17 15:54:08 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/header_mig.h"
 
+void	ft_putnbr_fd(int n, int fd)
+{
+	if (n == -2147483648)
+	{
+		ft_putchar_fd('-', fd);
+		ft_putchar_fd('2', fd);
+		n = -n;
+		ft_putnbr_fd(147483648, fd);
+	}
+	else if (n < 0)
+	{
+		ft_putchar_fd('-', fd);
+		n = n * (-1);
+		ft_putnbr_fd(n, fd);
+	}
+	else if (n > 9)
+	{
+		ft_putnbr_fd(0 + n / 10, fd);
+		ft_putchar_fd('0' + n % 10, fd);
+	}
+	else
+		ft_putchar_fd('0' + n, fd);
+}
+
+void	ft_putstr_fd(const char *s, int fd)
+{
+	while (*s)
+	{
+		write(fd, s, 1);
+		s++;
+	}
+}
+
+void	ft_putchar_fd(char c, int fd)
+{
+	write(fd, &c, 1);
+}
+
 /*testear in linux*/
 void	handle_ctrl_c(int sig)
 {
 	(void)sig;
-	//rl_redisplay();
 	rl_replace_line("", 0);
 	rl_on_new_line();
-	//rl_set_prompt("");
 	rl_redisplay();
-	//rl_set_prompt("minishell> ");
 }
 
 void	handle_ctrl_backslash(int sig)
@@ -33,57 +68,11 @@ void	handle_ctrl_backslash(int sig)
 
 void	init_signals(void)
 {
-	struct sigaction	sigint_action;
-	struct sigaction	sigquit_action;
-
-	sigint_action.sa_handler = handle_ctrl_c;
-	sigemptyset(&sigint_action.sa_mask);
-	sigint_action.sa_flags = 0;
-	if (sigaction(SIGINT, &sigint_action, NULL) < 0)
-	{
-		perror("sigaction(SIGINT) failed");
-		exit(EXIT_FAILURE);
-	}
-
-	sigquit_action.sa_handler = handle_ctrl_backslash; //SIG_IGN?
-	sigemptyset(&sigquit_action.sa_mask);
-	sigquit_action.sa_flags = 0;
-	if (sigaction(SIGQUIT, &sigquit_action, NULL) < 0)
-	{
-		perror("sigaction(SIGQUIT) failed");
-		exit(EXIT_FAILURE);
-	}
-
-	//signal(SIGINT, handle_ctrl_c);
-	//signal(SIGQUIT, SIG_IGN); //
-	//signal(SIGQUIT, handle_ctrl_backslash); /*test in linux*/
+	signal(SIGINT, handle_ctrl_c);
+	signal(SIGQUIT, SIG_IGN); 
+	//signal(SIGQUIT, handle_ctrl_backslash); /*esta se usara cuando se inicie un proceso*/
 }
 
-/*
-int main() {
-    // Initialize readline
-    rl_bind_key('\t', rl_complete);
-
-    // Initialize signals
-    init_signals();
-
-    // Main loop or other program logic
-    while (1) {
-        char *input = readline("minishell> ");
-        if (!input) {
-            printf("Exiting...\n");
-            break;
-        }
-        add_history(input);
-        // Process input or handle commands
-        printf("Entered: %s\n", input);
-        free(input);
-    }
-
-    return 0;
-}
-*/
-/*
 int main(void) {
     char *input;
 
@@ -108,4 +97,3 @@ int main(void) {
 
     return 0;
 }
-*/
