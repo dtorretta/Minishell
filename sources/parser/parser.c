@@ -14,10 +14,10 @@
 
 //cuenta la cantidad de argumentos WORD que quedan antes del PIPE
 //no deberian quedar redirecciones
-static int count_args (t_lexer *head, t_mshell *minishell)
+static int	count_args(t_lexer *head, t_mshell *minishell)
 {
-	int i;
-	t_lexer *current;
+	int		i;
+	t_lexer	*current;
 
 	i = 0;
 	current = head;
@@ -26,7 +26,7 @@ static int count_args (t_lexer *head, t_mshell *minishell)
 	while (current && current->token != PIPE)
 	{
 		if (current -> token != WORD)
-		    return (handle_error(minishell, 4)); //ese necesario poner el return aca?
+			return (handle_error(minishell, 4)); //ese necesario poner el return aca?
 		i++;
 		current = current->next;
 	}
@@ -40,23 +40,23 @@ static int count_args (t_lexer *head, t_mshell *minishell)
 //cuenta la cantidad de argumentos restantes (que solo deberian ser WORD)
 //con calloc creo un array para almacenar todos los str (token WORD) + \0
 //los array llevan doble pointer
-static t_parser *add_redirection (t_parser *commands, t_mshell *minishell)
+static t_parser	*add_redirection(t_parser *commands, t_mshell *minishell)
 {
-	t_lexer *current;
-	t_lexer *next_node;
-	t_lexer *node;
-	int arguments;
-	char **arg_array;
-	int i;
+	t_lexer	*current;
+	t_lexer	*next_node;
+	t_lexer	*node;
+	int		arguments;
+	char	**arg_array;
+	int		i;
 
 	current = minishell->lexer_list;
-	while(current && current->token != PIPE)
+	while (current && current->token != PIPE)
 	{
-		if(current->token != WORD)
+		if (current->token != WORD)
 		{
 			node = lexer_new_node(strdup(current->next->str), current->token ); //(OK)crea un nodo para la nueva sub linked list con las redirecciones
 			lexer_add_last(&commands->redirections, node); //(OK) add el nodo a la sublinked list de redirecciones   (2)
-    		next_node = current->next->next;
+			next_node = current->next->next;
 			ft_delnode(current->next, &minishell->lexer_list);
 			ft_delnode(current, &minishell->lexer_list);
 			current = next_node;
@@ -83,26 +83,26 @@ static t_parser *add_redirection (t_parser *commands, t_mshell *minishell)
 	}
 	commands->str = arg_array;
 	commands->builtins_handler = command_handler(arg_array[0]);
-	return;
+	return ;
 }
 
-void parser (t_mshell *minishell)
+void	parser(t_mshell *minishell)
 {
-    t_parser *node;
-    t_mshell *current = minishell;
+	t_parser	*node;
+	t_mshell	*current;
 
-    minishell->commands = NULL;
-    while(current->lexer_list)
+	current = minishell;
+	minishell->commands = NULL;
+	while (current->lexer_list)
 	{
 		node = parser_new_node(minishell);
 		add_redirection (node, minishell);
 		parser_add_last(&minishell->commands, node);
 
-		if(current->lexer_list && current->lexer_list->token == PIPE)
+		if (current->lexer_list && current->lexer_list->token == PIPE)
 			ft_delnode(current->lexer_list, &minishell->lexer_list);
-
 		//current = minishell; //es necesario??? parece que no
-    }
+	}
 
     /*************FREES**********************/
     //no hay que ponerlo ahora, es solo a fin de chequeo de leaks
@@ -113,4 +113,5 @@ void parser (t_mshell *minishell)
 
 
 	//free_string_array MIGUE YA TIENE ESTA FUNCION EN LIBFT
+	//cambiar luego por ft_free_array
 }

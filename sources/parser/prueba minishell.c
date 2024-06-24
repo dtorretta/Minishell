@@ -365,11 +365,11 @@ void free_parser_list(t_parser *list) {
 
 void	ft_delnode(t_lexer *temp, t_lexer  **lexer_list)
 {
-	
+
 	if (temp == NULL) { //argregar
         return;
     }
-	
+
 	if (temp->prev == NULL && temp->next == NULL) //si es el unico elemento
 	{
 	    free(temp->str);
@@ -391,7 +391,7 @@ void	ft_delnode(t_lexer *temp, t_lexer  **lexer_list)
     if (temp->prev && temp->next == NULL) //es el ultimo nodo
     {
         temp->prev->next = NULL;
-    }   
+    }
 	free(temp->str);
 	free(temp); //tambien tengo que borrar la memoria de los string???
 }
@@ -400,9 +400,9 @@ int count_args (t_lexer *lexer_list)
 {
 	int i;
 	t_lexer *current;
-	
+
 	i = 0;
-	current = lexer_list;	
+	current = lexer_list;
 	if (!current)
 	{
 		return (-1);//add error
@@ -413,7 +413,7 @@ int count_args (t_lexer *lexer_list)
 		    return(-1); //add error
 		i++;
 		current = current->next;
-		
+
 	}
 	return (i);
 }
@@ -422,14 +422,14 @@ void borrar (t_mshell *minishell, t_parser *commands)
 {
 	(void) minishell;
 	(void) commands;
-	
+
 	printf("HOLAAAAAAAAAAAAA");
 }
 
 int (*command_handler(char *str))(t_mshell *minishell, t_parser *commands)
 {
-    
-    //el puntero minishel y commands no se usa ahora, si no que es necesario dentro de las funciones 
+
+    //el puntero minishel y commands no se usa ahora, si no que es necesario dentro de las funciones
     // ver si puedo pasar como parametro direecto el string
     static void *commands_array [8][2] = {
         {"echo", borrar}, //TODO function
@@ -438,12 +438,12 @@ int (*command_handler(char *str))(t_mshell *minishell, t_parser *commands)
         {"export", borrar}, //TODO function
         {"unset", borrar}, //TODO function
         {"env", borrar}, //TODO function
-        {"exit", borrar}, //TODO function    
-        {"ls", borrar}, //BORRAR    
+        {"exit", borrar}, //TODO function
+        {"ls", borrar}, //BORRAR
     };
     int i;
-    
-    i = 0;    
+
+    i = 0;
     while(i < 7)
     {
         if (str && !strncmp(commands_array[i][0], str, strlen(commands_array[i][0])))
@@ -453,7 +453,7 @@ int (*command_handler(char *str))(t_mshell *minishell, t_parser *commands)
                 return(NULL); //retorna null en vez de un pointer
             return (commands_array[i][0]);
 		}
-		else    
+		else
             i++;
     }
     return (NULL);
@@ -480,11 +480,11 @@ void add_redirection (t_parser *commands, t_mshell *minishell)
 	int arguments;
 	char **arg_array;
 	int i;
-	
+
 	arguments = count_args(minishell->lexer_list); //BORRAR
 	printf("\nCANTIDAD DE ARGUMENTOS: %d\n", arguments); //BORRAR
-	
-	current = minishell->lexer_list;	
+
+	current = minishell->lexer_list;
 	while(current && current->token != PIPE)
 	{
 		if(current->token != WORD)
@@ -495,28 +495,28 @@ void add_redirection (t_parser *commands, t_mshell *minishell)
 			ft_delnode(current->next, &minishell->lexer_list);
 			ft_delnode(current, &minishell->lexer_list);
 			current = next_node;
-			
+
 			commands->num_redirections++;
 		}
 		else
 			current = current->next;
 	}
-	
+
 	arguments = count_args(minishell->lexer_list); //al nodo general le a;ade los token WORD
 	printf("\nCANTIDAD DE ARGUMENTOS: %d\n", arguments); //BORRAR esta bien que de 1 que son los word que quedan despues de las eliminaciones
-	
+
 	arg_array = calloc ((arguments + 1), sizeof(char*));
 	if (!arg_array) //ver
 		return; //no puedo hacer retur exit failor (1/4)
 	current = minishell->lexer_list; //devolvemos el puntero al primer elemento;
 	i = 0;
-	
+
 	printf("\nLEXER LIST antes de array:\n"); //BORRAR 1 elemento ls
 	print_lexer_list(minishell->lexer_list); //BORRAR
-	
+
 	printf("\nCOMMAND LIST con las redirections:\n"); //BORRAR 2 elementos > y salida.txt
 	print_lexer_list(commands->redirections); //BORRAR
-        
+
 	while (i < arguments)
 	{
 		arg_array[i] = strdup(current->str);
@@ -528,7 +528,7 @@ void add_redirection (t_parser *commands, t_mshell *minishell)
 	print_string_array (arg_array); //1 solo elemento ls
 	printf("\nLEXER LIST despues de array:\n"); //BORRAR
     print_lexer_list(minishell->lexer_list); //BORRAR
-    
+
     commands->str = arg_array;
 	commands->builtins_handler = command_handler(arg_array[0]);
     return;
@@ -537,27 +537,27 @@ void add_redirection (t_parser *commands, t_mshell *minishell)
 t_parser	*ft_parsernew()
 {
     t_parser *new_node;
-    
+
     new_node = (t_parser *)malloc(sizeof(t_parser));
 	if (!new_node)
 		return (0);
-    
+
 	new_node->num_redirections = 0;
 	new_node->redirections = NULL;
 	new_node->next = NULL;
 	new_node->prev = NULL;
 	new_node->hd_file_name = NULL;
-    
+
     return(new_node);
 }
 
 int mini_echo (t_mshell *minishell, t_parser *commands)
 {
     (void) minishell;
-    
+
     //el array de string tiene en el primer elemento la palabra echo, y en el siguiente puede ser tanto "-n" como el string a imprimir
     int i;
-    
+
     i = 1;
     if (commands->str)
     {
@@ -569,17 +569,17 @@ int mini_echo (t_mshell *minishell, t_parser *commands)
         }
         else
             ft_putendl_fd(commands->str[i], 1);
-    }    
+    }
     return (EXIT_SUCCESS);
 }
 
 int mini_exit (t_mshell *minishell, t_parser *commands)
 {
-    if (commands == NULL || minishell == NULL) 
+    if (commands == NULL || minishell == NULL)
         return EXIT_FAILURE;
-       
+
     ft_putendl_fd ("exit", 1);
-        
+
     free_parser_list(commands);
     free_lexer_list(minishell->lexer_list);
     //free_string_array(minishell->paths);
@@ -590,7 +590,7 @@ int mini_exit (t_mshell *minishell, t_parser *commands)
     //     free(minishell->pid);
     // if(minishell->args)
     //     free(minishell->args);
-    free(minishell);    
+    free(minishell);
 }
 
 char	**ft_arrdup(char **arr)
@@ -610,7 +610,7 @@ char	**ft_arrdup(char **arr)
 		rtn[i] = strdup(arr[i]);
 		i++;
 	}
-	
+
     return (rtn);
 }
 
@@ -618,7 +618,7 @@ int mini_env (t_mshell *minishell, t_parser *commands)
 {
     (void)commands;
     int i = 0;
-    
+
     printf("check⚠️\n");
     // Recorrer el array hasta encontrar un NULL
     while (minishell->envp[i])
@@ -626,7 +626,7 @@ int mini_env (t_mshell *minishell, t_parser *commands)
         //printf("%s\n", minishell->envp[i]);
         ft_putendl_fd(minishell->envp[i], 1);
         i++;
-    }   
+    }
 }
 
 int mini_pwd (t_mshell *minishell, t_parser *commands)
@@ -657,70 +657,70 @@ void initshell(t_mshell *minishell, char **env)
 	minishell->pwd = NULL;
 	minishell->old_pwd = NULL;
 	minishell->pid = NULL;
-	
+
 }
 
-int main(int argc, char **argv, char **env) 
+int main(int argc, char **argv, char **env)
 {
     (void)argc;
     (void)argv;
     t_mshell *minishell;
     t_parser *node;
-    
+
     minishell = (t_mshell *)malloc(sizeof(t_mshell));
     if (!minishell) {
         perror("malloc");
         exit(EXIT_FAILURE);
     }
-          
-    
+
+
     minishell->lexer_list = create_lexer_list(); //hard codding
     initshell(minishell, env);
     t_mshell *current = minishell;
-    
+
     // Imprimir la lista de lexer
     printf("*********lista original************\n");
     print_lexer_list(minishell->lexer_list);
-    
+
     int limite = 0;
-    
+
     while(current->lexer_list && limite < 5)
 	{
 		node = ft_parsernew(); //aca aloco memoria al nuevo nodo
 		add_redirection (node, minishell);
-		ft_parseradd_back(&minishell->commands, node); 
-		
-		if(current->lexer_list && current->lexer_list->token == PIPE)	
+		ft_parseradd_back(&minishell->commands, node);
+
+		if(current->lexer_list && current->lexer_list->token == PIPE)
 		{
 			printf("\n*********PIPE************\n");
 			ft_delnode(current->lexer_list, &minishell->lexer_list);
 			//break;
-		}	
-		limite++;	
+		}
+		limite++;
 		//current = minishell; //es necesario??? parece que no
     }
 
     // Imprimir la lista de lexer después de la llamada a prueba
     printf("\nfinal original\n"); //BORRAR
     print_lexer_list(minishell->lexer_list);//BORRAR
-    
-    
+
+
     printf("\n************final antes del execute****************\n"); //BORRAR
     print_parser_list(minishell->commands);//BORRAR
-    
-    
-    
+
+
+
     printf("\n************COMMANDS TESTERS****************\n"); //BORRAR
     mini_pwd(minishell, minishell->commands);
     printf("\nCHECK\n");
-    
+
     /*************FREES**********************/
     //⚠️ no hay que ponerlo ahora, es solo a fin de chequeo de leaks. ponerlo al final de todo cuando este todo terminado
-    free_parser_list(minishell->commands); 
-    if(minishell->envp) 
+    free_parser_list(minishell->commands);
+    if(minishell->envp)
         free_string_array(minishell->envp);
-    free(minishell); 
-        
+    free(minishell);
+
 
     return 0;
 }

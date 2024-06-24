@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 16:51:40 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/11 15:38:42 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/21 16:15:56 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <string.h>
 # include <unistd.h>
 
-// LIBC FUNCTIONS//
+// LIBC FUNCTIONS //
 int					ft_isalpha(int c);
 int					ft_isdigit(int c);
 int					ft_isalnum(int c);
@@ -44,7 +44,7 @@ int					ft_atoi(const char *nptr);
 void				*ft_calloc(size_t count, size_t size);
 char				*ft_strdup(const char *s1);
 
-// ADDITIONAL FUNCTIONS//
+// ADDITIONAL FUNCTIONS //
 char				*ft_substr(char const *s, unsigned int start, size_t len);
 char				*ft_strjoin(char const *s1, char const *s2);
 char				*ft_strtrim(char const *s1, char const *set);
@@ -56,6 +56,10 @@ void				ft_putchar_fd(char c, int fd);
 void				ft_putstr_fd(const char *s, int fd);
 void				ft_putendl_fd(char *s, int fd);
 void				ft_putnbr_fd(int n, int fd);
+
+// EXTRA FUNCTIONS //
+void				ft_free_array(char **array);
+char				*ft_strstr(char *str, char *to_find);
 
 // BONUS FUNCTIONS//
 typedef struct s_list

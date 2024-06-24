@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:43:09 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/17 15:57:35 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/23 20:42:39 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,14 @@ int	lexer(t_mshell *data)
 
 	prompt = "minishell> ";
 	user_input = readline(prompt);
+	trimmed_input = ft_strtrim(user_input, " ");
+	free(user_input);
+	data->args = trimmed_input;
 	if (!data->args)
 	{
 		ft_putendl_fd("exit", 1);
 		exit(EXIT_SUCCESS);
 	}
-	trimmed_input = ft_strtrim(user_input, " ");
-	free(user_input);
-	data->args = trimmed_input;
 	if (*data->args == '\0')
 		return (reset_data(data));
 	add_history(data->args);

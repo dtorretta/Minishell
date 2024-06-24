@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 19:10:18 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/17 17:40:57 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/23 20:44:54 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static int	set_pwd(char *env_var, char **pwd, int prefix_len)
 	return (*pwd != NULL);
 }
 
-int	get_pwd(t_mshell *data) //cambiar a void
+void	get_pwd(t_mshell *data) //cambiar a void
 {
 	int	i;
 
@@ -32,10 +32,9 @@ int	get_pwd(t_mshell *data) //cambiar a void
 		if (ft_strncmp(data->envp[i], "PWD=", 4) == 0)
 			set_pwd(data->envp[i], &(data->pwd), 4);
 		if (ft_strncmp(data->envp[i], "OLDPWD=", 7) == 0)
-			set_pwd(data->envp[i], &(data->pwd), 7);
+			set_pwd(data->envp[i], &(data->old_pwd), 7);
 		i++;
 	}
-	return (1);
 }
 
 char	*get_path(char **envp)
