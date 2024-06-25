@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 20:59:12 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/17 15:40:17 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/25 22:07:55 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,19 +65,29 @@ int	handle_token(char *str, int i, t_lexer **lexer_list)
 
 int	handle_word(char *str, int start, t_lexer **lexer_list)
 {
-	int	len;
+	char	*cleaned_word;
+	int		i;
+	int		len;
 
 	len = 0;
+	i = 0;
+	cleaned_word = (char *)malloc(ft_strlen(str) + 1);
+	if (!cleaned_word)
+		return (-1);
 	while (str[start + len] && (!check_token(str[start + len])
 			&& !ft_iswhitespace(str[start + len])))
 	{
-		len += skip_quotes(str, start + len, 34);
-		len += skip_quotes(str, start + len, 39);
-		if (str[start + len] && (!check_token(str[start + len])
-				&& !ft_iswhitespace(str[start + len])))
-			len++;
+		if (str[start + len] == '\"' || str[start + len] == '\'')
+			len += copy_quoted_content(str, start + len, cleaned_word, &i);
+		else
+			cleaned_word[i++] = str[start + len++];
 	}
-	if (!add_node(ft_substr(str, start, len), WORD, lexer_list))
+	cleaned_word[i] = '\0';
+	if (!add_node(ft_strdup(cleaned_word), WORD, lexer_list))
+	{
+		free(cleaned_word);
 		return (-1);
+	}
+	free(cleaned_word);
 	return (len);
 }

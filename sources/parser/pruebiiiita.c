@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../../includes/header.h"
+//#include "../../includes/header_mig.h"
 
 /*********VARIOS********/
 void free_string_array(char **array) {
@@ -575,24 +576,6 @@ if (single_quote == 0 || (single_quote > 0 && single_quote % 2 == 0)
 	return (0);
 }
 
-int	skip_quotes(const char *str, int start, char quote)
-{
-	int	len;
-
-	len = 0;
-	if (str[start] == quote)
-	{
-		len++;
-		start++;
-		while (str[start + len] && str[start + len] != quote)
-			len++;
-		if (str[start + len] == quote)
-			len++;
-	}
-	return (len);
-}
-
-
 t_tokens	check_token(int c)
 {
 	if (c == '|')
@@ -644,25 +627,70 @@ int	handle_token(char *str, int i, t_lexer **lexer_list)
 	return (0);
 }
 
-int	handle_word(char *str, int start, t_lexer **lexer_list)
+/*int	skip_quotes(const char *str, int start)
 {
+	char	quote_type;
 	int	len;
 
-	len = 0;
-	while (str[start + len] && (!check_token(str[start + len])
-			&& !ft_iswhitespace(str[start + len])))
+	len = 1;
+	quote_type = str[start];
+	while (str[start + len] && str[start + len] != quote_type)
+		len++;
+	if (str[start + len] == quote_type)
+		len++;
+	return (len);
+}*/
+
+int	copy_quoted_content(char *str, int start, char *cleaned_word, int *i)
+{
+	char	quote_type;
+	int	len;
+
+	len = 1;
+	quote_type = str[start];
+	while (str[start + len] && str[start + len] != quote_type)
 	{
-		len += skip_quotes(str, start + len, 34);
-		len += skip_quotes(str, start + len, 39);
-		if (str[start + len] && (!check_token(str[start + len])
-				&& !ft_iswhitespace(str[start + len])))
-			len++;
+		cleaned_word[(*i)] = str[start + len];
+		(*i)++;
+		len++;
 	}
-	if (!add_node(ft_substr(str, start, len), WORD, lexer_list))
-		return (-1);
+	if (str[start + len] == quote_type)
+		len++;
 	return (len);
 }
 
+int handle_word(char *str, int start, t_lexer **lexer_list)
+{
+	char	*cleaned_word;
+	int		i;
+	int		len;
+
+	len = 0;
+	i = 0;
+	cleaned_word = (char *)malloc(strlen(str) + 1);
+	if (!cleaned_word)
+		return (-1);
+	while (str[start + len] && (!check_token(str[start + len])
+			&& !ft_iswhitespace(str[start + len])))
+	{
+		if (str[start + len] == '\"' || str[start + len] == '\'')
+			len += copy_quoted_content(str, start + len, cleaned_word, &i);
+		else
+		{
+			cleaned_word[i] = str[start + len];
+			i++;
+			len++;
+		}
+	}
+	cleaned_word[i] = '\0';
+	if (!add_node(strdup(cleaned_word), WORD, lexer_list))
+	{
+		free(cleaned_word);
+		return (-1);
+	}
+	free(cleaned_word);
+	return (len);
+}
 
 int	tokenizer(t_mshell *data)
 {

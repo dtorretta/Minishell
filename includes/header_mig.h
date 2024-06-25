@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:29:16 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/23 20:48:15 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/25 22:11:19 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ int			handle_token(char *str, int i, t_lexer **lexer_list);
 int			handle_word(char *str, int start, t_lexer **lexer_list);
 /*-Quote handling-*/
 int			count_quotes(char *str);
-int			skip_quotes(const char *str, int start, char quote);
+int			copy_quoted_content(char *str, int start, char *word, int *i);
 /*-Utils-*/
 int			skip_space(char *str, int i);
 int			add_node(char *str, t_tokens token, t_lexer **lexer_list);

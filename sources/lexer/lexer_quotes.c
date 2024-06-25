@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 17:19:25 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/17 17:47:50 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/25 22:10:57 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,19 +54,20 @@ int	count_quotes(char *str)
 	return (0);
 }
 
-int	skip_quotes(const char *str, int start, char quote)
+int	copy_quoted_content(char *str, int start, char *word, int *i)
 {
-	int	len;
+	char	quote_type;
+	int		len;
 
-	len = 0;
-	if (str[start] == quote)
+	len = 1;
+	quote_type = str[start];
+	while (str[start + len] && str[start + len] != quote_type)
 	{
+		word[(*i)] = str[start + len];
+		(*i)++;
 		len++;
-		start++;
-		while (str[start + len] && str[start + len] != quote)
-			len++;
-		if (str[start + len] == quote)
-			len++;
 	}
+	if (str[start + len] == quote_type)
+		len++;
 	return (len);
 }
