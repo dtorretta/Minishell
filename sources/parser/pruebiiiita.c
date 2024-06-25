@@ -693,14 +693,14 @@ int	lexer(t_mshell *data)
 
 	prompt = "minishell> ";
 	user_input = readline(prompt);
+	trimmed_input = ft_strtrim(user_input, " ");
+	free(user_input);
+	data->args = trimmed_input;
 	if (!data->args)
 	{
 		ft_putendl_fd("exit", 1);
 		exit(EXIT_SUCCESS);
 	}
-	trimmed_input = ft_strtrim(user_input, " ");
-	free(user_input);
-	data->args = trimmed_input;
 	//if (*data->args == '\0')
 		//return (reset_data(data));
 	add_history(data->args);

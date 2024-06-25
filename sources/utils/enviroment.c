@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 19:10:18 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/23 20:44:54 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/25 08:32:22 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char	*get_path(char **envp)
 {
 	char	*path_var;
 
-	path_var = ft_strstr(envp, "PATH=");
+	path_var = ft_strstr(*envp, "PATH=");
 	if (!path_var)
 		return (ft_strdup(""));
 	return (ft_substr(path_var + 5, 0, ft_strlen(path_var + 5)));
@@ -67,9 +67,9 @@ int	handle_envp(t_mshell *data)
 		len = ft_strlen(data->paths[i]);
 		if (len > 0 && data->paths[i][len - 1] != '/')
 		{
-			temp = ft_strjoin(data->paths, '/');
+			temp = ft_strjoin(*data->paths, (char const *) '/');
 			free(data->paths);
-			data->paths = temp;
+			data->paths = &temp;
 		}
 		i++;
 	}

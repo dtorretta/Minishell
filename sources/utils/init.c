@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 21:10:52 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/17 16:19:07 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/25 08:40:36 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,14 @@ int	init_data(t_mshell *data)
 	//g_global.stop_heredoc = 0;
 	//g_global.in_cmd = 0;
 	//g_global.in_heredoc = 0;
-	handle_envp(&data);
+	handle_envp(data);
 	init_signals();
 	return (1);
 }
 
 int	reset_data(t_mshell *data)
 {
-	ft_commands_clear(&data->commands); // MAKE
+	//ft_commands_clear(&data->commands); // MAKE
 	free(data->args);
 	if (data->pid)
 		free(data->pid);
@@ -41,7 +41,7 @@ int	reset_data(t_mshell *data)
 }
 
 /*BUILTIN CLEAR... Ver en donde recolocar*/
-void	builtins_clear(t_parser **list)
+/*void	builtins_clear(t_parser **list)
 {
 	t_parser	*current;
 	t_parser	*next;
@@ -54,7 +54,7 @@ void	builtins_clear(t_parser **list)
 	{
 		next = current->next;
 		redirection_temp = current->redirections;
-		ft_lexer_clear(&redirection_temp);
+		lexer_delete_all(&redirection_temp);
 		current->redirections = redirection_temp;
 		if (current->str)
 			ft_free_array(current->str);
@@ -65,3 +65,4 @@ void	builtins_clear(t_parser **list)
 	}
 	*list = NULL;
 }
+*/

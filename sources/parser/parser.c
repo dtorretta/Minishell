@@ -40,7 +40,7 @@ static int	count_args(t_lexer *head, t_mshell *minishell)
 //cuenta la cantidad de argumentos restantes (que solo deberian ser WORD)
 //con calloc creo un array para almacenar todos los str (token WORD) + \0
 //los array llevan doble pointer
-static t_parser	*add_redirection(t_parser *commands, t_mshell *minishell)
+static t_parser	*add_redirection(t_parser *commands, t_mshell *minishell) // Hay que quitar una variable de esta funcion. Máximo son 5 -.-' (gracias norminette)
 {
 	t_lexer	*current;
 	t_lexer	*next_node;
