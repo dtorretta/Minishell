@@ -383,8 +383,8 @@ int	handle_envp(t_mshell *data)
 		if (len > 0 && data->paths[i][len - 1] != '/')
 		{
 			temp = ft_strjoin(*data->paths, (const char *)'/');
-			free(data->paths);
-			data->paths = &temp;
+			free(data->paths[i]);
+			data->paths[i] = temp;
 		}
 		i++;
 	}

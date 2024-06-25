@@ -4,10 +4,9 @@ cc -Wall -Wextra -Werror -g -I ./includes/header_mig.h -I ./libft/includes -I /o
 
 
 
-*** Comando para compilar pruebiiiita.c en Linux ***  (si el comppilar te tira un error con la libreria -lft sencillamente elimina -lft del comando)
+*** Comando para compilar pruebiiiita.c en Linux ***
 
-cc -Wall -Wextra -Werror -g -I ./includes/header_mig.h -I ./libft/includes -I usr/include/readline -L /usr/lib -lft -lreadline pruebiiiita.c -o pruebiiiita
-
+cc -Wall -Wextra -Werror -g -I ./includes/header_mig.h -I ./libft/includes -I /usr/include/readline pruebiiiita.c -L /usr/lib -lreadline -o pruebiiiita
 
 
 *** MAKEFILE for macOS ***
