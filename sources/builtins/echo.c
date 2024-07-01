@@ -16,22 +16,26 @@
 //followed by a new line (ft_putendl_fd)
 //echo -n doesn't print a new line (ft_putstr_fd)
 //bash accept multiples -n
-char *delete_quotes (char *str) //lo necesito en mas funciones?
+
+char *delete_quotes (char *str) ///agregar a utils //ver si la tiene migue
 {
-    int i = 0;
-    int last;
-	char *temp;
-	
-	last = ft_strlen(str);
-	if(str[i] == 34 || str[i] == 39)
+	char	*result;
+	int		len;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	len = ft_strlen(str);
+	result = ft_calloc((len + 1), sizeof(char *));
+	while (i < len)
 	{
-		while (str[i] == 34 || str[i] == 39)
-			i++;
-		temp = ft_substr(str, i, last - i - i);
+		if (str[i] != '\'' && str[i] != '\"')
+			result[j++] = str[i];
+		i++;
 	}
-	else
-		temp = str;
-	return(temp);
+	result[j] = '\0';
+	return (result);
 }
 
 int	mini_echo(t_mshell *minishell, t_parser *commands)

@@ -26,22 +26,25 @@
 //si lo encuentra, actualizar el valor
 //si no lo encuentra lo a;axde al final
 
-char *delete_quotes (char *str) //eliminar
+char *delete_quotes (char *str) //BORRAR
 {
-    int i = 0;
-    int last;
-	char *temp;
-	
-	last = ft_strlen(str);
-	if(str[i] == 34 || str[i] == 39)
+	char	*result;
+	int		len;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	len = ft_strlen(str);
+	result = ft_calloc((len + 1), sizeof(char *));
+	while (i < len)
 	{
-		while (str[i] == 34 || str[i] == 39)
-			i++;
-		temp = ft_substr(str, i, last - i - i);
+		if (str[i] != '\'' && str[i] != '\"')
+			result[j++] = str[i];
+		i++;
 	}
-	else
-		temp = str;
-	return(temp);
+	result[j] = '\0';
+	return (result);
 }
 
 void print_array(char **array, int i) //BORRAR, ESTA EN UTILS

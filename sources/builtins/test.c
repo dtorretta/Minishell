@@ -207,6 +207,30 @@ char **new_array(char **array, char *str) //BORRAR, ESTA EN UTILS
 	return(new_array);
 }
 
+
+char	*remove_single_quote(char *str)
+{
+	char	*result;
+	int		len;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	len = ft_strlen(str);
+	result = calloc((len + 1), sizeof(char *));
+	while (i < len)
+	{
+		if (str[i] != '\'' && str[i] != '\"')
+			result[j++] = str[i];
+		i++;
+	}
+	result[j] = '\0';
+	return (result);
+}
+
+
+
 void coincidence (char **env, int i, char *add_var) //BORRAR, ESTA EN UTILS
 {
 	free(env[i]);
@@ -242,7 +266,7 @@ static char *check_quotes(char *str, char **var_name)
 			temp = ft_substr(str, 0, i); //export varname & =
 			*var_name = strdup(temp); //revisar si esto sobrepasa esta funcion
 			//i++;
-			def = delete_quotes(str + i); //contiene el string con la definicion
+			def = remove_single_quote(str + i); //contiene el string con la definicion
 			temp = ft_strjoin(temp, def); //varname & = & def
 			return(temp);
 		}
@@ -318,8 +342,8 @@ int export (char **array, char **env)
 		temp = new_array(env, add_var);
 		free(env);
 		env = temp;
-		//printf("\n\nenvp nuevo: \n");
-		//print_string_array(env);
+		printf("\n\nenvp nuevo: \n");
+		print_string_array(env);
 	}
 	return(EXIT_SUCCESS);
 }
@@ -350,7 +374,7 @@ int main(int argc, char **argv, char **env)
 {
     (void)argc;
     (void)argv;
-    char *str[3] = {"export", "ZZZ=\"\"\"abc\"\"\"", NULL};
+    char *str[3] = {"export", "ZZZ=\"\"\"abc\"d\"\"\"", NULL};
     //char *str[2] = {"export", NULL};
     char **envp;
     
@@ -358,7 +382,7 @@ int main(int argc, char **argv, char **env)
     
     printf("envp original: \n");
     print_string_array(envp);
-    //printf("\n\noriginal: %s\n", str[1]);
+    printf("\n\noriginal: %s\n", str[1]);
     // //char *array[4] = {"char", "=", "hello", NULL};
     // // int i = 0;
     
@@ -379,8 +403,8 @@ int main(int argc, char **argv, char **env)
 	export(str, envp);
 	
 	
-	printf("\nenvp nuevo: \n");
-	print_string_array(envp); //tengo problemas cuando imprimo el env aca
+	//printf("\nenvp nuevo: \n");
+	//print_string_array(envp); //tengo problemas cuando imprimo el env aca
 	
 	
 	
