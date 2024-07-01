@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 21:10:52 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/25 08:40:36 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/30 12:03:40 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ int	init_data(t_mshell *data)
 	//g_global.stop_heredoc = 0;
 	//g_global.in_cmd = 0;
 	//g_global.in_heredoc = 0;
+	data->in_cmd = 0;
 	handle_envp(data);
 	init_signals();
 	return (1);

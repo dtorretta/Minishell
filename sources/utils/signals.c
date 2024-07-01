@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 18:31:02 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/17 15:54:08 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/06/30 11:54:08 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,11 @@ void	handle_ctrl_backslash(int sig)
 void	init_signals(void)
 {
 	signal(SIGINT, handle_ctrl_c);
-	signal(SIGQUIT, SIG_IGN); 
+	signal(SIGQUIT, SIG_IGN);
 	//signal(SIGQUIT, handle_ctrl_backslash); /*esta se usara cuando se inicie un proceso*/
 }
 
+/*
 int main(void) {
     char *input;
 
@@ -96,4 +97,4 @@ int main(void) {
     clear_history();
 
     return 0;
-}
+}*/

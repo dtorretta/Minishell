@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:29:16 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/25 22:11:19 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/01 17:46:23 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ typedef struct s_mshell
 	char					*old_pwd;
 	int						pipes; //ver si es necesario. Hasta hoy 17.6 no ha sido utilizada
 	int						*pid;
+	int						in_cmd; // nuevo (creamos para señalar que hay un comando activo)
 	bool					heredoc;
 	bool					reset;
 }	t_mshell; //t_tools;
@@ -97,7 +98,7 @@ int			handle_token(char *str, int i, t_lexer **lexer_list);
 int			handle_word(char *str, int start, t_lexer **lexer_list);
 /*-Quote handling-*/
 int			count_quotes(char *str);
-int			copy_quoted_content(char *str, int start, char *word, int *i);
+int			skip_quotes(const char *str, int start, char quote);
 /*-Utils-*/
 int			skip_space(char *str, int i);
 int			add_node(char *str, t_tokens token, t_lexer **lexer_list);
@@ -116,7 +117,7 @@ void		parser(t_mshell *minishell);
 int			(*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands);
 t_parser	*parser_new_node(t_mshell *minishell);
 void		parser_add_last(t_parser **head, t_parser *new);
-void		ft_delnode(t_lexer *temp, t_lexer  **head);
+void		ft_delnode(t_lexer *temp, t_lexer **head);
 void		free_lexer_list(t_lexer *list);
 void		free_string_array(char **array);
 
@@ -127,6 +128,12 @@ int			mini_env(t_mshell *minishell, t_parser *commands);
 int			mini_exit(t_mshell *minishell, t_parser *commands);
 void		free_minishell(t_mshell *minishell);
 int			mini_pwd(t_mshell *minishell, t_parser *commands);
+
+/*******EXPANDER*******/
+
+/*-Utils-*/
+char		*remove_single_quote(char *str);
+
 
 /*******ERROR HANDLING*******/
 
