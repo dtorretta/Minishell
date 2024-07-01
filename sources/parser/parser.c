@@ -82,7 +82,7 @@ static t_parser	*add_redirection(t_parser *commands, t_mshell *minishell) // Hay
 		current = next_node;
 	}
 	commands->str = arg_array;
-	commands->builtins_handler = command_handler(arg_array[0]);
+	commands->builtins_handler = builtins_handler(arg_array[0]); //check
 	return ;
 }
 

@@ -28,9 +28,9 @@ int	(*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands)
 	// ver si puedo pasar como parametro direecto el string
 	static void *builtins_array [7][2] = {
 		{"echo", mini_echo},
-		//{"cd", mini_cd}, //TODO function
+		{"cd", mini_cd}, //TODO function
 		{"pwd", mini_pwd},
-		//{"export", mini_export}, //TODO function
+		{"export", mini_export}, //TODO function
 		//{"unset", mini_unset}, //TODO function
 		{"env", mini_env},
 		{"exit", mini_exit},
@@ -55,17 +55,19 @@ int	(*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands)
 
 t_parser	*parser_new_node(t_mshell *minishell)
 {
-	t_parser	*new_node;
-
-	new_node = (t_parser *)malloc(sizeof(t_parser));
+    t_parser *new_node;
+    
+    new_node = (t_parser *)malloc(sizeof(t_parser));
 	if (!new_node)
 		return (handle_error(minishell, 0)); //ese necesario poner el return aca? tal vez me genere error porque la funcion retorna un int y mi funcion aca no
+    
 	new_node->num_redirections = 0;
 	new_node->redirections = NULL;
 	new_node->next = NULL;
 	new_node->prev = NULL;
 	new_node->hd_file_name = NULL;
-	return(new_node);
+    
+    return(new_node);
 }
 
 void	parser_add_last(t_parser **head, t_parser *new)
@@ -82,30 +84,32 @@ void	parser_add_last(t_parser **head, t_parser *new)
 		tmp = tmp->next;
 	tmp->next = new;
 	new->prev = tmp;
+	
+	
 }
 
 void	ft_delnode(t_lexer *temp, t_lexer  **head)
 {
 	if (temp->prev == NULL && temp->next == NULL)
 	{
-		free(temp->str);
-		free(temp);
-		return;
-	}
-	if (temp->prev && temp->next) //si hay uno antes y uno despues
+	    free(temp->str);
+	    free(temp);
+	    return;
+    }
+    if (temp->prev && temp->next) //si hay uno antes y uno despues
 	{
-		temp->prev->next = temp->next;
-		temp->next->prev = temp->prev;
-	}
-	if (temp->prev == NULL && temp->next) //es el primer nodo
-	{
-		*head = temp->next;
-		temp->next->prev = NULL;
-	}
-	if (temp->prev && temp->next == NULL) //es el ultimo nodo
-	{
-		temp->prev->next = NULL;
-	}
+	    temp->prev->next = temp->next;
+	    temp->next->prev = temp->prev;
+    }
+    if (temp->prev == NULL && temp->next) //es el primer nodo
+    {
+        *head = temp->next;
+        temp->next->prev = NULL;
+    }
+    if (temp->prev && temp->next == NULL) //es el ultimo nodo
+    {
+        temp->prev->next = NULL;
+    }   
 	free(temp->str);
 	free(temp);
 }
@@ -113,20 +117,18 @@ void	ft_delnode(t_lexer *temp, t_lexer  **head)
 
 /*************FREES**********************/
 
-void free_lexer_list(t_lexer *list)
+void free_lexer_list(t_lexer *list) 
 {
-	t_lexer	*temp;
-
-	while (list)
-	{
-		temp = list;
-		list = list->next;
-		free(temp->str);
-		free(temp);
-	}
+    t_lexer *temp;
+    while (list) {
+        temp = list;
+        list = list->next;
+        free(temp->str);
+        free(temp);
+    }
 }
 
-void	free_string_array(char **array) //cambiar luego por ft_free_array
+void free_string_array(char **array) 
 {
     if (array == NULL) {
         return;
@@ -141,16 +143,13 @@ void	free_string_array(char **array) //cambiar luego por ft_free_array
     free(array); // Liberar el array de punteros
 }
 
-void free_parser_list(t_parser *list)
-{
-	t_parser	*temp;
-
-	while (list)
-	{
-		temp = list;
-		list = list->next;
-		free_string_array(temp->str); // cambiar luego por ft_free_array
-		free_lexer_list(temp->redirections);
-		free(temp);
-	}
+void free_parser_list(t_parser *list) {
+    t_parser *temp;
+    while (list) {
+        temp = list;
+        list = list->next;
+        free_string_array(temp->str);
+        free_lexer_list(temp->redirections);
+        free(temp);
+    }
 }
