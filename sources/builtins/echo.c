@@ -16,25 +16,44 @@
 //followed by a new line (ft_putendl_fd)
 //echo -n doesn't print a new line (ft_putstr_fd)
 //bash accept multiples -n
+char *delete_quotes (char *str) //lo necesito en mas funciones?
+{
+    int i = 0;
+    int last;
+	char *temp;
+	
+	last = ft_strlen(str);
+	if(str[i] == 34 || str[i] == 39)
+	{
+		while (str[i] == 34 || str[i] == 39)
+			i++;
+		temp = ft_substr(str, i, last - i - i);
+	}
+	else
+		temp = str;
+	return(temp);
+}
+
 int	mini_echo(t_mshell *minishell, t_parser *commands)
 {
 	int	i;
+	char *temp;
 
 	(void) minishell;
 	i = 1;
 	if (commands->str)
 	{
-		if (!ft_strncmp (commands->str[i], "-n", 3)) //esta bien 3? incluye el caracter nulo?
+		if (!ft_strncmp (commands->str[1], "-n", 3)) //esta bien 3? incluye el caracter nulo?
 		{
-			while (commands->str[i] && !ft_strncmp (commands->str[i], "-n", 3))
-				i++;
-			while (commands->str[i]) //NEW  // revisar si en el caso de (echo "hello" "world") lo imprime con espacio o no
-				ft_putstr_fd(commands->str[i++], 1);
+			while (commands->str[1] && !ft_strncmp (commands->str[1], "-n", 3)) //puede haber mas de 1
+				i++;//pasa al sigueinte elemento del array
+			temp = delete_quotes (commands->str[i]); //eliminar ""
+			ft_putstr_fd(temp, 1);
 		}
 		else
 		{
-			while (commands->str[i]) //NEW	
-				ft_putendl_fd(commands->str[i++], 1);
+			temp = delete_quotes (commands->str[i]); //eliminar ""
+			ft_putendl_fd(temp, 1);
 		}
 	}
 	return (EXIT_SUCCESS);

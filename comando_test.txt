@@ -9,6 +9,11 @@ cc -Wall -Wextra -Werror -g -I ./includes/header_mig.h -I ./libft/includes -I /o
 cc -Wall -Wextra -Werror -g -I ./includes/header_mig.h -I ./libft/includes -I /usr/include/readline pruebiiiita.c -L /usr/lib -lreadline -o pruebiiiita
 
 
+*** Comando para compilar prueba minishell.c en Linux ***
+
+cc -Wall -Wextra -Werror -g -I ./includes/header.h -I ./libft/includes -I /usr/include/readline prueba_minishell.c -L /usr/lib -lreadline -o test
+
+
 *** MAKEFILE for macOS ***
 
 # Name

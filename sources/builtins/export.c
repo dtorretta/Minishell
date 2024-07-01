@@ -26,6 +26,24 @@
 //si lo encuentra, actualizar el valor
 //si no lo encuentra lo a;axde al final
 
+char *delete_quotes (char *str) //eliminar
+{
+    int i = 0;
+    int last;
+	char *temp;
+	
+	last = ft_strlen(str);
+	if(str[i] == 34 || str[i] == 39)
+	{
+		while (str[i] == 34 || str[i] == 39)
+			i++;
+		temp = ft_substr(str, i, last - i - i);
+	}
+	else
+		temp = str;
+	return(temp);
+}
+
 void print_array(char **array, int i) //BORRAR, ESTA EN UTILS
 {
 	while (array[i])
@@ -106,34 +124,66 @@ static bool check_valid_identifier(char c)
 //array[2]--> nueva definificion
 //array[3]--> null
 //si recorre todo el while loop y no encontro nada, crea un array de 2 elementos donde el primero es todo el str y el 2do es NULL.
-static char **check_command(char *str)
+static char *check_quotes(char *str, char **var_name)
 {
-	char **array;
+	//char **array;
 	int i;
 	char *temp;
+	char *def;
 	
 	i = 0;
 	while (str[i])
 	{
 		if(str[i] == '=')
 		{
-			array = ft_calloc ((4), sizeof(char*));
-			temp = ft_substr(str, 0, i); //esta bien el len?
-			array[0] = temp;
-			array[1] = ft_strdup("=");
 			i++;
-			array[2] = ft_strdup(str + i);
-			return(array);
+			temp = ft_substr(str, 0, i); //export varname & =
+			*var_name = ft_strdup(temp); //revisar si esto sobrepasa esta funcion
+			def = delete_quotes(str + i); //contiene el string con la definicion
+			temp = ft_strjoin(temp, def); //varname & = & def
+			return(temp);
 		}
 		else
 			i++;
 	}
-	array = ft_calloc ((2), sizeof(char*));
-	if (!array)
-		return (NULL); //ese necesario poner el return aca?
-	array[0] = str; 
-	return(array);
+	*var_name = str; //si no hay = de todos modos hay que darle valor a var name
+	return(str);
 }
+
+
+
+
+// static char **check_command(char *str)
+// {
+// 	char **array;
+// 	int i;
+// 	char *temp;
+	
+// 	i = 0;
+// 	while (str[i])
+// 	{
+// 		if(str[i] == '=')
+// 		{
+// 			array = ft_calloc ((4), sizeof(char*));
+// 			temp = ft_substr(str, 0, i); //esta bien el len?
+// 			array[0] = temp;
+// 			array[1] = ft_strdup("=");
+// 			i++;
+// 			array[2] = ft_strdup(str + i);
+// 			return(array);
+// 		}
+// 		else
+// 			i++;
+// 	}
+// 	array = ft_calloc ((2), sizeof(char*));
+// 	if (!array)
+// 		return (NULL); //ese necesario poner el return aca? //cambairlo por la otra version
+// 	array[0] = str; 
+// 	return(array);
+// }
+
+
+
 
 static int error_check (t_mshell *minishell, t_parser *commands)
 {
@@ -162,21 +212,28 @@ static int error_check (t_mshell *minishell, t_parser *commands)
 }
 
 //echo """hello""" deberia borrar todos los ""
-static char *var_name(char **array)
-{
-	char *str;
+//quita los " y ' de mas
+//VER, creo que en verdad no es necesario ya que siempre vamos a iprimir el env
+
+// static char *var_name(char **array)
+// {
+// 	char *str;
+// 	char *temp;
 	
-	if(!array[1])
-		str = array[0];
-	else
-	{
-		str = ft_strjoin(array[0], array [1]);
-		str = ft_strjoin(str, "\"");
-		str = ft_strjoin(str, array [2]);
-		str = ft_strjoin(str, "\"");
-	}
-	return (str);
-}
+// 	if(!array[1])
+// 		str = array[0];
+// 	else
+// 	{
+// 		temp = delete_quotes(array[2]);
+// 		free(array[2]);
+// 		array[2] = temp;
+// 		str = ft_strjoin(array[0], array [1]); //varname & =
+// 		str = ft_strjoin(str, array[2]); //varname & = & definition
+// 	}
+// 	return (str);
+// }
+
+
 
 //str[0] --> export
 //str[1] --> nombre de la variable (puede incluir la definicion)
@@ -186,6 +243,7 @@ int mini_export (t_mshell *minishell, t_parser *commands)
 	int i;
 	char **temp;
 	char *add_var;
+	char *var_name;
 	
 	i = -1;
 	if(error_check(minishell, commands)) //success 0 . failure 1
@@ -194,14 +252,17 @@ int mini_export (t_mshell *minishell, t_parser *commands)
 		mini_env(minishell, commands);
 	else
 	{
-		temp = check_command(commands->str[1]);//va a ser un array de un solo elemento si no hay =   o de 3 si encuentra un = 
-		add_var = var_name (temp);
+		add_var = check_quotes(commands->str[1], &var_name);//revisa si el string tiene "" en la definicion, de ser asi los elimina
+		//add_var = var_name(temp); //revisa si el 3er elemento definicion de la variable tiene "" y vuelve a unir todo en un solo string
 		while(minishell->envp[++i])
 		{
-			if(!ft_strncmp(minishell->envp[i], temp[0], ft_strlen(temp[0]))) //buscar en el array envp si se encuentra la variable definida con export
-				coincidence (minishell, i, add_var);
+			if(!ft_strncmp(minishell->envp[i], var_name, ft_strlen(var_name))) //buscar en el array envp si se encuentra la variable definida con export
+			{
+				coincidence(minishell, i, add_var);
+				return(EXIT_SUCCESS);
+			}
 		}
-		free(temp); //si no lo encontro, entonces a;adirlo al final del array.  
+		//free(temp); //si no lo encontro, entonces a;adirlo al final del array.  
 		temp = new_array(minishell->envp, add_var);
 		free(minishell->envp);
 		minishell->envp = temp;
@@ -218,3 +279,28 @@ int mini_export (t_mshell *minishell, t_parser *commands)
 //unir lo de migue y lo mio
 //volver a probar export
 
+
+//export ZZZ="""abc"""
+//export -> ZZZ="abc"              
+//env -->  ZZZ=abc    //en mi codigo actual imprimiria ZZZ=abc ??
+
+
+// static char *var_name(char **array)
+// {
+// 	char *str;
+// 	char *temp;
+	
+// 	if(!array[1])
+// 		str = array[0];
+// 	else
+// 	{
+// 		temp = delete_quotes(array[2]);
+// 		free(array[2]);
+// 		array[2] = temp;
+// 		str = ft_strjoin(array[0], array [1]); //export & =
+// 		str = ft_strjoin(str, "\"");
+// 		str = ft_strjoin(str, array[2]);
+// 		str = ft_strjoin(str, "\"");
+// 	}
+// 	return (str);
+// }
