@@ -28,10 +28,10 @@ int	(*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands)
 	// ver si puedo pasar como parametro direecto el string
 	static void *builtins_array [7][2] = {
 		{"echo", mini_echo},
-		{"cd", mini_cd}, //TODO function
+		{"cd", mini_cd},
 		{"pwd", mini_pwd},
-		{"export", mini_export}, //TODO function
-		//{"unset", mini_unset}, //TODO function
+		{"export", mini_export},
+		{"unset", mini_unset},
 		{"env", mini_env},
 		{"exit", mini_exit},
 	};
@@ -115,7 +115,7 @@ void	ft_delnode(t_lexer *temp, t_lexer  **head)
 }
 
 
-/*************FREES**********************/
+/*************FREES**********************/ //despues agregar a un nuevo .c
 
 void free_lexer_list(t_lexer *list) 
 {

@@ -92,17 +92,6 @@ static int	change_directory(char **env, char *str)
 	return (0);
 }
 
-// void print_array(char **array, int i)
-// {
-//     while (array[i])
-//     {
-//         ft_putstr_fd(array[i], STDERR_FILENO);
-//         i++;
-//         if(array[i])
-//             write(2, " ", 1);        
-//     }
-// }
-
 //acepta 1 solo argumento que puede ser .. / - / nada / path
 int mini_cd (t_mshell *minishell, t_parser *commands)
 {  

@@ -26,7 +26,7 @@
 //si lo encuentra, actualizar el valor
 //si no lo encuentra lo a;axde al final
 
-char *delete_quotes (char *str) //BORRAR
+char *delete_quotes (char *str) //BORRAR esta en utils
 {
 	char	*result;
 	int		len;
@@ -43,7 +43,6 @@ char *delete_quotes (char *str) //BORRAR
 			result[j++] = str[i];
 		i++;
 	}
-	result[j] = '\0';
 	return (result);
 }
 
@@ -56,7 +55,6 @@ void print_array(char **array, int i) //BORRAR, ESTA EN UTILS
 		if(array[i])
 			write(2, " ", 1);        
 	}
-	
 }
 
 int	handle_error2(t_mshell *data, int error, char *str, char **array) //BORRAR. ESTA EN ERROR.C
@@ -98,20 +96,25 @@ char **new_array(char **array, char *str) //BORRAR, ESTA EN UTILS
 		new_array[i] = ft_strdup(array[i]);
 		i++;
 	}
-	new_array[i] = str;
+	new_array[i] = str; //agrega la nueva variable como ultimo elemento
 	return(new_array);
 }
 
-void coincidence (t_mshell *minishell, int i, char *add_var) //BORRAR, ESTA EN UTILS
+static int check_coincidence (t_mshell *minishell, int i, char *var_name, char *add_var)
 {
-	free(minishell->envp[i]);
-	minishell->envp[i] = add_var;
-
+	
+	if(!ft_strncmp(minishell->envp[i], var_name, ft_strlen(var_name))) 
+	{
+		free(minishell->envp[i]);
+		minishell->envp[i] = add_var;
+		return(0);
+	}
+	return(1);
 }
 
+// Verifica si el carácter c es válido como parte de un identificador de variable en Bash
 static bool check_valid_identifier(char c) 
 {
-	// Verifica si el carácter c es válido como parte de un identificador de variable en Bash
 	if ((c >= 'a' && c <= 'z') ||
 		(c >= 'A' && c <= 'Z') ||
 		(c >= '0' && c <= '9') ||
@@ -121,72 +124,36 @@ static bool check_valid_identifier(char c)
 		return false;
 }
 
-//si encuentra un = crea array
-//array[0] --> nombre de la variable
-//array[1] --> =
-//array[2]--> nueva definificion
-//array[3]--> null
-//si recorre todo el while loop y no encontro nada, crea un array de 2 elementos donde el primero es todo el str y el 2do es NULL.
+//elimina todos los quotes
+//si encuentra =, almacena el nombre de la variable sin quotes en var_name
 static char *check_quotes(char *str, char **var_name)
 {
-	//char **array;
 	int i;
 	char *temp;
-	char *def;
+	//char *def;
 	
 	i = 0;
+	temp = delete_quotes(str);
 	while (str[i])
 	{
 		if(str[i] == '=')
 		{
 			i++;
-			temp = ft_substr(str, 0, i); //export varname & =
-			*var_name = ft_strdup(temp); //revisar si esto sobrepasa esta funcion
-			def = delete_quotes(str + i); //contiene el string con la definicion
-			temp = ft_strjoin(temp, def); //varname & = & def
+			//temp = delete_quotes(ft_substr(str, 0, i)); //export varname & =
+			*var_name = delete_quotes(ft_substr(str, 0, i)); //export varname & =
+			//temp = delete_quotes(str);
+			//*var_name = ft_strdup(temp); //revisar si esto sobrepasa esta funcion
+			//def = delete_quotes(str + i); //lo que viene despues del ==
+			//temp = ft_strjoin(temp, def); //varname & = & def
 			return(temp);
 		}
 		else
 			i++;
 	}
-	*var_name = str; //si no hay = de todos modos hay que darle valor a var name
-	return(str);
+	*var_name = delete_quotes(str); //si no hay = de todos modos hay que darle valor a var name
+	//temp = delete_quotes(str);
+	return(temp);
 }
-
-
-
-
-// static char **check_command(char *str)
-// {
-// 	char **array;
-// 	int i;
-// 	char *temp;
-	
-// 	i = 0;
-// 	while (str[i])
-// 	{
-// 		if(str[i] == '=')
-// 		{
-// 			array = ft_calloc ((4), sizeof(char*));
-// 			temp = ft_substr(str, 0, i); //esta bien el len?
-// 			array[0] = temp;
-// 			array[1] = ft_strdup("=");
-// 			i++;
-// 			array[2] = ft_strdup(str + i);
-// 			return(array);
-// 		}
-// 		else
-// 			i++;
-// 	}
-// 	array = ft_calloc ((2), sizeof(char*));
-// 	if (!array)
-// 		return (NULL); //ese necesario poner el return aca? //cambairlo por la otra version
-// 	array[0] = str; 
-// 	return(array);
-// }
-
-
-
 
 static int error_check (t_mshell *minishell, t_parser *commands)
 {
@@ -214,30 +181,6 @@ static int error_check (t_mshell *minishell, t_parser *commands)
 	return(EXIT_SUCCESS);
 }
 
-//echo """hello""" deberia borrar todos los ""
-//quita los " y ' de mas
-//VER, creo que en verdad no es necesario ya que siempre vamos a iprimir el env
-
-// static char *var_name(char **array)
-// {
-// 	char *str;
-// 	char *temp;
-	
-// 	if(!array[1])
-// 		str = array[0];
-// 	else
-// 	{
-// 		temp = delete_quotes(array[2]);
-// 		free(array[2]);
-// 		array[2] = temp;
-// 		str = ft_strjoin(array[0], array [1]); //varname & =
-// 		str = ft_strjoin(str, array[2]); //varname & = & definition
-// 	}
-// 	return (str);
-// }
-
-
-
 //str[0] --> export
 //str[1] --> nombre de la variable (puede incluir la definicion)
 //str[2] --> error ya que significa que el comando original tenia espacios
@@ -255,15 +198,16 @@ int mini_export (t_mshell *minishell, t_parser *commands)
 		mini_env(minishell, commands);
 	else
 	{
-		add_var = check_quotes(commands->str[1], &var_name);//revisa si el string tiene "" en la definicion, de ser asi los elimina
-		//add_var = var_name(temp); //revisa si el 3er elemento definicion de la variable tiene "" y vuelve a unir todo en un solo string
+		add_var = check_quotes(commands->str[1], &var_name);//elimina los quotes de la variable (lo que esta antes de =)
 		while(minishell->envp[++i])
 		{
-			if(!ft_strncmp(minishell->envp[i], var_name, ft_strlen(var_name))) //buscar en el array envp si se encuentra la variable definida con export
-			{
-				coincidence(minishell, i, add_var);
-				return(EXIT_SUCCESS);
-			}
+			if(check_coincidence(minishell, i, var_name, add_var) == 0)
+				return(EXIT_SUCCESS);	
+			// if(!ft_strncmp(minishell->envp[i], var_name, ft_strlen(var_name))) //buscar en el array envp si se encuentra la variable definida con export
+			// {
+			// 	coincidence(minishell, i, add_var);
+			// 	return(EXIT_SUCCESS);
+			// }
 		}
 		//free(temp); //si no lo encontro, entonces a;adirlo al final del array.  
 		temp = new_array(minishell->envp, add_var);
@@ -286,24 +230,3 @@ int mini_export (t_mshell *minishell, t_parser *commands)
 //export ZZZ="""abc"""
 //export -> ZZZ="abc"              
 //env -->  ZZZ=abc    //en mi codigo actual imprimiria ZZZ=abc ??
-
-
-// static char *var_name(char **array)
-// {
-// 	char *str;
-// 	char *temp;
-	
-// 	if(!array[1])
-// 		str = array[0];
-// 	else
-// 	{
-// 		temp = delete_quotes(array[2]);
-// 		free(array[2]);
-// 		array[2] = temp;
-// 		str = ft_strjoin(array[0], array [1]); //export & =
-// 		str = ft_strjoin(str, "\"");
-// 		str = ft_strjoin(str, array[2]);
-// 		str = ft_strjoin(str, "\"");
-// 	}
-// 	return (str);
-// }

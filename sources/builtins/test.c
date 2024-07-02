@@ -118,47 +118,47 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
     
 // }
 
-char *delete_quotes (char *str) //lo necesito en mas funciones?
-{
-    int i = 0;
-    int last;
-	char *temp;
+// char *delete_quotes (char *str) //lo necesito en mas funciones?
+// {
+//     int i = 0;
+//     int last;
+// 	char *temp;
 	
-	last = ft_strlen(str);
-	if(str[i] == 34 || str[i] == 39)
-	{
-		while (str[i] == 34 || str[i] == 39)
-			i++;
-		temp = ft_substr(str, i, last - i - i);
-	}
-	else
-		temp = str;
-	return(temp);
-}
+// 	last = ft_strlen(str);
+// 	if(str[i] == 34 || str[i] == 39)
+// 	{
+// 		while (str[i] == 34 || str[i] == 39)
+// 			i++;
+// 		temp = ft_substr(str, i, last - i - i);
+// 	}
+// 	else
+// 		temp = str;
+// 	return(temp);
+// }
 
-int	echo(char **array)
-{
-	int	i;
-	char *temp;
+// int	echo(char **array)
+// {
+// 	int	i;
+// 	char *temp;
 
-	i = 1;
-	if (array)
-	{
-		if (!strncmp (array[1], "-n", 3)) //esta bien 3? incluye el caracter nulo?
-		{
-			while (array[1] && !strncmp (array[1], "-n", 3)) //puede haber mas de 1
-				i++;//pasa al sigueinte elemento del array
-			temp = delete_quotes (array[i]); //eliminar ""
-			ft_putstr_fd(temp, 1);
-		}
-		else
-		{
-			temp = delete_quotes (array[i]); //eliminar ""
-			ft_putendl_fd(temp, 1);
-		}
-	}
-	return (EXIT_SUCCESS);
-}
+// 	i = 1;
+// 	if (array)
+// 	{
+// 		if (!strncmp (array[1], "-n", 3)) //esta bien 3? incluye el caracter nulo?
+// 		{
+// 			while (array[1] && !strncmp (array[1], "-n", 3)) //puede haber mas de 1
+// 				i++;//pasa al sigueinte elemento del array
+// 			temp = delete_quotes (array[i]); //eliminar ""
+// 			ft_putstr_fd(temp, 1);
+// 		}
+// 		else
+// 		{
+// 			temp = delete_quotes (array[i]); //eliminar ""
+// 			ft_putendl_fd(temp, 1);
+// 		}
+// 	}
+// 	return (EXIT_SUCCESS);
+// }
 
 void print_array(char **array, int i) //BORRAR, ESTA EN UTILS
 {
@@ -185,168 +185,174 @@ void print_string_array(char **array)
     }
 }
 
-char **new_array(char **array, char *str) //BORRAR, ESTA EN UTILS
-{
-	char **new_array;
-	int i;
+// char **new_array(char **array, char *str) //BORRAR, ESTA EN UTILS
+// {
+// 	char **new_array;
+// 	int i;
 	
-	i = 0;
-	while(array[i])
-		i++;
-	new_array = calloc((i + 2), sizeof(char*));
-	if (!new_array)
-		return (NULL);
-	i = 0;
+// 	i = 0;
+// 	while(array[i])
+// 		i++;
+// 	new_array = calloc((i + 2), sizeof(char*));
+// 	if (!new_array)
+// 		return (NULL);
+// 	i = 0;
 	
-	while(array[i])
-	{
-		new_array[i] = strdup(array[i]);
-		i++;
-	}
-	new_array[i] = str;
-	return(new_array);
-}
+// 	while(array[i])
+// 	{
+// 		new_array[i] = strdup(array[i]);
+// 		i++;
+// 	}
+// 	new_array[i] = str;
+// 	return(new_array);
+// }
 
 
-char	*remove_single_quote(char *str)
-{
-	char	*result;
-	int		len;
-	int		i;
-	int		j;
+// char	*remove_single_quote(char *str)
+// {
+// 	char	*result;
+// 	int		len;
+// 	int		i;
+// 	int		j;
 
-	i = 0;
-	j = 0;
-	len = ft_strlen(str);
-	result = calloc((len + 1), sizeof(char *));
-	while (i < len)
-	{
-		if (str[i] != '\'' && str[i] != '\"')
-			result[j++] = str[i];
-		i++;
-	}
-	result[j] = '\0';
-	return (result);
-}
-
-
-
-void coincidence (char **env, int i, char *add_var) //BORRAR, ESTA EN UTILS
-{
-	free(env[i]);
-	env[i] = add_var;
-
-}
-
-static bool check_valid_identifier(char c) 
-{
-	// Verifica si el carácter c es válido como parte de un identificador de variable en Bash
-	if ((c >= 'a' && c <= 'z') ||
-		(c >= 'A' && c <= 'Z') ||
-		(c >= '0' && c <= '9') ||
-		c == '_' )
-		return true;
-	else 
-		return false;
-}
-
-static char *check_quotes(char *str, char **var_name)
-{
-	//char **array;
-	int i;
-	char *temp;
-	char *def;
-	
-	i = 0;
-	while (str[i])
-	{
-		if(str[i] == '=')
-		{
-			i++;
-			temp = ft_substr(str, 0, i); //export varname & =
-			*var_name = strdup(temp); //revisar si esto sobrepasa esta funcion
-			//i++;
-			def = remove_single_quote(str + i); //contiene el string con la definicion
-			temp = ft_strjoin(temp, def); //varname & = & def
-			return(temp);
-		}
-		else
-			i++;
-	}
-	*var_name = str;
-	return(str);
-}
-
-static int error_check (char **array)
-{
-	int i;
-	
-	i = 0;
-	if (array[2]) //si tengo mas de 3
-	{
-	    printf("error, mas de tres elementos\n");
-	    print_string_array(array);
-
-	    return(EXIT_FAILURE);		
-    }
-	else if (array[1])
-	{
-		if (ft_isdigit(array[1][0]) || array[1][0] == '=')
-		{
-	        printf("error, hay num\n");
-            return(EXIT_FAILURE);	
-		}
-		while (array[1][i] != '=' && array[1][i]) 
-		{
-			if (!check_valid_identifier(array[1][i])) 
-			{
-	            printf("error, hay !\n");
-	            return(EXIT_FAILURE);	
-			}
-			i++;
-		}
-	}
-	return(EXIT_SUCCESS);
-}
-
-int export (char **array, char **env)
-{
-	int i;
-	char **temp;
-	char *add_var;
-	char *var_name;
-	
-	i = -1;
-	if(error_check(array)) //success 0 . failure 1
-		return(EXIT_FAILURE);
-	if(!array[1] || array[1][0] == '\0') //deberia imprimir algo mas que el enviroment???????
-		printf("imprime enviroment\n");
-	else
-	{
-		add_var = check_quotes(array[1], &var_name);//revisa si el string tiene "" en la definicion, de ser asi los elimina
-		//add_var = var_name(temp); //revisa si el 3er elemento definicion de la variable tiene "" y vuelve a unir todo en un solo string
+// 	i = 0;
+// 	j = 0;
+// 	len = ft_strlen(str);
+// 	result = calloc((len + 1), sizeof(char *));
+// 	while (i < len)
+// 	{
+// 		if (str[i] == '\\' && (str[i + 1] == '\'' || str[i + 1] == '\"'))
+//         {
+//             result[j++] = str[i++];
+//             result[j++] = str[i];
+//         }
 		
-		printf("var name: %s\n", var_name);
-		printf("add name: %s\n", add_var);
+// 		else if (str[i] != '\'' && str[i] != '\"')
+// 			result[j++] = str[i];
+// 		i++;
+// 	}
+// 	//result[j] = '\0';
+// 	return (result);
+// }
+
+
+
+// void coincidence (char **env, int i, char *add_var) //BORRAR, ESTA EN UTILS
+// {
+// 	free(env[i]);
+// 	env[i] = add_var;
+
+// }
+
+// static bool check_valid_identifier(char c) 
+// {
+// 	// Verifica si el carácter c es válido como parte de un identificador de variable en Bash
+// 	if ((c >= 'a' && c <= 'z') ||
+// 		(c >= 'A' && c <= 'Z') ||
+// 		(c >= '0' && c <= '9') ||
+// 		c == '_' )
+// 		return true;
+// 	else 
+// 		return false;
+// }
+
+// static char *check_quotes(char *str, char **var_name)
+// {
+// 	//char **array;
+// 	int i;
+// 	char *temp;
+// 	char *def;
+	
+// 	i = 0;
+// 	while (str[i])
+// 	{
+// 		if(str[i] == '=')
+// 		{
+// 			i++;
+// 			temp = ft_substr(str, 0, i); //export varname & =
+// 			*var_name = strdup(temp); //revisar si esto sobrepasa esta funcion
+// 			//i++;
+// 			def = remove_single_quote(str + i); //contiene el string con la definicion
+// 			temp = ft_strjoin(temp, def); //varname & = & def
+// 			return(temp);
+// 		}
+// 		else
+// 			i++;
+// 	}
+// 	*var_name = str;
+// 	return(str);
+// }
+
+// static int error_check (char **array)
+// {
+// 	int i;
+	
+// 	i = 0;
+// 	if (array[2]) //si tengo mas de 3
+// 	{
+// 	    printf("error, mas de tres elementos\n");
+// 	    print_string_array(array);
+
+// 	    return(EXIT_FAILURE);		
+//     }
+// 	else if (array[1])
+// 	{
+// 		if (ft_isdigit(array[1][0]) || array[1][0] == '=')
+// 		{
+// 	        printf("error, hay num\n");
+//             return(EXIT_FAILURE);	
+// 		}
+// 		while (array[1][i] != '=' && array[1][i]) 
+// 		{
+// 			if (!check_valid_identifier(array[1][i])) 
+// 			{
+// 	            printf("error, hay !\n");
+// 	            return(EXIT_FAILURE);	
+// 			}
+// 			i++;
+// 		}
+// 	}
+// 	return(EXIT_SUCCESS);
+// }
+
+// int export (char **array, char **env)
+// {
+// 	int i;
+// 	char **temp;
+// 	char *add_var;
+// 	char *var_name;
+	
+// 	i = -1;
+// 	if(error_check(array)) //success 0 . failure 1
+// 		return(EXIT_FAILURE);
+// 	if(!array[1] || array[1][0] == '\0') //deberia imprimir algo mas que el enviroment???????
+// 		printf("imprime enviroment\n");
+// 	else
+// 	{
+// 		add_var = check_quotes(array[1], &var_name);//revisa si el string tiene "" en la definicion, de ser asi los elimina
+// 		//add_var = var_name(temp); //revisa si el 3er elemento definicion de la variable tiene "" y vuelve a unir todo en un solo string
+		
+// 		printf("var name: %s\n", var_name);
+// 		printf("add name: %s\n", add_var);
 		
 		
-		while(env[++i])
-		{
-			if(!strncmp(env[i], var_name, ft_strlen(var_name))) //buscar en el array envp si se encuentra la variable definida con export
-			{
-				coincidence(env, i, add_var);
-				return(EXIT_SUCCESS);
-			}
-		}
-		//free(temp); //si no lo encontro, entonces a;adirlo al final del array.  
-		temp = new_array(env, add_var);
-		free(env);
-		env = temp;
-		printf("\n\nenvp nuevo: \n");
-		print_string_array(env);
-	}
-	return(EXIT_SUCCESS);
-}
+// 		while(env[++i])
+// 		{
+// 			if(!strncmp(env[i], var_name, ft_strlen(var_name))) //buscar en el array envp si se encuentra la variable definida con export
+// 			{
+// 				coincidence(env, i, add_var);
+// 				return(EXIT_SUCCESS);
+// 			}
+// 		}
+// 		//free(temp); //si no lo encontro, entonces a;adirlo al final del array.  
+// 		temp = new_array(env, add_var);
+// 		free(env);
+// 		env = temp;
+// 		printf("\n\nenvp nuevo: \n");
+// 		print_string_array(env);
+// 	}
+// 	return(EXIT_SUCCESS);
+// }
 
 char	**ft_arrdup(char **arr)
 {
@@ -370,19 +376,120 @@ char	**ft_arrdup(char **arr)
 }
 
 
+char *delete_quotes (char *str) //BORRAR
+{
+	char	*result;
+	int		len;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	len = ft_strlen(str);
+	result = calloc((len + 1), sizeof(char *));
+	while (i < len)
+	{
+		if (str[i] != '\'' && str[i] != '\"')
+			result[j++] = str[i];
+		i++;
+	}
+	return (result);
+}
+
+static char *check_quote(char *str)
+{
+	int i;
+	char *temp;
+	
+	i = 0;
+	while (str[i])
+	{
+		if(str[i] == '=')
+		{
+			temp = delete_quotes(ft_substr(str, 0, i));
+			return(temp);
+		}
+		i++;
+	}
+	temp = delete_quotes(str); //si no hay = de todos modos hay que darle valor a var name
+	return(temp);
+}
+
+static char **newarray(char **array, char *str)
+{
+	char **new_array;
+	int i;
+	int j;
+	
+	i = 0;
+	while(array[i])
+		i++;
+	new_array = calloc((i), sizeof(char*));
+	if (!new_array)
+		return (NULL); //cambiar
+	i = 0;
+	j = 0;
+	while(array[i])
+	{
+		if(!strncmp(array[i], str, ft_strlen(str)))
+		{
+			free(array[i]);
+			i++;
+		}
+		
+		//new_array[j] = strdup(array[i]);
+		new_array[j++] = strdup(array[i++]);
+		//i++;
+		//j++;
+	}
+	return(new_array);
+}
+
+int unset (char **minishellenv, char **unsetarray)
+{
+	int i;
+	char *env_var;
+	char *unset_var;
+	char **temp;
+	
+	i = -1;
+	if(unsetarray[1])
+	{
+		while(minishellenv[++i])
+		{
+			env_var = check_quote(minishellenv[i]);
+			unset_var = delete_quotes(unsetarray[1]);
+			if(!strncmp(env_var, unset_var, ft_strlen(unset_var))) //buscar en el array envp si se encuentra la variable definida con export
+			{
+				temp = newarray(minishellenv, env_var);
+				free(minishellenv);
+				minishellenv = temp;
+				print_string_array(temp);
+				printf("\ndeleted %s\n", unset_var);
+				return(EXIT_SUCCESS);
+			}
+			free(env_var); //si no lo encuentra
+		}
+		printf("\nno coincidence\n");
+		return(EXIT_SUCCESS); //si no hay coincidencia no pasa nada
+	}
+	printf("\nonly unset\n");
+	return(EXIT_SUCCESS); // si solo esta unset, no pasa nada
+}
+
 int main(int argc, char **argv, char **env) 
 {
     (void)argc;
     (void)argv;
-    char *str[3] = {"export", "ZZZ=\"\"\"abc\"d\"\"\"", NULL};
-    //char *str[2] = {"export", NULL};
+    char *array[3] = {"unset", "\'PWD=\'", NULL};
+    //char *array[2] = {"unset", NULL};
     char **envp;
     
     envp = ft_arrdup(env);
     
     printf("envp original: \n");
     print_string_array(envp);
-    printf("\n\noriginal: %s\n", str[1]);
+    printf("\nto delete: %s\n", array[1]);
     // //char *array[4] = {"char", "=", "hello", NULL};
     // // int i = 0;
     
@@ -400,7 +507,7 @@ int main(int argc, char **argv, char **env)
 	//printf("\nenvp nuevo: \n");
 	
 	
-	export(str, envp);
+	unset(envp, array);
 	
 	
 	//printf("\nenvp nuevo: \n");

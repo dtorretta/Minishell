@@ -105,5 +105,6 @@ int mini_env (t_mshell *minishell, t_parser *commands);
 int mini_pwd (t_mshell *minishell, t_parser *commands);
 int mini_cd (t_mshell *minishell, t_parser *commands);
 int mini_export (t_mshell *minishell, t_parser *commands);
+int mini_unset (t_mshell *minishell, t_parser *commands);
 
 #endif // HEADER_H

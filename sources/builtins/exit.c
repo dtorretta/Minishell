@@ -15,8 +15,7 @@
 //el bash real hace distincion sobre si despues del exit viene un numero, una letra etc.
 //pero las instrucciones al decir que tenemos que implementar exit sin ninguna opcion, no agregue ese manejo de errores,
 //esta bien?
-
-void free_minishell (t_mshell *minishell)
+void free_minishell (t_mshell *minishell) //lo necesito para alguna otra funcion?
 {
 	free_parser_list(minishell->commands);
 	free_lexer_list(minishell->lexer_list);
@@ -54,19 +53,15 @@ int mini_exit (t_mshell *minishell, t_parser *commands)
 	int exit_code;
 	
 	if (commands == NULL || minishell == NULL) 
-		return EXIT_FAILURE;  
-		
+		return EXIT_FAILURE;  	
 	ft_putendl_fd("exit", STDOUT_FILENO);
-	
 	if (commands->str[1] && commands->str[2]) //si hay varios argumentos --> error
 	{
 		ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
 		return (EXIT_FAILURE); //no libera la memoria yha que la ejecucion del programa no deberia terminar, tiene que dar la posibilidad de ingresar otro argumento
 	}
-		
 	else if (!commands->str[1]) //si solo esta exit
 		exit_code = 0; 
-	
 	else //si solo hay un argumento --> ok
 	{
 		if (!is_num(commands->str[1])) //si algun caracter NO es numero //solo tiene en cuenta un + o - --> error
@@ -78,10 +73,8 @@ int mini_exit (t_mshell *minishell, t_parser *commands)
 		}
 		else //si solo son numeros
 			exit_code = ft_atoi(commands->str[1]);
-	}
-		
+	}	
 	free_minishell (minishell);
-	
 	exit (exit_code); //finaliza el programa con un código de salida específico para el sistema operativo. Puede ser utilizado para determinar cómo terminó el programa
 	
 	//return (EXIT_SUCCESS); //nunca se va a ejecutar
