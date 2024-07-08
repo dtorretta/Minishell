@@ -95,7 +95,7 @@ static int	change_directory(char **env, char *str)
 //acepta 1 solo argumento que puede ser .. / - / nada / path
 int mini_cd (t_mshell *minishell, t_parser *commands)
 {  
-	if(commands->str[2]) //si hay mas de 1 argumento
+	if(commands->str[1] && commands->str[2]) //si hay mas de 2 argumentos (si no agrego str[1] cuando solo tengo un argumento me da error de jump)
 	{
 		ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO);
 		return (EXIT_FAILURE);

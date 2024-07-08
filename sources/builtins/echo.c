@@ -38,13 +38,14 @@ int	mini_echo(t_mshell *minishell, t_parser *commands)
 			ft_putendl_fd(temp, 1);
 		}
 	}
+	free(temp);
 	return (EXIT_SUCCESS);
 }
 
 //HACER QUE IMPRIMA TOO EL ARRAY
 
 /*
-- echo "hello" "world"
+- echo "hello" "world" //chequear en codigo migue si esto queda en nhodos separados
 hello world
 
 - echo "hello""world"

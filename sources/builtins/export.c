@@ -160,7 +160,7 @@ static int error_check (t_mshell *minishell, t_parser *commands)
 	int i;
 	
 	i = 0;
-	if (commands->str[2]) //si tengo mas de 3
+	if (commands->str[1] && commands->str[2]) //si tengo mas de 2
 		return(handle_error2(minishell, 1, NULL, commands->str));		
 	else if (commands->str[1])
 	{
@@ -211,22 +211,14 @@ int mini_export (t_mshell *minishell, t_parser *commands)
 		}
 		//free(temp); //si no lo encontro, entonces a;adirlo al final del array.  
 		temp = new_array(minishell->envp, add_var);
-		free(minishell->envp);
+		free_string_array(minishell->envp);		
 		minishell->envp = temp;
+		free(var_name);
 	}
 	return(EXIT_SUCCESS);
 }
 
 
-//export zaq="\"hello\""
-// --> declare -x zaq="\"hello\""
+//export ZZZ=\"hello\"
+// --> ZZZ="hello"       --> no me reconoce que no debe borrarlas. ver funcion de migue      
 
-
-
-//unir lo de migue y lo mio
-//volver a probar export
-
-
-//export ZZZ="""abc"""
-//export -> ZZZ="abc"              
-//env -->  ZZZ=abc    //en mi codigo actual imprimiria ZZZ=abc ??

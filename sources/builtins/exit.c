@@ -21,8 +21,10 @@ void free_minishell (t_mshell *minishell) //lo necesito para alguna otra funcion
 	free_lexer_list(minishell->lexer_list);
 	free_string_array(minishell->paths);
 	free_string_array(minishell->envp);
-	free(minishell->pwd); //imposible que este vacio?
-	free(minishell->old_pwd); //imposible que este vacio?
+	if (minishell->pwd) 
+	    free(minishell->pwd);
+	if (minishell->old_pwd) 
+	    free(minishell->old_pwd);
 	if(minishell->pid)
 		free(minishell->pid);
 	if(minishell->args)
@@ -47,30 +49,25 @@ static int	is_num(char *num)
 	return (1);
 }
 
-//si no me alanzan las lineas, hacer nueva funcion para los errores
-int mini_exit (t_mshell *minishell, t_parser *commands)
+//en bash cuando tenes ; deja de leer --> exit a;b --> bash: exit: a: numeric argument required (no lo agregue)
+int mini_exit(t_mshell *minishell, t_parser *commands)
 {
 	int exit_code;
 	
 	if (commands == NULL || minishell == NULL) 
 		return EXIT_FAILURE;  	
 	ft_putendl_fd("exit", STDOUT_FILENO);
-	if (commands->str[1] && commands->str[2]) //si hay varios argumentos --> error
+	if (!commands->str[1]) //si solo esta exit
+		exit_code = 0; 
+	else if (is_num(commands->str[1]) && commands->str[2]) //si hay varios argumentos --> error
 	{
 		ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
 		return (EXIT_FAILURE); //no libera la memoria yha que la ejecucion del programa no deberia terminar, tiene que dar la posibilidad de ingresar otro argumento
 	}
-	else if (!commands->str[1]) //si solo esta exit
-		exit_code = 0; 
 	else //si solo hay un argumento --> ok
 	{
-		if (!is_num(commands->str[1])) //si algun caracter NO es numero //solo tiene en cuenta un + o - --> error
-		{
-			ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
-			ft_putstr_fd(commands->str[1], STDERR_FILENO);
-			ft_putendl_fd(": numeric argument required", STDERR_FILENO);
-			return (EXIT_FAILURE); //no libera la memoria yha que la ejecucion del programa no deberia terminar, tiene que dar la posibilidad de ingresar otro argumento
-		}
+		if (!is_num(commands->str[1])) //si algun caracter NO es numero //solo tiene en cuenta un + o - --> error // en bash cuando pasa esto sale del tipo bash, probar en el campus
+			return(handle_error2(minishell, 4, commands->str[1], NULL));
 		else //si solo son numeros
 			exit_code = ft_atoi(commands->str[1]);
 	}	
@@ -79,4 +76,3 @@ int mini_exit (t_mshell *minishell, t_parser *commands)
 	
 	//return (EXIT_SUCCESS); //nunca se va a ejecutar
 }
-

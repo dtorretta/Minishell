@@ -15,8 +15,16 @@
 int	mini_env(t_mshell *minishell, t_parser *commands)
 {
 	int	i;
+	
+	if(commands->str[1]) //si tengo algo mas que env
+	{
+		ft_putstr_fd("env: ‘", STDERR_FILENO);
+		ft_putstr_fd(commands->str[1], STDERR_FILENO);
+		ft_putendl_fd("’: No such file or directory", STDERR_FILENO); 
+		//reset_data(data);
+		return(EXIT_FAILURE);
+	}
 
-	(void)commands;
 	i = 0;
 	while (minishell->envp[i])
 	{

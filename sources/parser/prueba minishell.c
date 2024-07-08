@@ -268,7 +268,7 @@ t_lexer *create_lexer_list() {
         perror("malloc");
         exit(EXIT_FAILURE);
     }
-    node_echo->str = strdup("export");
+    node_echo->str = strdup("echo");
     node_echo->token = WORD;
     node_echo->i = 0;
     node_echo->prev = NULL;
@@ -279,7 +279,7 @@ t_lexer *create_lexer_list() {
         perror("malloc");
         exit(EXIT_FAILURE);
     }
-    node_dash_n1->str = strdup("zz!zz=1");
+    node_dash_n1->str = strdup("hello");
     node_dash_n1->token = WORD;
     node_dash_n1->i = 1;
     node_dash_n1->prev = node_echo;
@@ -290,7 +290,7 @@ t_lexer *create_lexer_list() {
     //     perror("malloc");
     //     exit(EXIT_FAILURE);
     // }
-    // node_hello->str = strdup("QWE");
+    // node_hello->str = strdup("extra");
     // node_hello->token = WORD;
     // node_hello->i = 2;
     // node_hello->prev = node_dash_n1;
@@ -307,9 +307,9 @@ t_lexer *create_lexer_list() {
     // node_world->prev = node_hello;
     // node_world->next = NULL;
 
-    // Enlazar los nodos
+    //Enlazar los nodos
     node_echo->next = node_dash_n1;
-    // node_dash_n1->next = node_hello;
+    //node_dash_n1->next = node_hello;
     // node_hello->next = node_world;
 
     return node_echo; // Devolvemos el primer nodo de la lista
@@ -377,11 +377,11 @@ void free_string_array(char **array) {
         return; // No hacer nada si el array es NULL
     }
 
-    for (int i = 0; array[i] != NULL; ++i) {
+    for (int i = 0; array[i]; ++i) {
         free(array[i]); // Liberar cada string en el array
         array[i] = NULL; // Opcional: establecer a NULL después de liberar
     }
-
+    printf("memory free");
     free(array); // Liberar el array de punteros
 }
 
@@ -391,9 +391,9 @@ void free_parser_list(t_parser *list) {
         temp = list;
         list = list->next;
         free_string_array(temp->str);
-        //free(temp->str); //creo que no alazanza solo asi
         free_lexer_list(temp->redirections);
         free(temp);
+        //free(list);
     }
 }
 
@@ -539,6 +539,7 @@ void add_redirection (t_parser *commands, t_mshell *minishell)
 	arguments = count_args(minishell->lexer_list); //al nodo general le a;ade los token WORD
 	printf("\nCANTIDAD DE ARGUMENTOS: %d\n", arguments); //BORRAR esta bien que de 1 que son los word que quedan despues de las eliminaciones
 	
+	
 	arg_array = calloc ((arguments + 1), sizeof(char*));
 	if (!arg_array) //ver
 		return; //no puedo hacer retur exit failor (1/4)
@@ -585,28 +586,50 @@ t_parser	*ft_parsernew()
     return(new_node);
 }
 
-int mini_echo (t_mshell *minishell, t_parser *commands)
+char *delete_quotes (char *str) //ver si la tiene migue
 {
-    (void) minishell;
-    int i;
-    
-    i = 1;
-    if (commands->str[i])
-    {
-        if (!strncmp (commands->str[i], "-n", 3)) //esta bien 3? incluye el caracter nulo?
-        {
-            while (commands->str[i] && !strncmp (commands->str[i], "-n", 3))
-                i++;
-            while (commands->str[i])
-                ft_putstr_fd(commands->str[i++], 1);  
-        }
-        else
-        {
-            while (commands->str[i])
-                ft_putendl_fd(commands->str[i++], 1);
-        }
-    }    
-    return (EXIT_SUCCESS);
+	char	*result;
+	int		len;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	len = strlen(str);
+	result = calloc((len + 1), sizeof(char *));
+	while (i < len)
+	{
+		if (str[i] != '\'' && str[i] != '\"')
+			result[j++] = str[i];
+		i++;
+	}
+	return (result);
+}
+
+int	mini_echo(t_mshell *minishell, t_parser *commands)
+{
+	int	i;
+	char *temp;
+
+	(void) minishell;
+	i = 1;
+	if (commands->str)
+	{
+		if (!strncmp (commands->str[1], "-n", 3)) //esta bien 3? incluye el caracter nulo?
+		{
+			while (commands->str[1] && !strncmp (commands->str[1], "-n", 3)) //puede haber mas de 1
+				i++;//pasa al sigueinte elemento del array
+			temp = delete_quotes (commands->str[i]); //eliminar ""
+			ft_putstr_fd(temp, 1);
+		}
+		else
+		{
+			temp = delete_quotes (commands->str[i]); //eliminar ""
+			ft_putendl_fd(temp, 1);
+		}
+	}
+	free (temp);
+	return (EXIT_SUCCESS);
 }
 
 char	**ft_arrdup(char **arr)
@@ -626,125 +649,125 @@ char	**ft_arrdup(char **arr)
 		rtn[i] = strdup(arr[i]);
 		i++;
 	}
-	
+
     return (rtn);
 }
 
-int mini_env (t_mshell *minishell, t_parser *commands)
-{
-    (void)commands;
-    int i = 0;
-    
-    printf("check⚠️\n");
-    // Recorrer el array hasta encontrar un NULL
-    while (minishell->envp[i])
-    {
-        //printf("%s\n", minishell->envp[i]);
-        ft_putendl_fd(minishell->envp[i], 1);
-        i++;
-    }   
-    return(1); //VER
-}
-
-int mini_pwd (t_mshell *minishell, t_parser *commands)
-{
-    (void)commands;
-    int i = 0;
-    char *pwd;
-
-    while (minishell->envp[i])
-    {
-        if (!strncmp(minishell->envp[i], "PWD=", 4))
-        {
-            pwd = ft_substr(minishell->envp[i], 4, strlen(minishell->envp[i]) - 4);
-            ft_putendl_fd(pwd, 1);
-            free (pwd);
-            return(EXIT_SUCCESS);
-        }
-        i++;
-    }
-    return(EXIT_FAILURE);
-}
-
-void free_minishell (t_mshell *minishell)
-{
-    free_parser_list(minishell->commands);
-    free_lexer_list(minishell->lexer_list);
-    free_string_array(minishell->paths);
-    free_string_array(minishell->envp);
-    free(minishell->pwd); //imposible que este vacio?
-    free(minishell->old_pwd); //imposible que este vacio?
-    if(minishell->pid)
-        free(minishell->pid);
-    if(minishell->args)
-        free(minishell->args);
-    free(minishell); 
-}
-
-int	ft_isdigit(int c)
-{
-	if (c >= '0' && c <= '9')
-		return (1);
-	return (0);
-}
-
-static int	is_num(char *num)
+int	mini_env(t_mshell *minishell, t_parser *commands)
 {
 	int	i;
 
+	(void)commands;
 	i = 0;
-	if (num[i] == '+' || num[i] == '-')
-		i++;
-	while (num[i])
+	if(commands->str[1]) //si tengo algo mas que env
 	{
-		if (!ft_isdigit(num[i]))
-			return (0);
-		else
-			i++;
+		ft_putstr_fd("env: ‘", STDERR_FILENO);                   
+		ft_putstr_fd(commands->str[1], STDERR_FILENO);
+		ft_putendl_fd("’: No such file or directory", STDERR_FILENO);
+		//reset_data(data);
+		return(EXIT_FAILURE);
 	}
-	return (1);
+	
+	while (minishell->envp[i])
+	{
+		ft_putendl_fd(minishell->envp[i], 1);
+		i++;
+	}
+	return (EXIT_SUCCESS);
 }
 
-int mini_exit (t_mshell *minishell, t_parser *commands)
+int	mini_pwd(t_mshell *minishell, t_parser *commands)
 {
-    int exit_code;
-    
-    if (commands == NULL || minishell == NULL) 
-        return EXIT_FAILURE;  
-        
-    ft_putendl_fd("exit", STDOUT_FILENO);
-    
-    if (commands->str[1] && commands->str[2]) //si hay varios argumentos --> error
-    {
-        ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
-        return (EXIT_FAILURE); //no libera la memoria yha que la ejecucion del programa no deberia terminar, tiene que dar la posibilidad de ingresar otro argumento
-    }
-        
-    else if (!commands->str[1]) //si solo esta exit
-        exit_code = 0; 
-    
-    else //si solo hay un argumento --> ok
-    {
-        if (!is_num(commands->str[1])) //si algun caracter NO es numero //solo tiene en cuenta un + o - --> error
-        {
-            ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
-            ft_putstr_fd(commands->str[1], STDERR_FILENO);
-            ft_putendl_fd(": numeric argument required", STDERR_FILENO);
-            return (EXIT_FAILURE); //no libera la memoria
-        }
-        else //si solo son numeros
-            exit_code = atoi(commands->str[1]);
-    }
-        
-    free_minishell (minishell);
-    
-    
-    printf("\nEXIT CODE: %d\n", exit_code);
-    
-    exit (exit_code); //finaliza el programa con un código de salida específico para el sistema operativo. Puede ser utilizado para determinar cómo terminó el programa
-    
-    //return (EXIT_SUCCESS); //nunca se va a ejecutar
+	int		i;
+	char	*pwd;
+
+	(void)commands;
+	i = 0;
+	while (minishell->envp[i])
+	{
+		if (!strncmp(minishell->envp[i], "PWD=", 4))
+		{
+			pwd = ft_substr(minishell->envp[i], 4,
+					strlen(minishell->envp[i]) - 4);
+			ft_putendl_fd(pwd, 1);
+			free (pwd);
+			return (EXIT_SUCCESS);
+		}
+		i++;
+	}
+	return (EXIT_FAILURE);
 }
+
+// void free_minishell (t_mshell *minishell) //lo necesito para alguna otra funcion?
+// {
+// 	free_parser_list(minishell->commands);
+// 	free_lexer_list(minishell->lexer_list);
+// 	free_string_array(minishell->paths);
+// 	free_string_array(minishell->envp);
+// 	free(minishell->pwd); //imposible que este vacio?
+// 	free(minishell->old_pwd); //imposible que este vacio?
+// 	if(minishell->pid)
+// 		free(minishell->pid);
+// 	if(minishell->args)
+// 		free(minishell->args);
+// 	free(minishell); 
+// }
+
+// int	ft_isdigit(int c)
+// {
+// 	if (c >= '0' && c <= '9')
+// 		return (1);
+// 	return (0);
+// }
+
+// static int	is_num(char *num)
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	if (num[i] == '+' || num[i] == '-')
+// 		i++;
+// 	while (num[i])
+// 	{
+// 		if (!ft_isdigit(num[i]))
+// 			return (0);
+// 		else
+// 			i++;
+// 	}
+// 	return (1);
+// }
+
+// int mini_exit(t_mshell *minishell, t_parser *commands)
+// {
+// 	int exit_code;
+	
+// 	if (commands == NULL || minishell == NULL) 
+// 		return EXIT_FAILURE;  	
+// 	ft_putendl_fd("exit", STDOUT_FILENO);
+// 	if (!commands->str[1]) //si solo esta exit
+// 		exit_code = 0; 
+// 	else if (is_num(commands->str[1]) && commands->str[2]) //si hay varios argumentos --> error // solo funciomna si el segundo argumento es numerico
+// 	{
+// 		ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
+// 		return (EXIT_FAILURE); //no libera la memoria yha que la ejecucion del programa no deberia terminar, tiene que dar la posibilidad de ingresar otro argumento
+// 	}
+// 	else //si solo hay un argumento --> ok
+// 	{
+//         if (!is_num(commands->str[1])) //si algun caracter NO es numero //solo tiene en cuenta un + o - --> error
+//         {
+//             ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
+//             ft_putstr_fd(commands->str[1], STDERR_FILENO);
+//             ft_putendl_fd(": numeric argument required", STDERR_FILENO);
+//             return (EXIT_FAILURE); //no libera la memoria
+//         }
+// 		else //si solo son numeros
+// 			exit_code = atoi(commands->str[1]);
+// 	}	
+// 	free_minishell (minishell);
+// 	exit (exit_code); //finaliza el programa con un código de salida específico para el sistema operativo. Puede ser utilizado para determinar cómo terminó el programa
+	
+// 	//return (EXIT_SUCCESS); //nunca se va a ejecutar
+// }
 
 void initshell(t_mshell *minishell, char **env)
 {
@@ -758,133 +781,98 @@ void initshell(t_mshell *minishell, char **env)
 	
 }
 
-void	change_pwd(t_mshell *minishell)
-{
-    char *temp;
-    
-    temp = strdup(minishell->pwd);
-    printf("CHECK temp: %s\n", temp);
-    free(minishell->old_pwd);
-    minishell->old_pwd = temp;
-    free(minishell->pwd);
-    minishell->pwd = getcwd(NULL, 0);    
-}
+// static void	change_pwd(t_mshell *minishell)
+// {
+// 	char *temp;
+	
+// 	temp = strdup(minishell->pwd);
+// 	free(minishell->old_pwd);
+// 	minishell->old_pwd = temp;
+// 	free(minishell->pwd);
+// 	minishell->pwd = getcwd(NULL, 0);
+// }
 
 //reescribe en el array envp PWD y OLDPWD.
-void	change_envp(t_mshell *minishell)
-{
-	int	i;
-	char *temp;
+// static void	change_envp(t_mshell *minishell)
+// {
+// 	int	i;
+// 	char *temp;
 
-	i = 0;
-	while (minishell->envp[i])
-	{
-		if (strncmp(minishell->envp[i], "PWD=", 4) == 0)
-		{	
-			printf ("👌 check PWD OK\n");
-			temp = ft_strjoin("PWD=", minishell->pwd);
-			printf ("👌 check PWD: %s\n", minishell->pwd);
-			printf ("👌 check PWD: %s\n", temp);
-			
-			free(minishell->envp[i]);
-			minishell->envp[i] = temp;
-			printf ("👌 check PWD: %s\n", minishell->envp[i]);
-			//free(temp); //necesario???
-        }	
-		if (strncmp(minishell->envp[i], "OLDPWD=", 7) == 0)
-		{	
-			printf ("👌 check OLDPWD OK\n");
-			temp = ft_strjoin("OLDPWD=", minishell->old_pwd);
-			free(minishell->envp[i]);
-			minishell->envp[i] = temp;
-			//free(temp); //necesario???
-        }	
-		i++;
-	}
-}
+// 	i = 0;
+// 	while (minishell->envp[i])
+// 	{
+// 		if (strncmp(minishell->envp[i], "PWD=", 4) == 0)
+// 		{	
+// 			temp = ft_strjoin("PWD=", minishell->pwd);
+// 			free(minishell->envp[i]);
+// 			minishell->envp[i] = temp;
+// 		}	
+// 		if (strncmp(minishell->envp[i], "OLDPWD=", 7) == 0)
+// 		{	
+// 			temp = ft_strjoin("OLDPWD=", minishell->old_pwd);
+// 			free(minishell->envp[i]);
+// 			minishell->envp[i] = temp;
+// 		}	
+// 		i++;
+// 	}
+// }
 
-int	change_directory(char **env, char *str)
-{
-	int	i;
-	char *new;
-	char *temp;
 
-	i = 0;
-	temp = ft_strjoin(str, "=");
-	printf("CHECK SIN ARG 2\n");
-	printf("str %s\n", temp);
-	printf("str len %ld\n", strlen(temp));
-	
-	while (env[i])
-	{
-		if (strncmp(env[i], temp, strlen(temp)) == 0)
-		{	
-			printf("FOUND\n");
-			new = strdup (env[i] + strlen(temp));
-			//exit;
-        }
-		//else
-		    i++;
-	}
-	
-	printf("CHECK HOME: %s\n", new);
-	
-	if(chdir(new) != 0)
-	{
-        ft_putstr_fd(str, 2);
-        ft_putendl_fd(" not set", 2);
-        free(new);
-        return (EXIT_FAILURE);
-    }
-	
-	free(new);
-	return (0);
-}
+// static int	change_directory(char **env, char *str)
+// {
+// 	int	i;
+// 	char *new;
+// 	char *temp;
 
-int mini_cd (t_mshell *minishell, t_parser *commands)
-{
-    
-   // printf("CHECK SEGFAULT 1\n");
-    
-    if(commands->str[2]) //si hay mas de 1 argumento
-    {
-        ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO);
-        return (EXIT_FAILURE);
-    }
-    
-    //printf("CHECK SEGFAULT 2\n");
-    else if (!commands->str[1]) //si no hay argumentos
-    {
-        if (change_directory(minishell->envp, "HOME") != 0 )
-            ft_putendl_fd("HOME not set", 2);
-    }    
-        
-    else if (!strncmp(commands->str[1], "-", 1)) 
-    {
-        if (change_directory(minishell->envp, "OLDPWD") != 0)
-            ft_putendl_fd("OLDPWD not set", 2);
-    }    
-    
-    
-    else
-    {
-        printf("CHECK NEW DIRECTORY %s\n", commands->str[1]);
-        if (chdir(commands->str[1]) != 0) //error en el cambio de directorio
-        {
-            printf("NO DEBERIA SALIR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
-            ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
-            ft_putstr_fd(commands->str[1], STDERR_FILENO);
-            ft_putendl_fd(": No such file or directory", STDERR_FILENO);
-            return (EXIT_FAILURE);
-        }
-    }
-    
-    printf("current directory: %s\n", getcwd(NULL, 0));
-    change_pwd(minishell);
-    change_envp (minishell);
-    
-    return(0);
-}
+// 	i = 0;
+// 	temp = ft_strjoin(str, "=");
+// 	while (env[i])
+// 	{
+// 		if (strncmp(env[i], temp, strlen(temp)) == 0)
+// 			new = strdup (env[i] + strlen(temp));
+// 		i++;
+// 	}
+// 	if(chdir(new) != 0)
+// 	{
+// 		ft_putstr_fd(str, 2);
+// 		ft_putendl_fd(" not set", 2);
+// 		free(temp);
+// 		free(new);
+// 		return (1);
+// 	}
+// 	free(temp);
+// 	free(new);
+// 	return (0);
+// }
+
+// int mini_cd (t_mshell *minishell, t_parser *commands)
+// {  
+// 	if(commands->str[1] && commands->str[2]) //si hay mas de 2 argumentos (si no agrego str[1] cuando solo tengo un argumento me da error de jump)
+// 	{
+// 		ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO);
+// 		return (EXIT_FAILURE);
+// 	}
+	
+// 	else if (!commands->str[1]) //si no hay argumentos
+// 		change_directory(minishell->envp, "HOME");
+		
+// 	else if (!strncmp(commands->str[1], "-", 1)) 
+// 		change_directory(minishell->envp, "OLDPWD");
+	
+// 	else
+// 	{
+// 		if (chdir(commands->str[1]) != 0) //error en el cambio de directorio
+// 		{
+// 			ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
+// 			ft_putstr_fd(commands->str[1], STDERR_FILENO);
+// 			ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+// 			return (EXIT_FAILURE);
+// 		}
+// 	}
+// 	change_pwd(minishell);
+// 	change_envp (minishell);
+// 	return(0);
+// }
 
 
 static int	set_pwd(char *env_var, char **pwd, int prefix_len)
@@ -913,211 +901,282 @@ int	get_pwd(t_mshell *data) //cambiar a void
 	return (1);
 }
 
-
-bool check_valid_identifier(char c) {
-    // Verifica si el carácter c es válido como parte de un identificador de variable en Bash
-    if ((c >= 'a' && c <= 'z') ||     // letras minúsculas
-        (c >= 'A' && c <= 'Z') ||     // letras mayúsculas
-        (c >= '0' && c <= '9') ||     // dígitos
-        c == '_' )                    // guion bajo
-        return true;
-    else 
-        return false;
+void print_array(char **array, int i) //BORRAR, ESTA EN UTILS
+{
+	while (array[i])
+	{
+		ft_putstr_fd(array[i], STDERR_FILENO);
+		i++;
+		if(array[i])
+			write(2, " ", 1);        
+	}
 }
 
-char **new_array(char **array, char *str)
+int	handle_error2(t_mshell *data, int error, char *str, char **array)
 {
-    char **new_array;
-    int i;
-    
-    i = 0;
-    while(array[i])
-        i++;
-    new_array = calloc((i + 2), sizeof(char*));
-    if (!new_array)
-        return (NULL);
-    i = 0;
-    
-    while(array[i])
-    {
-        new_array[i] = strdup(array[i]);
-        i++;
-    }
-    new_array[i] = str;
-    return(new_array);
+	(void)data;
+	printf("fucking numero de error: %d\n", error);
+	if(error == 1 || error == 2 || error == 4)
+	{
+		ft_putstr_fd("minishell: export: `", STDERR_FILENO);
+		if(error == 1)
+			print_array(array, 2); //que imprima del dos en adelante  
+		else if(error == 2 || error == 4)
+			ft_putstr_fd(str, STDERR_FILENO);
+		ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
+	}
+	else if (error == 3)
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);                   
+		ft_putstr_fd(str, STDERR_FILENO);
+		ft_putendl_fd(": event not found", STDERR_FILENO); 
+	}
+	else if (error == 5)
+	{
+		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
+		ft_putstr_fd(str, STDERR_FILENO);
+		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
+	}
+	//reset_data(data);
+	return(EXIT_FAILURE);
+}
+
+char **new_array(char **array, char *str) //BORRAR, ESTA EN UTILS
+{
+	char **new_array;
+	int i;
+	
+	i = 0;
+	while(array[i])
+		i++;
+	new_array = calloc((i + 2), sizeof(char*));
+	if (!new_array)
+		return (NULL);
+	i = 0;
+	
+	while(array[i])
+	{
+		new_array[i] = strdup(array[i]);
+		i++;
+	}
+	new_array[i] = str; //agrega la nueva variable como ultimo elemento
+	return(new_array);
 }
 
 
-void print_array(char **array, int i)
+static int check_coincidence (t_mshell *minishell, int i, char *var_name, char *add_var)
 {
-    while (array[i])
-    {
-        ft_putstr_fd(array[i], STDERR_FILENO);
-        i++;
-        if(array[i])
-            write(2, " ", 1);        
-    }
-    
+	
+	if(!strncmp(minishell->envp[i], var_name, strlen(var_name))) 
+	{
+		free(minishell->envp[i]);
+		minishell->envp[i] = add_var;
+		return(0);
+	}
+	return(1);
 }
 
-//echo """hello""" deberia borrar todos los ""
-char *var_name(char **array)
+
+// //si encuentra un = crea array
+// //array[0] --> nombre de la variable
+// //array[1] --> =
+// //array[2]--> nueva definificion
+// //array[3]--> null
+// //si recorre todo el while loop y no encontro nada, crea un array de 2 elementos donde el primero es todo el str y el 2do es NULL.
+
+static bool check_valid_identifier(char c) 
 {
-    char *str;
-    
-    if(!array[1])
-        str = array[0];
-    else
-    {
-        str = ft_strjoin(array[0], array [1]);
-        str = ft_strjoin(str, "\"");
-        str = ft_strjoin(str, array [2]);
-        str = ft_strjoin(str, "\"");
-    }
-    return (str);
+	if ((c >= 'a' && c <= 'z') ||
+		(c >= 'A' && c <= 'Z') ||
+		(c >= '0' && c <= '9') ||
+		c == '_' )
+		return true;
+	else 
+		return false;
 }
 
-//si encuentra un = crea array
-//array[0] --> nombre de la variable
-//array[1] --> =
-//array[2]--> nueva definificion
-//array[3]--> null
-//si recorre todo el while loop y no encontro nada, crea un array de 2 elementos donde el primero es todo el str y el 2do es NULL.
 
-
-
-
-char **check_command(char *str)
+static char *check_quotes(char *str, char **var_name)
 {
-    char **array;
-    int i;
-    char *temp;
-    
-    i = 0;
-    while (str[i])
-    {
-        if(str[i] == '=')
-        {
-            array = calloc ((4), sizeof(char*));
-            temp = ft_substr(str, 0, i); //esta bien el len?
-            array[0] = temp;
-            array[1] = strdup("=");
-            i++;
-            array[2] = strdup(str + i);
-            return(array);            
+	int i;
+	char *temp;
+	char *substr;
+	
+	i = 0;
+	temp = delete_quotes(str);
+	while (str[i])
+	{
+		if(str[i] == '=')
+		{
+			i++;
+			//temp = delete_quotes(ft_substr(str, 0, i)); //export varname & =
+			substr = ft_substr(str, 0, i);
+			*var_name = delete_quotes(substr); //export varname & =   ////si uno todo en la mism a linea funciona pero da memory leaks
+			//temp = delete_quotes(str);
+			//*var_name = ft_strdup(temp); //revisar si esto sobrepasa esta funcion
+			//def = delete_quotes(str + i); //lo que viene despues del ==
+			//temp = ft_strjoin(temp, def); //varname & = & def
+			free(substr);
+			return(temp);
+		}
+		else
+			i++;
+	}
+	*var_name = delete_quotes(str); //si no hay = de todos modos hay que darle valor a var name
+	//temp = delete_quotes(str);
+	return(temp);
+}
+
+static int error_check (t_mshell *minishell, t_parser *commands)
+{
+	int i;
+	
+	i = 0;
+	if (commands->str[1] && commands->str[2]) //si tengo mas de 3
+		return(handle_error2(minishell, 1, NULL, commands->str));		
+	else if (commands->str[1])
+	{
+		if (isdigit(commands->str[1][0]) || commands->str[1][0] == '=')
+		{
+		    printf("ACA HAY =========================\n");
+			return(handle_error2(minishell, 2, commands->str[1], NULL));
         }
-        else
-            i++;
-    }
-    array = calloc ((2), sizeof(char*));
-	if (!array)
-	    return (NULL); //ese necesario poner el return aca?
-    array[0] = str; 
-    return(array);
+		while (commands->str[1][i] != '=' && commands->str[1][i]) 
+		{
+			if (!check_valid_identifier(commands->str[1][i])) 
+			{
+				if (commands->str[1][i] == '!')
+					return(handle_error2(minishell, 3, commands->str[1] + i, NULL));
+				else
+					return(handle_error2(minishell, 4, commands->str[1], NULL));
+			}
+			i++;
+		}
+	}
+	return(EXIT_SUCCESS);
 }
-
-
 
 //str[0] --> export
 //str[1] --> nombre de la variable (puede incluir la definicion)
 //str[2] --> error ya que significa que el comando original tenia espacios
 int mini_export (t_mshell *minishell, t_parser *commands)
 {
-    int i;
-    char **temp;
-    char *new_var;
-    
-    i = 0;
-    
-    printf("✔️✔️✔️✔️✔️check 1\n");
-    
-    if (commands->str[2]) //si tengo mas de 3
-    {
-        ft_putstr_fd("minishell: export: `", STDERR_FILENO);
-        print_array(commands->str, 2); //que imprima del dos en adelante        
-        ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
-        return(EXIT_FAILURE);
-    }
-    
-    printf("✔️✔️✔️✔️✔️check 2\n");
-            
-    if (commands->str[1])
-    {   
-        if (ft_isdigit(commands->str[1][0]) || commands->str[1][0] == '=')
-        {
-            ft_putstr_fd("minishell: export: `", STDERR_FILENO);
-            ft_putstr_fd(commands->str[1], STDERR_FILENO);
-            ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
-            return(EXIT_FAILURE);
-        }
-    
-        while (commands->str[1][i] != '=' && commands->str[1][i]) 
-        {
-            if (!check_valid_identifier(commands->str[1][i])) 
-            {
-                if (commands->str[1][i] == '!')
-                {
-                    printf("✔️✔️✔️✔️✔️check 3\n");
-                    ft_putstr_fd("minishell: ", STDERR_FILENO);                   
-                    ft_putstr_fd(commands->str[1] + i, STDERR_FILENO);
-                    ft_putendl_fd(": event not found", STDERR_FILENO); 
-                    return(EXIT_FAILURE);
-                }
-                else
-                {
-                    //printf("✔️✔️✔️✔️✔️identifier %c\n", commands->str[1][i]);
-                    //printf("✔️✔️✔️✔️✔️check 4\n");
-                    ft_putstr_fd("minishell: export: `", STDERR_FILENO);
-                    ft_putstr_fd(commands->str[1], STDERR_FILENO);
-                    ft_putendl_fd("': not a valid identifier", STDERR_FILENO); 
-                    return(EXIT_FAILURE);
-                }
+	int i;
+	char **temp;
+	char *add_var;
+	char *var_name;
+	
+	i = -1;
+	if(error_check(minishell, commands)) //success 0 . failure 1
+		return(EXIT_FAILURE);
+	if(!commands->str[1] || commands->str[1][0] == '\0') //deberia imprimir algo mas que el enviroment???????
+		mini_env(minishell, commands);
+	else
+	{
+		add_var = check_quotes(commands->str[1], &var_name);//elimina los quotes de la variable (lo que esta antes de =)
+		while(minishell->envp[++i])
+		{
+			if(check_coincidence(minishell, i, var_name, add_var) == 0)
+			{	
+			    return(EXIT_SUCCESS);	
             }
-            i++;
-        }
-    }
-    
-  
-    
-    printf("✔️✔️✔️✔️✔️check 3\n");
-    
-    
-    i = 0;
-    //deberia imprimir algo mas que el enviroment???????
-    if(!commands->str[1] || commands->str[1][0] == '\0')//si solo tengo export, que imprima el enviroment
-        mini_env(minishell, commands);
-    else
-    {
-        printf("✔️✔️✔️✔️✔️check 4\n");
-        temp = check_command(commands->str[1]);//va a ser un array de un solo elemento si no hay =   o de 3 si encuentra un =
-        new_var = var_name (temp);
-        //printf("new var %s\n:", new_var);
-        
-        while(minishell->envp[i]) 
-        {
-            //ESTA BIEN EL LEN???         
-            if(!strncmp(minishell->envp[i], temp[0], strlen(temp[0]))) //buscar en el array envp si se encuentra la variable definida con export
-            {
-                printf("✔️✔️✔️✔️✔️check 7\n");
-                free(minishell->envp[i]);
-                minishell->envp[i] = new_var;
-            }
-            else
-                i++; 
-        }
-        
-        printf("✔️✔️✔️✔️✔️check 9\n");
-        
-        //no lo encontro, entonces a;adirlo al final del array.  
-        free(temp);
-        temp = new_array(minishell->envp, new_var);
-        printf("✔️✔️✔️✔️✔️check 10\n");
-        //printf("new var %s\n:", new_var);
-        print_string_array(temp);
-        free(minishell->envp);
-        minishell->envp = temp;
-    }
-    return(EXIT_SUCCESS);
+		}
+		temp = new_array(minishell->envp, add_var);
+		free_string_array(minishell->envp);		
+		minishell->envp = temp;
+		free(var_name);
+	}
+	return(EXIT_SUCCESS);
+}
+
+static char *check_quote(char *str) //no borrar, es distinta a la otra
+{
+	int i;
+	char *temp;
+	char *substr;
+	
+	i = 0;
+	while (str[i])
+	{
+		if(str[i] == '=')
+		{
+			substr = ft_substr(str, 0, i);
+			temp = delete_quotes(substr);
+			free(substr);
+			return(temp);
+		}
+		i++;
+	}
+	temp = delete_quotes(str); //si no hay = de todos modos hay que darle valor a var name
+	return(temp);
+}
+
+static char **newarray(char **array, char *str)
+{
+	char **new_array;
+	int i;
+	int j;
+	
+	i = 0;
+	while(array[i])
+		i++;
+	new_array = calloc((i), sizeof(char*));
+	if (!new_array)
+		return (NULL); //cambiar
+	i = 0;
+	j = 0;
+	while(array[i])
+	{
+		if(!strncmp(array[i], str, strlen(str)))
+		{
+			//free(array[i]);
+			i++;
+		}
+		new_array[j++] = strdup(array[i++]);
+	}
+	return(new_array);
+}
+
+int mini_unset (t_mshell *minishell, t_parser *commands)
+{
+	int i;
+	char *env_var;
+	char *unset_var;
+	char **temp;
+	
+	i = -1;
+	if(commands->str[1] && minishell->envp)
+	{
+		unset_var = check_quote(commands->str[1]);
+		while(minishell->envp[++i])
+		{
+			env_var = check_quote(minishell->envp[i]); //separa de env pwd=lalal en solo pwd //revisar nombre funcion
+			if(!strncmp(env_var, unset_var, strlen(unset_var))) //buscar en el array envp si se encuentra la variable definida con export
+			{
+				temp = newarray(minishell->envp, env_var);
+				free_string_array(minishell->envp);
+				//free(minishell->envp);
+				minishell->envp = temp;
+				if(!strncmp("PWD", unset_var, strlen(unset_var)))
+				{
+				    free(minishell->pwd);
+				    minishell->pwd = NULL;
+                }
+                if(!strncmp("OLDPWD", unset_var, strlen(unset_var)))
+				{
+				    free(minishell->old_pwd);
+				    minishell->old_pwd = NULL;
+                }
+                free(unset_var);
+                free(env_var);
+				return(EXIT_SUCCESS);
+			}
+			free(env_var); //si no lo encuentra
+		}
+		free(unset_var); //si no lo encuentra
+		return(EXIT_SUCCESS); //si no hay coincidencia no pasa nada
+	}
+    return(EXIT_SUCCESS); 
 }
 
 int main(int argc, char **argv, char **env) 
@@ -1190,24 +1249,51 @@ int main(int argc, char **argv, char **env)
     // print_string_array(env);
     // printf("\n");
     
-    // printf("\n***POST TEST**\n"); //BORRAR
-    mini_export(minishell, minishell->commands);
+    printf("\n***POST TEST**\n"); //BORRAR
+    //mini_export(minishell, minishell->commands);
+    mini_echo(minishell, minishell->commands);
+    //mini_env(minishell, minishell->commands);
+    //mini_pwd(minishell, minishell->commands);
+    //mini_cd(minishell, minishell->commands);
+    //mini_exit(minishell, minishell->commands);
+    //mini_unset(minishell, minishell->commands);
     
     
     printf("\n***IMRPIMIR ARRAY**\n"); //BORRAR
-    //print_string_array(minishell->envp);
+    print_string_array(minishell->envp);
     printf("\n");
     
-    // printf("PWD: %s\n", minishell->pwd);
-    // printf("OLD PWD: %s\n", minishell->old_pwd);
+    //printf("PWD: %s\n", minishell->pwd);
+    //printf("OLD PWD: %s\n", minishell->old_pwd);
     
     // /*************FREES**********************/
     // //⚠️ no hay que ponerlo ahora, es solo a fin de chequeo de leaks. ponerlo al final de todo cuando este todo terminado
-    // // free_parser_list(minishell->commands); 
-    // // if(minishell->envp) 
-    // //     free_string_array(minishell->envp);
-    // // free(minishell); 
-        
+ 
+    
+    free_parser_list(minishell->commands);
+    /*  
+        free_string_array(temp->str);
+        free_lexer_list(temp->redirections);
+        free(temp);
+    */
+	free_lexer_list(minishell->lexer_list);
+	free_string_array(minishell->paths);
+	if (minishell->envp) 
+	    free_string_array(minishell->envp);
+	/*
+	    free(array[i]); // Liberar cada string en el array
+        free(array); // Liberar el array de punteros
+	*/
+	if (minishell->pwd)
+	    free(minishell->pwd);
+	if (minishell->old_pwd) 
+	    free(minishell->old_pwd);
+	if(minishell->pid)
+		free(minishell->pid);
+	if(minishell->args)
+		free(minishell->args);
+	free(minishell); 
+	
 
     return 0;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   header_mig.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:29:16 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/01 17:46:23 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/07 16:05:52 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ typedef struct s_mshell
 	char					*args;
 	char					**paths;
 	char					**envp;
-	struct s_parser			*commands;
+	struct s_parser			*commands; //aca agrego para cada nodo del parser las redirecciones/builtins/str
 	t_lexer					*lexer_list;
 	char					*pwd;
 	char					*old_pwd;
@@ -65,7 +65,7 @@ typedef struct s_mshell
 typedef struct s_parser
 {
 	char					**str;
-	int						(*builtins_handler)(t_mshell *, struct s_parser *); //Es un puntero a la funcion builtin que tiene 2 argumentos: Un puntero a t_mshell y Un puntero a t_parser
+	int						(*builtins)(t_mshell *, struct s_parser *); //Es un puntero a la funcion builtin que tiene 2 argumentos: Un puntero a t_mshell y Un puntero a t_parser
 	int						num_redirections;
 	char					*hd_file_name; //?
 	t_lexer					*redirections;
@@ -114,29 +114,39 @@ void		lexer_delete_all(t_lexer **list);
 /*******PARSER*******/
 
 void		parser(t_mshell *minishell);
-int			(*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands);
+int	        (*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands);
 t_parser	*parser_new_node(t_mshell *minishell);
 void		parser_add_last(t_parser **head, t_parser *new);
 void		ft_delnode(t_lexer *temp, t_lexer **head);
 void		free_lexer_list(t_lexer *list);
 void		free_string_array(char **array);
+void        free_parser_list(t_parser *list);
 
-/*******BUILSTINS*******/
+/*******BUILTINS*******/
 
-int			mini_echo(t_mshell *minishell, t_parser *commands);
-int			mini_env(t_mshell *minishell, t_parser *commands);
-int			mini_exit(t_mshell *minishell, t_parser *commands);
 void		free_minishell(t_mshell *minishell);
-int			mini_pwd(t_mshell *minishell, t_parser *commands);
+int         mini_echo (t_mshell *minishell, t_parser *commands); //no memory leaks
+int         mini_exit (t_mshell *minishell, t_parser *commands); //no memory leaks
+int         mini_env (t_mshell *minishell, t_parser *commands); //no memory leaks
+int         mini_pwd (t_mshell *minishell, t_parser *commands); //no memory leaks
+int         mini_cd (t_mshell *minishell, t_parser *commands); //no memory leaks
+int         mini_export (t_mshell *minishell, t_parser *commands); //no memory leaks
+int         mini_unset (t_mshell *minishell, t_parser *commands); //me costo un huevo pero no memory leaks
+
+/*-Utils-*/
+
+void print_array(char **array, int i);
 
 /*******EXPANDER*******/
 
 /*-Utils-*/
 char		*remove_single_quote(char *str);
-
+char **new_array(char **array, char *str);
+char *delete_quotes (char *str); //ver si la tiene migue y si es igual o no
 
 /*******ERROR HANDLING*******/
 
 int			handle_error(t_mshell *data, int error);
+int	        handle_error2(t_mshell *data, int error, char *str, char **array);
 
 #endif

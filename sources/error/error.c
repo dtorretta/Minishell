@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 16:19:08 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/01 23:29:11 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/05 01:11:01 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ int	handle_error(t_mshell *data, int error)
 
 int	handle_error2(t_mshell *data, int error, char *str, char **array)
 {
+	(void)data;
 	if(error == 1 || error == 2 || error == 4)
 	{
 		ft_putstr_fd("minishell: export: `", STDERR_FILENO);
@@ -47,6 +48,12 @@ int	handle_error2(t_mshell *data, int error, char *str, char **array)
 		ft_putstr_fd("minishell: ", STDERR_FILENO);                   
 		ft_putstr_fd(str, STDERR_FILENO);
 		ft_putendl_fd(": event not found", STDERR_FILENO); 
+	}
+	else if (error == 5)
+	{
+		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
+		ft_putstr_fd(str, STDERR_FILENO);
+		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
 	}
 	//reset_data(data);
 	return(EXIT_FAILURE);
