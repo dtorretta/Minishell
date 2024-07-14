@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 14:54:25 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/14 14:13:11 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/14 14:45:33 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ char	*expand_double_quote(t_mshell *data, char *str)
 	return (result);
 }
 
-char	**expander(t_mshell *data, char **str)
+char	**expander(t_mshell *data, char **str) //SEPARAR EN VARIAS FUNCTIONES
 {
 	char	*temp;
 	char	*expanded_str;

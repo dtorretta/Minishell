@@ -55,7 +55,7 @@ typedef struct s_mshell
 typedef struct s_parser
 {
 	char					**str;
-	int						(*builtins_handler)(t_mshell *, struct s_parser *); //Es un puntero a la funcion builtin que tiene 2 argumentos: Un puntero a t_mshell y Un puntero a t_parser
+	int						(*builtins)(t_mshell *, struct s_parser *); //Es un puntero a la funcion builtin que tiene 2 argumentos: Un puntero a t_mshell y Un puntero a t_parser
 	int						num_redirections;
 	char					*hd_file_name; //?
 	t_lexer					*redirections;
@@ -84,13 +84,14 @@ void		lexer_add_last(t_lexer **list, t_lexer *new_node);
 
 /*******ERROR HANDLING*******/
 int			handle_error(t_mshell *data, int error);
+int	handle_error2(t_mshell *data, int error, char *str, char **array);
 
 /*******PARSER*******/
 void parser (t_mshell *minishell);
 
 /*******PARSER UTILS*******/
-void	ft_delnode(t_lexer *temp, t_lexer  **lexer_list);
-int (*command_handler (char *str))(t_mshell *minishell, t_parser *commands);
+void		ft_delnode(t_lexer *temp, t_lexer **head);
+int	  (*builtins(char *str))(t_mshell *minishell, t_parser *commands);
 void	parser_add_last(t_parser **head, t_parser *new);
 t_parser	*parser_new_node(t_mshell *minishell);
 
@@ -103,5 +104,8 @@ int mini_echo (t_mshell *minishell, t_parser *commands);
 int mini_exit (t_mshell *minishell, t_parser *commands);
 int mini_env (t_mshell *minishell, t_parser *commands);
 int mini_pwd (t_mshell *minishell, t_parser *commands);
+int mini_cd (t_mshell *minishell, t_parser *commands);
+int mini_export (t_mshell *minishell, t_parser *commands);
+int mini_unset (t_mshell *minishell, t_parser *commands);
 
 #endif // HEADER_H

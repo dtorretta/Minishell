@@ -18,23 +18,46 @@
 //bash accept multiples -n
 int	mini_echo(t_mshell *minishell, t_parser *commands)
 {
-	//el array de string tiene en el primer elemento la palabra echo, y en el siguiente puede ser tanto "-n" como el string a imprimir
 	int	i;
+	char *temp;
 
 	(void) minishell;
 	i = 1;
 	if (commands->str)
 	{
-		if (!ft_strncmp (commands->str[i], "-n", 3)) //esta bien 3? incluye el caracter nulo?
+		if (!ft_strncmp (commands->str[1], "-n", 3)) //esta bien 3? incluye el caracter nulo?
 		{
-			while (commands->str[i] && !ft_strncmp (commands->str[i], "-n", 3))
-				i++;
-			ft_putstr_fd(commands->str[i], 1);
+			while (commands->str[1] && !ft_strncmp (commands->str[1], "-n", 3)) //puede haber mas de 1
+				i++;//pasa al sigueinte elemento del array
+			temp = delete_quotes (commands->str[i]); //eliminar ""
+			ft_putstr_fd(temp, 1);
 		}
 		else
-			ft_putendl_fd(commands->str[i], 1);
+		{
+			temp = delete_quotes (commands->str[i]); //eliminar ""
+			ft_putendl_fd(temp, 1);
+		}
 	}
+	free(temp);
 	return (EXIT_SUCCESS);
 }
 
 //HACER QUE IMPRIMA TOO EL ARRAY
+
+/*
+- echo "hello" "world" //chequear en codigo migue si esto queda en nhodos separados
+hello world
+
+- echo "hello""world"
+helloworld
+
+- echo -n -n-n hola
+-n-n hola
+
+- echo #hola
+- NADA
+
+- echo "#hola"
+#hola
+
+*/

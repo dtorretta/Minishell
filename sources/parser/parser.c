@@ -82,7 +82,7 @@ static t_parser	*add_redirection(t_parser *commands, t_mshell *minishell) // Hay
 		current = next_node;
 	}
 	commands->str = arg_array;
-	commands->builtins_handler = command_handler(arg_array[0]);
+	commands->builtins = builtins_handler(commands->str[0]); //asigna el nombre de la funcion y pointer del builtin
 	return ;
 }
 
@@ -96,7 +96,7 @@ void	parser(t_mshell *minishell)
 	while (current->lexer_list)
 	{
 		node = parser_new_node(minishell);
-		add_redirection (node, minishell);
+		add_redirection (node, minishell); //aca es donde le asigno a node las variables que faltan: redirections/ handle_builtins/ str
 		parser_add_last(&minishell->commands, node);
 
 		if (current->lexer_list && current->lexer_list->token == PIPE)
