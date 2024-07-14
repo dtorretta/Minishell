@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   header_mig.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:29:16 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/14 14:44:57 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/14 18:56:38 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ typedef struct s_mshell
 	t_lexer					*lexer_list;
 	char					*pwd;
 	char					*old_pwd;
-	int						pipes; //ver si es necesario. Hasta hoy 17.6 no ha sido utilizada
+	int						pipes;
 	int						*pid;
 	int						in_cmd; // nuevo (creamos para señalar que hay un comando activo)
 	bool					heredoc;
@@ -116,10 +116,15 @@ void		lexer_delete_all(t_lexer **list);
 /*******PARSER*******/
 
 void		parser(t_mshell *minishell);
-int			(*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands);
 t_parser	*parser_new_node(t_mshell *minishell);
 void		parser_add_last(t_parser **head, t_parser *new);
 void		ft_delnode(t_lexer *temp, t_lexer **head);
+int			(*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands);
+char	    *expand_builtin(t_mshell *data, const char *str);
+char	    **expander_builtins(t_mshell *data, char **str);
+
+/*******FREE*******/
+
 void		free_lexer_list(t_lexer *list);
 void		free_string_array(char **array);
 void		free_parser_list(t_parser *list);

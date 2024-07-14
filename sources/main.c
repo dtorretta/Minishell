@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:31:22 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/17 16:13:52 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/14 18:49:55 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	main(int ac, char **av, char **envp)
 	// printf("MAKE WELCOME MESSAGE/n"); //MAKE
 	lexer(&data);
 	parser(&data);
-	// prepare_executor(&data); // ??
+	executor(&data);
 	reset_data(&data);
 	return (0);
 }
