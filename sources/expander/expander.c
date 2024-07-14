@@ -6,78 +6,11 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 14:54:25 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/01 00:48:14 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/14 14:13:11 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/header_mig.h"
-
-char	*remove_single_quote(char *str)
-{
-	char	*result;
-	int		len;
-	int		i;
-	int		j;
-
-	i = 0;
-	j = 0;
-	len = ft_strlen(str);
-	result = (char *)malloc(len + 1);
-	while (i < len)
-	{
-		if (str[i] != '\'')
-			result[j++] = str[i];
-		i++;
-	}
-	result[j] = '\0';
-	return (result);
-}
-
-char	*get_variable_name(const char *str)
-{
-	char	*var_name;
-	int		len;
-
-	len = 0;
-	var_name = (char *)malloc(len + 1);
-	while (str[len] && (ft_isalnum(str[len]) || str[len] == '_'))
-		len++;
-	ft_strncpy(var_name, str, len);
-	var_name[len] = '\0';
-	return (var_name);
-}
-
-char	*get_variable_value(t_mshell *data, char *var_name)
-{
-	int	i;
-	int	var_len;
-
-	i = 0;
-	var_len = ft_strlen(var_name);
-	if (!var_name)
-		return (NULL);
-	while (data->envp[i] != NULL)
-	{
-		if (ft_strncmp(data->envp[i], var_name, var_len) == 0
-			&& data->envp[i][var_len] == '=')
-			return (ft_strdup(data->envp[i] + var_len + 1));
-		i++;
-	}
-	return (NULL);
-}
-
-char	*expand_variable(t_mshell *data, const char *str, int *index)
-{
-	char	*var_name;
-	char	*var_value;
-
-	var_name = get_variable_name(str + 1);
-	var_value = get_variable_value(data, var_name);
-	*index += ft_strlen(var_name) + 1;
-	//free(var_name);
-	//return var_value ? strdup(var_value) : NULL;
-	return (var_value);
-}
 
 char	*handle_inside_quote(t_mshell *data, char *str, int *i, char *result)
 {
@@ -94,7 +27,7 @@ char	*handle_inside_quote(t_mshell *data, char *str, int *i, char *result)
 			{
 				ft_strcpy(result + result_len, var_value);
 				result_len += ft_strlen(var_value);
-				//free (var_value); //free or not? its maybe part of envp array?
+				free (var_value);
 			}
 		}
 		else
@@ -111,11 +44,12 @@ char	*expand_double_quote(t_mshell *data, char *str)
 	int		i;
 	int		result_len;
 
+	if (ft_strstr(str, "\"export\""))
+		return (ft_strdup(str));
 	i = 0;
 	result_len = 0;
 	len = ft_strlen(str);
-	result = (char *)malloc(len * 2);
-	result[0] = '\0';
+	result = ft_calloc(MAX_EXP_SIZE, sizeof(char));
 	while (i < len)
 	{
 		if (str[i] == '\"')
@@ -127,45 +61,61 @@ char	*expand_double_quote(t_mshell *data, char *str)
 			result_len += ft_strlen(result);
 		}
 		else
-		{
 			result[result_len++] = str[i++];
-		}
 	}
-	result[result_len] = '\0';
 	return (result);
 }
 
 char	**expander(t_mshell *data, char **str)
 {
-	int	i;
+	char	*temp;
+	char	*expanded_str;
+	int		i;
+	int		expanded_i;
 
 	i = 0;
+	expanded_i = 0;
 	while (str[i] != NULL)
 	{
 		if (ft_strchr(str[i], '\'') != NULL)
+		{
+			temp = str[i];
 			str[i] = remove_single_quote(str[i]);
+			free(temp);
+		}
 		else if (ft_strchr(str[i], '\"') != NULL)
+		{
+			temp = str[i];
 			str[i] = expand_double_quote(data, str[i]);
-		else
-			str[i] = expand_variable(data, str[i], &i);
+			free(temp);
+		}
+		else if (ft_strchr(str[i], '$') != NULL)
+		{
+			expanded_str = expand_variable(data, str[i], &expanded_i);
+			if (expanded_str)
+			{
+				free(str[i]);
+				str[i] = expanded_str;
+			}
+		}
 		i++;
 	}
 	return (str);
 }
 
-
 int main()
 {
     // Sample data initialization (replace with your actual data initialization)
     t_mshell data;
-    data.envp = (char **)malloc(4 * sizeof(char *));
-    data.envp[0] = "VAR1=value1";
-    data.envp[1] = "VAR2=value2";
-    data.envp[2] = "HOME=/home/user";
-    data.envp[3] = NULL;
+    data.envp = (char **)malloc(5 * sizeof(char *));
+    data.envp[0] = strdup("VAR1=value1");
+    data.envp[1] = strdup("VAR2=value2");
+    data.envp[2] = strdup("HOME=/home/user");
+	data.envp[3] = strdup("export");
+    data.envp[4] = NULL;
 
     // Sample command strings with variables and quotes
-    char **commands = (char **)malloc(11 * sizeof(char *));
+    char **commands = (char **)malloc(13 * sizeof(char *));
     commands[0] = strdup("echo \"$HOME\"");
     commands[1] = strdup("echo 'Value is $VAR1'");
     commands[2] = strdup("echo \"Values: $VAR1 $VAR2\"");
@@ -176,7 +126,9 @@ int main()
     commands[7] = strdup("echo \"Variable in the middle: text $VAR1 text\"");
     commands[8] = strdup("echo \"Variable at the end: $VAR1\"");
     commands[9] = strdup("echo \"Multiple variables: $VAR1 $VAR2 $HOME\"");
-    commands[10] = NULL;
+	commands[10] = strdup("echo \"export\"");
+    commands[11] = NULL; // Make sure to terminate the array with NULL
+
 
     // Print original commands
     printf("Original Commands:\n");
@@ -199,7 +151,7 @@ int main()
 
     // Free allocated memory
     ft_free_array(commands);
-    ft_free_array(data.envp);
+	ft_free_array(data.envp);
 
     return 0;
 }

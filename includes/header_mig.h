@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:29:16 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/01 17:46:23 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/02 14:21:12 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+
+# define MAX_EXP_SIZE 1024 // buffer for expanded variables "expander.c"
 
 /*******STRUCTURES*******/
 typedef enum s_tokens

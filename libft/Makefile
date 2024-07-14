@@ -31,7 +31,9 @@ OBJS = $(LIBFT_OBJS) $(FT_PRINTF_OBJS) $(GNL_OBJS)
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	ar rc $(NAME) $(OBJS)
+	@echo "Creating $(NAME)..."
+	@ar rc $(NAME) $(OBJS)
+	@echo "libft is ready."
 
 $(OBJ_DIR)%.o: $(LIBFT_DIR)%.c
 	@mkdir -p $(@D)
@@ -43,10 +45,17 @@ $(OBJ_DIR)%.o: $(GNL_DIR)%.c
 	@mkdir -p $(@D)
 	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
+$(OBJS): | pre-compile-message
+
+pre-compile-message:
+	@echo "Compiling libft..."
+
 clean:
+	@echo "Removing object files..."
 	$(RM) $(OBJ_DIR)*.o
 
 fclean: clean
+	@echo "Removing $(NAME)..."
 	$(RM) $(NAME)
 
 re: fclean all

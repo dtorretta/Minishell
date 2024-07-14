@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 16:51:40 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/30 18:11:13 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/02 15:50:02 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ void				ft_free_array(char **array);
 char				*ft_strstr(char *str, char *to_find);
 char				*ft_strcpy(char *dst, const char *src);
 char				*ft_strncpy(char *dst, const char *src, size_t len);
+int					ft_strcmp(const char *s1, const char *s2);
 
 // BONUS FUNCTIONS//
 typedef struct s_list
