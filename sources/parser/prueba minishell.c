@@ -3,6 +3,8 @@
 #include <string.h>
 #include "../../includes/header.h"
 
+# define MAX_EXP_SIZE 1024 // buffer for expanded variables "expander.c"
+
 
 int	ft_iswhitespace(char c)
 {
@@ -268,7 +270,7 @@ t_lexer *create_lexer_list() {
         perror("malloc");
         exit(EXIT_FAILURE);
     }
-    node_echo->str = strdup("echo");
+    node_echo->str = strdup("export");
     node_echo->token = WORD;
     node_echo->i = 0;
     node_echo->prev = NULL;
@@ -279,38 +281,51 @@ t_lexer *create_lexer_list() {
         perror("malloc");
         exit(EXIT_FAILURE);
     }
-    node_dash_n1->str = strdup("hello");
+    node_dash_n1->str = strdup("a=ho");
     node_dash_n1->token = WORD;
     node_dash_n1->i = 1;
     node_dash_n1->prev = node_echo;
     node_dash_n1->next = NULL;
 
-    // t_lexer *node_hello = (t_lexer *)malloc(sizeof(t_lexer));
-    // if (!node_hello) {
-    //     perror("malloc");
-    //     exit(EXIT_FAILURE);
-    // }
-    // node_hello->str = strdup("extra");
-    // node_hello->token = WORD;
-    // node_hello->i = 2;
-    // node_hello->prev = node_dash_n1;
-    // node_hello->next = NULL;
+    t_lexer *node_hello = (t_lexer *)malloc(sizeof(t_lexer));
+    if (!node_hello) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+    node_hello->str = strdup("|");
+    node_hello->token = PIPE;
+    node_hello->i = 2;
+    node_hello->prev = node_dash_n1;
+    node_hello->next = NULL;
 
-    // t_lexer *node_world = (t_lexer *)malloc(sizeof(t_lexer));
-    // if (!node_world) {
-    //     perror("malloc");
-    //     exit(EXIT_FAILURE);
-    // }
-    // node_world->str = strdup(" world");
-    // node_world->token = WORD;
-    // node_world->i = 3;
-    // node_world->prev = node_hello;
-    // node_world->next = NULL;
+    t_lexer *node_world = (t_lexer *)malloc(sizeof(t_lexer));
+    if (!node_world) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+    node_world->str = strdup("ec$a");
+    node_world->token = WORD;
+    node_world->i = 3;
+    node_world->prev = node_hello;
+    node_world->next = NULL;
+    
+    t_lexer *node_last = (t_lexer *)malloc(sizeof(t_lexer));
+    if (!node_last) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+    node_last->str = strdup("hello");
+    node_last->token = WORD;
+    node_last->i = 4;
+    node_last->prev = node_world;
+    node_last->next = NULL;
+
 
     //Enlazar los nodos
     node_echo->next = node_dash_n1;
-    //node_dash_n1->next = node_hello;
-    // node_hello->next = node_world;
+    node_dash_n1->next = node_hello;
+    node_hello->next = node_world;
+    node_world->next = node_last;
 
     return node_echo; // Devolvemos el primer nodo de la lista
 }
@@ -506,68 +521,45 @@ void print_string_array(char **array)
     }
 }
 
-void add_redirection (t_parser *commands, t_mshell *minishell)
+char	*ft_strstr(char *str, char *to_find)
 {
-	t_lexer *current;
-	t_lexer *next_node;
-	t_lexer *node;
-	int arguments;
-	char **arg_array;
-	int i;
-	
-	arguments = count_args(minishell->lexer_list); //BORRAR
-	printf("\nCANTIDAD DE ARGUMENTOS: %d\n", arguments); //BORRAR
-	
-	current = minishell->lexer_list;	
-	while(current && current->token != PIPE)
+	int	len;
+	int	i;
+	int	j;
+
+	len = 0;
+	while (to_find[len])
 	{
-		if(current->token != WORD)
-		{
-			node = ft_lexernew(strdup(current->next->str), current->token ); //(OK)crea un nodo para la nueva sub linked list con las redirecciones
-			ft_lexeradd_back(&commands->redirections, node); //(OK) add el nodo a la sublinked list de redirecciones   (2)
-    		next_node = current->next->next;
-			ft_delnode(current->next, &minishell->lexer_list);
-			ft_delnode(current, &minishell->lexer_list);
-			current = next_node;
-			
-			commands->num_redirections++;
-		}
-		else
-			current = current->next;
+		len++;
 	}
-	
-	arguments = count_args(minishell->lexer_list); //al nodo general le a;ade los token WORD
-	printf("\nCANTIDAD DE ARGUMENTOS: %d\n", arguments); //BORRAR esta bien que de 1 que son los word que quedan despues de las eliminaciones
-	
-	
-	arg_array = calloc ((arguments + 1), sizeof(char*));
-	if (!arg_array) //ver
-		return; //no puedo hacer retur exit failor (1/4)
-	current = minishell->lexer_list; //devolvemos el puntero al primer elemento;
+	if (len == 0)
+		return (str);
 	i = 0;
-	
-	printf("\nLEXER LIST antes de array:\n"); //BORRAR 1 elemento ls
-	print_lexer_list(minishell->lexer_list); //BORRAR
-	
-	printf("\nCOMMAND LIST con las redirections:\n"); //BORRAR 2 elementos > y salida.txt
-	print_lexer_list(commands->redirections); //BORRAR
-        
-	while (i < arguments)
+	j = 0;
+	while (str[i])
 	{
-		arg_array[i] = strdup(current->str);
-		next_node = current->next;
-		ft_delnode(current, &minishell->lexer_list);
+		while (to_find[j] == str[i + j])
+		{
+			if (j + 1 == len)
+				return (str + i);
+			j++;
+		}
+		j = 0;
 		i++;
-		current = next_node; //aca esta el problema
 	}
-	print_string_array (arg_array); //1 solo elemento ls
-	printf("\nLEXER LIST despues de array:\n"); //BORRAR
-    print_lexer_list(minishell->lexer_list); //BORRAR
-    
-    commands->str = arg_array;
-	commands->builtins_handler = command_handler(arg_array[0]);
-    return;
+	return (NULL);
 }
+
+char	*ft_strchr(const char *str, int c)
+{
+	while (*str && *str != (unsigned char)c)
+		str++;
+	if (*str == (unsigned char)c)
+		return ((char *)str);
+	return (NULL);
+}
+
+
 
 t_parser	*ft_parsernew()
 {
@@ -1179,6 +1171,164 @@ int mini_unset (t_mshell *minishell, t_parser *commands)
     return(EXIT_SUCCESS); 
 }
 
+
+char	*get_variable_value(t_mshell *data, char *var_name)
+{
+	int	i;
+	int	var_len;
+
+	i = 0;
+	var_len = strlen(var_name);
+	while (data->envp[i] != NULL)
+	{
+		if (strncmp(data->envp[i], var_name, var_len) == 0
+			&& data->envp[i][var_len] == '=')
+			return (strdup(data->envp[i] + var_len + 1));
+		i++;
+	}
+	return (NULL);
+}
+
+char	*expand_variable(t_mshell *data, const char *str)
+{
+	char	*var_name;
+	char	*var_value;
+	char *temp;
+	char *expanded_str;
+	
+	int i = 0;	
+
+	printf ("2: %s \n", str);
+	
+	while(str[i])
+	{
+		if(str[i]=='$')
+		{
+			var_name = ft_substr(str, 0, i);
+			i++;
+			temp = strdup(str + i);
+		}
+		else
+			i++;
+	}
+	printf ("var_name: %s \n", var_name); //ok
+	printf ("temp: %s \n", temp); //ok
+	
+	var_value = get_variable_value(data, temp);
+	printf ("var_value: %s \n", var_value); 
+	
+	expanded_str = ft_strjoin(var_name, var_value);
+	printf ("expanded_str: %s \n", expanded_str);
+	
+	free(var_name);
+	free(var_value);
+	if (expanded_str)
+		return (expanded_str);
+	else
+		return (NULL);
+}
+
+
+
+char	**expander(t_mshell *data, char **str) //SEPARAR EN VARIAS FUNCTIONES
+{
+	char	*expanded_str;
+	int		i;
+
+	i = 0;
+	while (str[i] != NULL)
+	{
+		if (ft_strchr(str[i], '$') != NULL)
+		{
+			printf ("\nACA HAY $$$$$$$$$$$$$$$$$$\n");
+			printf ("\n%s \n", str[i]);
+			expanded_str = expand_variable(data, str[i]);
+			if (expanded_str)
+			{
+				free(str[i]);
+				str[i] = expanded_str;
+			}
+		}
+		i++;
+	}
+	return (str);
+}
+
+
+
+void add_redirection (t_parser *commands, t_mshell *minishell)
+{
+	t_lexer *current;
+	t_lexer *next_node;
+	t_lexer *node;
+	int arguments;
+	char **arg_array;
+	int i;
+	char    **expanded_array;
+	
+	arguments = count_args(minishell->lexer_list); //BORRAR
+	printf("\nCANTIDAD DE ARGUMENTOS: %d\n", arguments); //BORRAR
+	
+	current = minishell->lexer_list;	
+	while(current && current->token != PIPE)
+	{
+		if(current->token != WORD)
+		{
+			node = ft_lexernew(strdup(current->next->str), current->token ); //(OK)crea un nodo para la nueva sub linked list con las redirecciones
+			ft_lexeradd_back(&commands->redirections, node); //(OK) add el nodo a la sublinked list de redirecciones   (2)
+    		next_node = current->next->next;
+			ft_delnode(current->next, &minishell->lexer_list);
+			ft_delnode(current, &minishell->lexer_list);
+			current = next_node;
+			
+			commands->num_redirections++;
+		}
+		else
+			current = current->next;
+	}
+	
+	arguments = count_args(minishell->lexer_list); //al nodo general le a;ade los token WORD
+	printf("\nCANTIDAD DE ARGUMENTOS: %d\n", arguments); //BORRAR esta bien que de 1 que son los word que quedan despues de las eliminaciones
+	
+	
+	arg_array = calloc ((arguments + 1), sizeof(char*));
+	if (!arg_array) //ver
+		return; //no puedo hacer retur exit failor (1/4)
+	current = minishell->lexer_list; //devolvemos el puntero al primer elemento;
+	i = 0;
+	
+	printf("\nLEXER LIST antes de array:\n"); //BORRAR 1 elemento ls
+	print_lexer_list(minishell->lexer_list); //BORRAR
+	
+	printf("\nCOMMAND LIST con las redirections:\n"); //BORRAR 2 elementos > y salida.txt
+	print_lexer_list(commands->redirections); //BORRAR
+        
+	while (i < arguments)
+	{
+		arg_array[i] = strdup(current->str);
+		next_node = current->next;
+		ft_delnode(current, &minishell->lexer_list);
+		i++;
+		current = next_node; //aca esta el problema
+	}
+	
+	expanded_array = expander(minishell, arg_array); //expander
+	commands->str = expanded_array;
+	
+	
+	
+	print_string_array (expanded_array); //1 solo elemento ls
+	printf("\nLEXER LIST despues de array:\n"); //BORRAR
+    print_lexer_list(minishell->lexer_list); //BORRAR
+    
+
+    //commands->str = arg_array;
+	commands->builtins = command_handler(arg_array[0]);
+    return;
+}
+
+
+
 int main(int argc, char **argv, char **env) 
 {
     (void)argc;
@@ -1210,20 +1360,37 @@ int main(int argc, char **argv, char **env)
     print_lexer_list(minishell->lexer_list);
     
     int limite = 0;
+    int borrar = 0;
     
     while(current->lexer_list && limite < 5)
 	{
 		node = ft_parsernew(); //aca aloco memoria al nuevo nodo
-		add_redirection (node, minishell);
+		add_redirection (node, minishell);//parser
+		
 		ft_parseradd_back(&minishell->commands, node); 
 		
+		if (borrar == 0)
+		{
+			printf("\n************COMMANDS TESTERS export****************\n"); //BORRAR
+			mini_export(minishell, minishell->commands);
+			printf("\n***IMRPIMIR ARRAY**\n"); //BORRAR
+            print_string_array(minishell->envp);
+            printf("\n");
+		}
+		if (borrar == 1)
+		{
+			printf("\n************COMMANDS TESTERS echo****************\n"); //BORRAR
+			
+			mini_echo(minishell, minishell->commands); 
+		}
 		if(current->lexer_list && current->lexer_list->token == PIPE)	
 		{
 			printf("\n*********PIPE************\n");
 			ft_delnode(current->lexer_list, &minishell->lexer_list);
 			//break;
 		}	
-		limite++;	
+		limite++;
+		borrar++;
 		//current = minishell; //es necesario??? parece que no
     }
 
@@ -1237,7 +1404,7 @@ int main(int argc, char **argv, char **env)
     
     
     
-    printf("\n************COMMANDS TESTERS****************\n"); //BORRAR
+    //printf("\n************COMMANDS TESTERS****************\n"); //BORRAR
     // mini_echo(minishell, minishell->commands);
     // printf("\nCHECK\n");
     
@@ -1249,9 +1416,9 @@ int main(int argc, char **argv, char **env)
     // print_string_array(env);
     // printf("\n");
     
-    printf("\n***POST TEST**\n"); //BORRAR
+    //printf("\n***POST TEST**\n"); //BORRAR
     //mini_export(minishell, minishell->commands);
-    mini_echo(minishell, minishell->commands);
+    //mini_echo(minishell, minishell->commands);
     //mini_env(minishell, minishell->commands);
     //mini_pwd(minishell, minishell->commands);
     //mini_cd(minishell, minishell->commands);
@@ -1259,9 +1426,9 @@ int main(int argc, char **argv, char **env)
     //mini_unset(minishell, minishell->commands);
     
     
-    printf("\n***IMRPIMIR ARRAY**\n"); //BORRAR
+    /*printf("\n***IMRPIMIR ARRAY**\n"); //BORRAR
     print_string_array(minishell->envp);
-    printf("\n");
+    printf("\n");*/
     
     //printf("PWD: %s\n", minishell->pwd);
     //printf("OLD PWD: %s\n", minishell->old_pwd);

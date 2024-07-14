@@ -40,14 +40,42 @@ static int	count_args(t_lexer *head, t_mshell *minishell)
 //cuenta la cantidad de argumentos restantes (que solo deberian ser WORD)
 //con calloc creo un array para almacenar todos los str (token WORD) + \0
 //los array llevan doble pointer
-static t_parser	*add_redirection(t_parser *commands, t_mshell *minishell) // Hay que quitar una variable de esta funcion. Máximo son 5 -.-' (gracias norminette)
+
+static char **built_args(t_mshell *minishell, int i)
+{
+	t_lexer	*current;
+	t_lexer	*next_node;
+	int		arguments;
+	char    **expanded_array;
+	char	**arg_array;
+	
+	arguments = count_args(minishell->lexer_list, minishell); //al nodo general le a;ade los token WORD
+	arg_array = calloc ((arguments + 1), sizeof(char*));
+	if (!arg_array)
+		return (handle_error(minishell, 0)); //ese necesario poner el return aca?
+	current = minishell->lexer_list; //devolvemos el puntero al primer elemento;
+	i = 0;
+	while (i < arguments)
+	{
+		arg_array[i] = strdup(current->str);
+		next_node = current->next;
+		ft_delnode(current, &minishell->lexer_list);
+		i++;
+		current = next_node;
+	}
+	expanded_array = expander_builtins(minishell, arg_array); //expander
+	return(expanded_array);
+}
+
+static t_parser	*built_node(t_parser *commands, t_mshell *minishell)
 {
 	t_lexer	*current;
 	t_lexer	*next_node;
 	t_lexer	*node;
-	int		arguments;
-	char	**arg_array;
-	int		i;
+	//int		arguments;
+	//char	**arg_array;
+	//int		i;
+	//char    **expanded_array;
 
 	current = minishell->lexer_list;
 	while (current && current->token != PIPE)
@@ -65,8 +93,7 @@ static t_parser	*add_redirection(t_parser *commands, t_mshell *minishell) // Hay
 		else
 			current = current->next;
 	}
-
-	arguments = count_args(minishell->lexer_list, minishell); //al nodo general le a;ade los token WORD
+	/*arguments = count_args(minishell->lexer_list, minishell); //al nodo general le a;ade los token WORD
 	arg_array = calloc ((arguments + 1), sizeof(char*));
 	if (!arg_array)
 		return (handle_error(minishell, 0)); //ese necesario poner el return aca?
@@ -81,7 +108,10 @@ static t_parser	*add_redirection(t_parser *commands, t_mshell *minishell) // Hay
 		i++;
 		current = next_node;
 	}
-	commands->str = arg_array;
+	
+	expanded_array = expander_builtins(minishell, arg_array); //expander   */
+	//commands->str = expanded_array;
+	commands->str = built_args(minishell, 0);
 	commands->builtins = builtins_handler(commands->str[0]); //asigna el nombre de la funcion y pointer del builtin
 	return ;
 }
@@ -96,7 +126,7 @@ void	parser(t_mshell *minishell)
 	while (current->lexer_list)
 	{
 		node = parser_new_node(minishell);
-		add_redirection (node, minishell); //aca es donde le asigno a node las variables que faltan: redirections/ handle_builtins/ str
+		built_node (node, minishell); //aca es donde le asigno a node las variables que faltan: redirections/ handle_builtins/ str
 		parser_add_last(&minishell->commands, node);
 
 		if (current->lexer_list && current->lexer_list->token == PIPE)
