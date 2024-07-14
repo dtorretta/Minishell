@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:29:16 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/02 14:21:12 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/14 14:26:37 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,9 +133,15 @@ int			mini_pwd(t_mshell *minishell, t_parser *commands);
 
 /*******EXPANDER*******/
 
+char		**expander(t_mshell *data, char **str);
+
 /*-Utils-*/
 char		*remove_single_quote(char *str);
-
+char		*get_variable_name(const char *str);
+char		*get_variable_value(t_mshell *data, char *var_name);
+char		*expand_variable(t_mshell *data, const char *str, int *index);
+char		*handle_inside_quote(t_mshell *data, char *str, int *i, char *result);
+char		*expand_double_quote(t_mshell *data, char *str);
 
 /*******ERROR HANDLING*******/
 
