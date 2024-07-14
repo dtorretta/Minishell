@@ -130,7 +130,10 @@ void	parser(t_mshell *minishell)
 		parser_add_last(&minishell->commands, node);
 
 		if (current->lexer_list && current->lexer_list->token == PIPE)
+		{
+			minishell->pipes++;
 			ft_delnode(current->lexer_list, &minishell->lexer_list);
+		}
 		//current = minishell; //es necesario??? parece que no
 	}
 
