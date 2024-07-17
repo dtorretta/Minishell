@@ -10,38 +10,35 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/header.h" //modifica el nombre
+#include "../../includes/header_mig.h" //modifica el nombre
 
-//cuenta la cantidad de argumentos WORD que quedan antes del PIPE
-//no deberian quedar redirecciones
+//Counts the amount of argument of WORD tokens before the PIPE
+//There should not be more redirections.
+//If a non-WORD token is encountered, handles the error and returns.
 static int	count_args(t_lexer *head, t_mshell *minishell)
 {
-	int		i;
+	int		amount;
 	t_lexer	*current;
 
-	i = 0;
+	amount = 0;
 	current = head;
 	if (!current)
-		return (handle_error(minishell, 4)); //ese necesario poner el return aca?
+		return (handle_error(minishell, 4));
 	while (current && current->token != PIPE)
 	{
 		if (current -> token != WORD)
-			return (handle_error(minishell, 4)); //ese necesario poner el return aca?
-		i++;
+			return (handle_error(minishell, 4));
+		amount++;
 		current = current->next;
 	}
-	return (i);
+	return (amount);
 }
 
-//busca los tokens hasta que no queden mas o haya un PIPE
-//si el token es uno de redireccion:
-//crea un nuevo nodo y lo a;ade a la nueva sub linked list con las redirecciones
-//lo elimina de la lexer_list original
-//cuenta la cantidad de argumentos restantes (que solo deberian ser WORD)
-//con calloc creo un array para almacenar todos los str (token WORD) + \0
-//los array llevan doble pointer
-
-static char	**built_args(t_mshell *minishell, int i)
+//Counts the number of WORD tokens in lexer_list.
+//Allocates memory with calloc for the arguments array.
+//Copies str from lexer L to the argument array, deleting nodes from lexer L.
+//Expands the first element of the array (builtin name).
+static char **built_args(t_mshell *minishell, int i)
 {
 	t_lexer	*current;
 	t_lexer	*next_node;
@@ -50,11 +47,9 @@ static char	**built_args(t_mshell *minishell, int i)
 	char	**arg_array;
 
 	arguments = count_args(minishell->lexer_list, minishell); //al nodo general le a;ade los token WORD
-	arg_array = calloc ((arguments + 1), sizeof(char *));
+	arg_array = calloc ((arguments + 1), sizeof(char*));
 	if (!arg_array)
-		return (handle_error(minishell, 0)); //ese necesario poner el return aca?
-	current = minishell->lexer_list; //devolvemos el puntero al primer elemento;
-	i = 0;
+		return (handle_error(minishell, 0));
 	while (i < arguments)
 	{
 		arg_array[i] = strdup(current->str);
@@ -63,27 +58,29 @@ static char	**built_args(t_mshell *minishell, int i)
 		i++;
 		current = next_node;
 	}
-	expanded_array = expander_builtins(minishell, arg_array); //expander
+	expanded_array = expander_builtins(minishell, arg_array);
 	return(expanded_array);
 }
 
+//Iterates over each node in the lexer_list until a PIPE token is found.
+//For each redirection token, creates and adds a new node to the list.
+//Deletes processed nodes from lexer_list and updates the current node.
+//Increments the number of redirections.
+//Sets the array of WORD-strings using built_args.
+//Assigns the built-in function name and pointer using builtins_handle
 static t_parser	*built_node(t_parser *commands, t_mshell *minishell)
 {
 	t_lexer	*current;
 	t_lexer	*next_node;
 	t_lexer	*node;
-	//int		arguments;
-	//char	**arg_array;
-	//int		i;
-	//char    **expanded_array;
 
 	current = minishell->lexer_list;
 	while (current && current->token != PIPE)
 	{
 		if (current->token != WORD)
 		{
-			node = lexer_new_node(strdup(current->next->str), current->token ); //(OK)crea un nodo para la nueva sub linked list con las redirecciones
-			lexer_add_last(&commands->redirections, node); //(OK) add el nodo a la sublinked list de redirecciones   (2)
+			node = lexer_new_node(strdup(current->next->str), current->token );
+			lexer_add_last(&commands->redirections, node);
 			next_node = current->next->next;
 			ft_delnode(current->next, &minishell->lexer_list);
 			ft_delnode(current, &minishell->lexer_list);
@@ -112,10 +109,13 @@ static t_parser	*built_node(t_parser *commands, t_mshell *minishell)
 	expanded_array = expander_builtins(minishell, arg_array); //expander   */
 	//commands->str = expanded_array;
 	commands->str = built_args(minishell, 0);
-	commands->builtins = builtins_handler(commands->str[0]); //asigna el nombre de la funcion y pointer del builtin
+	commands->builtins = builtins_handler(commands->str[0]);
 	return ;
 }
 
+//Iterates over each node in the lexer_list until it is empty.
+//For each simple command, creates and builds a new node.
+//If the token is a PIPE, increments pipes and deletes it from lexer_list.
 void	parser(t_mshell *minishell)
 {
 	t_parser	*node;
@@ -126,9 +126,8 @@ void	parser(t_mshell *minishell)
 	while (current->lexer_list)
 	{
 		node = parser_new_node(minishell);
-		built_node (node, minishell); //aca es donde le asigno a node las variables que faltan: redirections/ handle_builtins/ str
+		built_node (node, minishell);
 		parser_add_last(&minishell->commands, node);
-
 		if (current->lexer_list && current->lexer_list->token == PIPE)
 		{
 			minishell->pipes++;
