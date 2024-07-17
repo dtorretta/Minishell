@@ -86,7 +86,7 @@ static int error_check (t_mshell *minishell, t_parser *commands)
 	int i;
 	
 	i = 0;
-	if (commands->str[1] && commands->str[2]) //si tengo mas de 2
+	if (commands->str[1] && commands->str[2])
 		return(handle_error2(minishell, 1, NULL, commands->str));		
 	else if (commands->str[1])
 	{
@@ -118,7 +118,7 @@ int mini_export (t_mshell *minishell, t_parser *commands)
 	char *var_name;
 	
 	i = -1;
-	if(error_check(minishell, commands)) //success 0 . failure 1
+	if(error_check(minishell, commands))
 		return(EXIT_FAILURE);
 	if(!commands->str[1] || commands->str[1][0] == '\0') //deberia imprimir algo mas que el enviroment???????
 		mini_env(minishell, commands);
@@ -129,13 +129,7 @@ int mini_export (t_mshell *minishell, t_parser *commands)
 		{
 			if(check_coincidence(minishell, i, var_name, add_var) == 0)
 				return(EXIT_SUCCESS);	
-			// if(!ft_strncmp(minishell->envp[i], var_name, ft_strlen(var_name))) //buscar en el array envp si se encuentra la variable definida con export
-			// {
-			// 	coincidence(minishell, i, add_var);
-			// 	return(EXIT_SUCCESS);
-			// }
 		}
-		//free(temp); //si no lo encontro, entonces a;adirlo al final del array.  
 		temp = new_array(minishell->envp, add_var);
 		free_string_array(minishell->envp);		
 		minishell->envp = temp;

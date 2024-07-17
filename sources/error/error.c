@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 16:19:08 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/17 22:53:35 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/17 23:18:55 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ int	handle_error(t_mshell *data, int error)
 		"syntax error: wrong token handling\n",
 		"system error: failed to create child process\n",
 		"syntax error: not a valid builtin\n",
+		"system error: failed to create pipe\n",
 	};
 
 	message = error_message[error];
@@ -55,6 +56,19 @@ int	handle_error2(t_mshell *data, int error, char *str, char **array)
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
 		ft_putstr_fd(str, STDERR_FILENO);
 		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
+	}
+	reset_data(data);
+	return(EXIT_FAILURE);
+}
+
+int	handle_error3(t_mshell *data, int error, char *str)
+{
+	(void)data;
+
+	if (error == 1)
+	{
+		ft_putstr_fd(str, STDERR_FILENO);
+		ft_putendl_fd(": command not found", STDERR_FILENO);
 	}
 	reset_data(data);
 	return(EXIT_FAILURE);

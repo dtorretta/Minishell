@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 11:36:17 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/17 21:01:11 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/17 23:34:29 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,40 @@ void	execute_single_cmd(t_parser *cmd, t_mshell *data)
 	else if (pid == 0)
 		execute_command(expanded_cmds, data);
 	wait_for_child(data, pid);
+}
+
+//If there are multiple commands, creates a pipe to connect current and next.
+//Every time communication between two processes is needed using a pipe:
+// - Declare an array of two int to store the read and write ends of the pipe.
+// - Use the pipe() function to initialize the pipe.
+//If there is a PIPE token, spawns a child process.
+void	execute_pipe_cmd(t_mshell *minishell)
+{
+  	int		fd[2];
+	int		fd_prev;
+	t_parser *temp_commands;
+	
+	int i = 0;
+	temp_commands = minishell->commands;
+	fd_prev = STDIN_FILENO;
+	while (temp_commands)
+	{
+		temp_commands = call_expander(minishell, temp_commands); //MIGUE
+		if (temp_commands->next)
+		{
+			if(pipe(fd) == -1)
+				return (handle_error(minishell, 7));
+		}
+		send_heredoc(minishell, temp_commands); //MIGUE
+		ft_fork(minishell, temp_commands, fd, fd_prev); 
+		close(fd[1]);
+		if (temp_commands->prev)
+			close(fd_prev);
+		fd_prev = get_fd(minishell, fd, temp_commands);
+		temp_commands = temp_commands->next;
+	}
+	wait_childspid(minishell, minishell->pid);
+	return (EXIT_SUCCESS);  
 }
 
 //data->pipes + 1 = cfubre todos los procesos mientras que el +1 adicional es comúnmente utilizado para guardar un valor extra. Puede ser para propósitos de seguridad, alineación de memoria, o para almacenar un valor especial (como un PID extra o un valor sentinela).
