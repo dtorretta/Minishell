@@ -64,13 +64,8 @@ typedef struct s_mshell
 	char					*old_pwd;
 	int						pipes;
 	int						*pid;
-	int						in_cmd; // nuevo (creamos para señalar que hay un comando activo)
-<<<<<<< HEAD
-	int						exit_code;  //NUEVO
-=======
-	int						exit_code; // nuevo (creamos para señalar si el ultimo pipeline se ejecutó con o sin errores)
-	bool					heredoc;
->>>>>>> d03acbf431fb2e324eb144be8372243512ca1eec
+	int						in_cmd; //nuevo (creamos para señalar que hay un comando activo)
+	int						exit_code;  //nuevo (creamos para señalar si el ultimo pipeline se ejecutó con o sin errores)
 	bool					reset;
 }	t_mshell; //t_tools;
 
@@ -79,8 +74,8 @@ typedef struct s_parser
 	char					**str;
 	int						(*builtins)(t_mshell *, struct s_parser *); //Es un puntero a la funcion builtin que tiene 2 argumentos: Un puntero a t_mshell y Un puntero a t_parser
 	int						num_redirections;
-	char					*hd_file_name; //?
-	bool					heredoc; //BAJAR A LA OTRA ESTRUCTURA
+	char					*hd_file_name;
+	bool					heredoc;
 	t_lexer					*redirections;
 	struct s_parser			*next;
 	struct s_parser			*prev;
