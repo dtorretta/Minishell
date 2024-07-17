@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/header.h" //modifica el nombre
+#include "../../includes/header_mig.h" //modifica el nombre
 
 //el bash real hace distincion sobre si despues del exit viene un numero, una letra etc.
 //pero las instrucciones al decir que tenemos que implementar exit sin ninguna opcion, no agregue ese manejo de errores,
@@ -52,13 +52,11 @@ static int	is_num(char *num)
 //en bash cuando tenes ; deja de leer --> exit a;b --> bash: exit: a: numeric argument required (no lo agregue)
 int mini_exit(t_mshell *minishell, t_parser *commands)
 {
-	int exit_code;
-	
 	if (commands == NULL || minishell == NULL) 
 		return EXIT_FAILURE;  	
 	ft_putendl_fd("exit", STDOUT_FILENO);
 	if (!commands->str[1]) //si solo esta exit
-		exit_code = 0; 
+		minishell->exit_code = 0; 
 	else if (is_num(commands->str[1]) && commands->str[2]) //si hay varios argumentos --> error
 	{
 		ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
@@ -69,10 +67,10 @@ int mini_exit(t_mshell *minishell, t_parser *commands)
 		if (!is_num(commands->str[1])) //si algun caracter NO es numero //solo tiene en cuenta un + o - --> error // en bash cuando pasa esto sale del tipo bash, probar en el campus
 			return(handle_error2(minishell, 4, commands->str[1], NULL));
 		else //si solo son numeros
-			exit_code = ft_atoi(commands->str[1]);
+			minishell->exit_code = ft_atoi(commands->str[1]);
 	}	
 	free_minishell (minishell);
-	exit (exit_code); //finaliza el programa con un código de salida específico para el sistema operativo. Puede ser utilizado para determinar cómo terminó el programa
+	exit (minishell->exit_code); //finaliza el programa con un código de salida específico para el sistema operativo. Puede ser utilizado para determinar cómo terminó el programa
 	
 	//return (EXIT_SUCCESS); //nunca se va a ejecutar
 }
