@@ -1,6 +1,5 @@
-obj//parser/parser.o: sources//parser/parser.c \
-  sources//parser/../../includes/header_mig.h \
-  includes/../libft/includes/libft.h \
+obj//utils/free.o: sources//utils/free.c \
+  sources//utils/../../includes/header.h \
   /opt/homebrew/opt/readline/include/readline/readline.h \
   /opt/homebrew/opt/readline/include/readline/rlstdc.h \
   /opt/homebrew/opt/readline/include/readline/rltypedefs.h \
@@ -9,9 +8,7 @@ obj//parser/parser.o: sources//parser/parser.c \
   /opt/homebrew/opt/readline/include/readline/tilde.h \
   /opt/homebrew/opt/readline/include/readline/history.h
 
-sources//parser/../../includes/header_mig.h:
-
-includes/../libft/includes/libft.h:
+sources//utils/../../includes/header.h:
 
 /opt/homebrew/opt/readline/include/readline/readline.h:
 

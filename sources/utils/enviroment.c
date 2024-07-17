@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 19:10:18 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/01 22:27:22 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/17 20:44:13 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static int	set_pwd(char *env_var, char **pwd, int prefix_len)
 	return (*pwd != NULL);
 }
 
-void	get_pwd(t_mshell *data) //cambiar a void
+void	get_pwd(t_mshell *data)
 {
 	int	i;
 
@@ -47,6 +47,13 @@ char	*get_path(char **envp)
 	return (ft_substr(path_var + 5, 0, ft_strlen(path_var + 5)));
 }
 
+/*
+Processes the environment variables to extract and store the PATH variable.
+Splits the PATH string into an array of directory paths.
+Ensures that each path in the array ends with a forward slash (/).
+Stores the processed paths in the data structure for later use.
+Returns an error code indicating success or failure.
+*/
 int	handle_envp(t_mshell *data)
 {
 	char	*path;
