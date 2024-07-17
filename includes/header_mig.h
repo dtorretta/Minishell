@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:29:16 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/17 20:59:55 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/17 22:01:02 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,8 @@ int			mini_unset (t_mshell *minishell, t_parser *commands); //me costo un huevo 
 /*-Utils-*/
 
 void		print_array(char **array, int i);
+char	    **new_array(char **array, char *str);
+char	    *delete_quotes(char *str, t_mshell *minishell);
 
 /*******EXPANDER*******/
 

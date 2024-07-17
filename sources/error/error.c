@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 16:19:08 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/17 21:01:01 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/17 22:53:35 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	handle_error2(t_mshell *data, int error, char *str, char **array)
 	{
 		ft_putstr_fd("minishell: export: `", STDERR_FILENO);
 		if (error == 1)
-			print_array(array, 2); //que imprima del dos en adelante
+			print_array(array, 2);
 		else if (error == 2 || error == 4)
 			ft_putstr_fd(str, STDERR_FILENO);
 		ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
@@ -56,6 +56,6 @@ int	handle_error2(t_mshell *data, int error, char *str, char **array)
 		ft_putstr_fd(str, STDERR_FILENO);
 		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
 	}
-	//reset_data(data);
+	reset_data(data);
 	return(EXIT_FAILURE);
 }

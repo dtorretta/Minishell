@@ -14,22 +14,8 @@
 
 int	mini_pwd(t_mshell *minishell, t_parser *commands)
 {
-	int		i;
-	char	*pwd;
-
 	(void)commands;
-	i = 0;
-	while (minishell->envp[i])
-	{
-		if (!ft_strncmp(minishell->envp[i], "PWD=", 4))
-		{
-			pwd = ft_substr(minishell->envp[i], 4,
-					ft_strlen(minishell->envp[i]) - 4);
-			ft_putendl_fd(pwd, 1);
-			free (pwd);
-			return (EXIT_SUCCESS);
-		}
-		i++;
-	}
+	
+	ft_putendl_fd(minishell->pwd, 1);
 	return (EXIT_FAILURE);
 }

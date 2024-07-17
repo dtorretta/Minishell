@@ -23,7 +23,7 @@
 //unset zzz / "zzz" / 'zzz' (ok)
 //unset zzz=abc / zzz= / zzzz / ZZZZ (NO)
 
-static char *check_quote(char *str) //no borrar, es distinta a la otra
+static char *check_quote(char *str, t_mshell *minishell) //no borrar, es distinta a la otra
 {
 	int i;
 	char *temp;
@@ -35,13 +35,13 @@ static char *check_quote(char *str) //no borrar, es distinta a la otra
 		if(str[i] == '=')
 		{
 			substr = ft_substr(str, 0, i);
-			temp = delete_quotes(substr); //si uno todo en la mism a linea funciona pero da memory leaks
+			temp = delete_quotes(substr, minishell); //si uno todo en la mism a linea funciona pero da memory leaks
 			free(substr);
 			return(temp);
 		}
 		i++;
 	}
-	temp = delete_quotes(str); //si no hay = de todos modos hay que darle valor a var name
+	temp = delete_quotes(str, minishell); //si no hay = de todos modos hay que darle valor a var name
 	return(temp);
 }
 
@@ -78,26 +78,16 @@ int mini_unset (t_mshell *minishell, t_parser *commands)
 	i = -1;
 	if(commands->str[1])
 	{
-		unset_var = check_quote(commands->str[1]);
+		unset_var = check_quote(commands->str[1], minishell);
 		while(minishell->envp[++i])
 		{
-			env_var = check_quote(minishell->envp[i]); //separa de env pwd=lalal en solo pwd //revisar nombre funcion
+			env_var = check_quote(minishell->envp[i], minishell); //separa de env pwd=lalal en solo pwd //revisar nombre funcion
 			if(!ft_strncmp(env_var, unset_var, ft_strlen(unset_var))) //buscar en el array envp si se encuentra la variable definida con export
 			{
 				temp = newarray(minishell->envp, env_var);
 				free_string_array(minishell->envp);
 				minishell->envp = temp;
-				if(!strncmp("PWD", unset_var, ft_strlen(unset_var)))
-				{
-				    free(minishell->pwd);
-				    minishell->pwd = NULL;
-                }
-                if(!strncmp("OLDPWD", unset_var, ft_strlen(unset_var)))
-				{
-				    free(minishell->old_pwd);
-				    minishell->old_pwd = NULL;
-                }
-                free(env_var);
+				free(env_var);
 				free(unset_var);
 				return(EXIT_SUCCESS);
 			}

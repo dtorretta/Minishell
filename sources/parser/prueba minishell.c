@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../includes/header.h"
+#include "../../includes/header_mig.h"
 
 # define MAX_EXP_SIZE 1024 // buffer for expanded variables "expander.c"
 
@@ -588,7 +588,7 @@ char *delete_quotes (char *str) //ver si la tiene migue
 	i = 0;
 	j = 0;
 	len = strlen(str);
-	result = calloc((len + 1), sizeof(char *));
+	result = calloc((len + 1), sizeof(char));
 	while (i < len)
 	{
 		if (str[i] != '\'' && str[i] != '\"')

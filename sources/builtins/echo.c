@@ -25,39 +25,19 @@ int	mini_echo(t_mshell *minishell, t_parser *commands)
 	i = 1;
 	if (commands->str)
 	{
-		if (!ft_strncmp (commands->str[1], "-n", 3)) //esta bien 3? incluye el caracter nulo?
+		if (!ft_strncmp (commands->str[1], "-n", 3))
 		{
-			while (commands->str[1] && !ft_strncmp (commands->str[1], "-n", 3)) //puede haber mas de 1
-				i++;//pasa al sigueinte elemento del array
-			temp = delete_quotes (commands->str[i]); //eliminar ""
+			while (commands->str[1] && !ft_strncmp (commands->str[1], "-n", 3))
+				i++;
+			temp = delete_quotes (commands->str[i], minishell);
 			ft_putstr_fd(temp, 1);
 		}
 		else
 		{
-			temp = delete_quotes (commands->str[i]); //eliminar ""
+			temp = delete_quotes (commands->str[i], minishell);
 			ft_putendl_fd(temp, 1);
 		}
 	}
 	free(temp);
 	return (EXIT_SUCCESS);
 }
-
-//HACER QUE IMPRIMA TOO EL ARRAY
-
-/*
-- echo "hello" "world" //chequear en codigo migue si esto queda en nhodos separados
-hello world
-
-- echo "hello""world"
-helloworld
-
-- echo -n -n-n hola
--n-n hola
-
-- echo #hola
-- NADA
-
-- echo "#hola"
-#hola
-
-*/

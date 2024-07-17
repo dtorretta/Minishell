@@ -12,22 +12,9 @@
 
 #include "../../includes/header_mig.h" //modifica el nombre
 
-//cd sin ningún argumento cambia el directorio actual al directorio home
-//home esta en envp
-//podemos usar la funcion chdir(ruta).
-//chdir es una funcion int. retorna 0 si salio todo bien
-
-// cd - cambia el directorio actual (PWD) al directorio anterior (OLDPWD)
-
-//cuando cambiamos el directorio hay que actualizar el array donde tenemos pwd y oldpwd
-//podemos usar la funcion getcwd --> pwd = getcwd(NULL, 0);
-//o podemos volver a correr el while loop que buscaba pwd y oldpwd
-
 //falta cd ..  ?
 
-
-
-//reemplazo PWD y OLDPWD por sus nuevas rutas
+//Rewrites the PWD and OLDPWD variables in the t_mshell struct
 static void	change_pwd(t_mshell *minishell)
 {
 	char	*temp;
@@ -39,7 +26,7 @@ static void	change_pwd(t_mshell *minishell)
 	minishell->pwd = getcwd(NULL, 0);
 }
 
-//reescribe en el array envp PWD y OLDPWD.
+//Rewrites the PWD and OLDPWD variables in the envp array.
 static void	change_envp(t_mshell *minishell)
 {
 	int		i;
@@ -64,52 +51,50 @@ static void	change_envp(t_mshell *minishell)
 	}
 }
 
-//a esta funcion solo entra si los argumentos son cd - o solo cd
+//Searchs in the env the variable HOME= or OLDPWD=
 static int	change_directory(char **env, char *str)
 {
 	int	i;
 	char *new;
-	char *temp;
 
-	i = 0;
-	temp = ft_strjoin(str, "=");
-	while (env[i])
+	i = -1;
+	new = NULL;
+	while (env[++i])
 	{
-		if (ft_strncmp(env[i], temp, ft_strlen(temp)) == 0)
-			new = ft_strdup (env[i] + ft_strlen(temp));
-		i++;
+		if (ft_strncmp(env[i], str, ft_strlen(str)) == 0)
+		{	
+			new = ft_strdup (env[i] + ft_strlen(str));
+			break;
+		}
 	}
 	if(chdir(new) != 0)
 	{
 		ft_putstr_fd(str, 2);
 		ft_putendl_fd(" not set", 2);
-		free(temp);
 		free(new);
 		return (1);
 	}
-	free(temp);
 	free(new);
 	return (0);
 }
 
-//acepta 1 solo argumento que puede ser .. / - / nada / path
+//CD only acepts one additional argument, if there are more, error.
+//if no arguments, changes directoy to HOME.
+//if '-' argument, changes directoy to the OLD PWD.
 int	mini_cd(t_mshell *minishell, t_parser *commands)
 {
-	if (commands->str[1] && commands->str[2]) //si hay mas de 2 argumentos (si no agrego str[1] cuando solo tengo un argumento me da error de jump)
+	if (commands->str[1] && commands->str[2])
 	{
 		ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
-
-	else if (!commands->str[1]) //si no hay argumentos
-		change_directory(minishell->envp, "HOME");
-
+	else if (!commands->str[1])
+		change_directory(minishell->envp, "HOME=");
 	else if (!ft_strncmp(commands->str[1], "-", 1))
-		change_directory(minishell->envp, "OLDPWD");
-
+		change_directory(minishell->envp, "OLDPWD=");
 	else
 	{
-		if (chdir(commands->str[1]) != 0) //error en el cambio de directorio
+		if (chdir(commands->str[1]) != 0)
 		{
 			ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
 			ft_putstr_fd(commands->str[1], STDERR_FILENO);

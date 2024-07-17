@@ -33,7 +33,7 @@ char	**new_array(char **array, char *str)
 		i++;
 	new_array = ft_calloc((i + 2), sizeof(char *));
 	if (!new_array)
-		return (NULL); //check
+		return (NULL); //a;adir el handle error
 	i = 0;
 
 	while (array[i])
@@ -45,7 +45,7 @@ char	**new_array(char **array, char *str)
 	return (new_array);
 }
 
-char	*delete_quotes(char *str) //ver si la tiene migue
+char	*delete_quotes(char *str, t_mshell *minishell)
 {
 	char	*result;
 	int		len;
@@ -55,7 +55,9 @@ char	*delete_quotes(char *str) //ver si la tiene migue
 	i = 0;
 	j = 0;
 	len = ft_strlen(str);
-	result = ft_calloc((len + 1), sizeof(char *));
+	result = ft_calloc((len + 1), sizeof(char));
+	if (!result)
+		return (handle_error(minishell, 0));
 	while (i < len)
 	{
 		if (str[i] != '\'' && str[i] != '\"')

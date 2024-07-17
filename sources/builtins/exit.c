@@ -21,9 +21,9 @@ void free_minishell (t_mshell *minishell) //lo necesito para alguna otra funcion
 	free_lexer_list(minishell->lexer_list);
 	free_string_array(minishell->paths);
 	free_string_array(minishell->envp);
-	if (minishell->pwd) 
+	if (minishell->pwd)
 	    free(minishell->pwd);
-	if (minishell->old_pwd) 
+	if (minishell->old_pwd)
 	    free(minishell->old_pwd);
 	if(minishell->pid)
 		free(minishell->pid);
