@@ -122,6 +122,7 @@ void	parser(t_mshell *minishell)
 
 	current = minishell;
 	minishell->commands = NULL;
+	
 	while (current->lexer_list)
 	{
 		node = parser_new_node(minishell);
