@@ -12,40 +12,40 @@
 
 #include "../../includes/header.h" //modifica el nombre
 
-void print_array(char **array, int i)
+void	print_array(char **array, int i)
 {
 	while (array[i])
 	{
 		ft_putstr_fd(array[i], STDERR_FILENO);
 		i++;
-		if(array[i])
-			write(2, " ", 1);        
+		if (array[i])
+			write(2, " ", 1);
 	}
 }
 
-char **new_array(char **array, char *str)
+char	**new_array(char **array, char *str)
 {
-	char **new_array;
-	int i;
-	
+	char	**new_array;
+	int		i;
+
 	i = 0;
-	while(array[i])
+	while (array[i])
 		i++;
-	new_array = ft_calloc((i + 2), sizeof(char*));
+	new_array = ft_calloc((i + 2), sizeof(char *));
 	if (!new_array)
 		return (NULL); //check
 	i = 0;
-	
-	while(array[i])
+
+	while (array[i])
 	{
 		new_array[i] = ft_strdup(array[i]);
 		i++;
 	}
 	new_array[i] = str;
-	return(new_array);
+	return (new_array);
 }
 
-char *delete_quotes (char *str) //ver si la tiene migue
+char	*delete_quotes(char *str) //ver si la tiene migue
 {
 	char	*result;
 	int		len;

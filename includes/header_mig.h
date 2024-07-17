@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   header_mig.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:29:16 by miguandr          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/07/17 20:08:42 by marvin           ###   ########.fr       */
+=======
+/*   Updated: 2024/07/17 20:06:24 by miguandr         ###   ########.fr       */
+>>>>>>> d03acbf431fb2e324eb144be8372243512ca1eec
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +23,7 @@
 # include <stdlib.h>
 # include <stdbool.h>
 # include <signal.h>
+# include <fcntl.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
@@ -60,7 +65,12 @@ typedef struct s_mshell
 	int						pipes;
 	int						*pid;
 	int						in_cmd; // nuevo (creamos para señalar que hay un comando activo)
+<<<<<<< HEAD
 	int						exit_code;  //NUEVO
+=======
+	int						exit_code; // nuevo (creamos para señalar si el ultimo pipeline se ejecutó con o sin errores)
+	bool					heredoc;
+>>>>>>> d03acbf431fb2e324eb144be8372243512ca1eec
 	bool					reset;
 }	t_mshell; //t_tools;
 
@@ -120,9 +130,15 @@ void		parser(t_mshell *minishell);
 t_parser	*parser_new_node(t_mshell *minishell);
 void		parser_add_last(t_parser **head, t_parser *new);
 void		ft_delnode(t_lexer *temp, t_lexer **head);
+<<<<<<< HEAD
 int	        (*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands);
 char	    *expand_builtin(t_mshell *data, const char *str);
 char	    **expander_builtins(t_mshell *data, char **str);
+=======
+int			(*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands);
+char		*expand_builtin(t_mshell *data, const char *str);
+char		**expander_builtins(t_mshell *data, char **str);
+>>>>>>> d03acbf431fb2e324eb144be8372243512ca1eec
 
 /*******FREE*******/
 
@@ -143,19 +159,42 @@ int			mini_unset (t_mshell *minishell, t_parser *commands); //me costo un huevo 
 
 /*-Utils-*/
 
-void print_array(char **array, int i);
+void		print_array(char **array, int i);
 
 /*******EXPANDER*******/
 
-char		**expander(t_mshell *data, char **str);
-
-/*-Utils-*/
-char		*remove_single_quote(char *str);
+void		expander(t_mshell *data, char **str);
+char		*expand_str(t_mshell *data, char *str);
+char		*handle_inside_quote(t_mshell *data, char *s, int *i, char *result);
+char		*expand_double_quote(t_mshell *data, char *str);
+/*-Variables-*/
 char		*get_variable_name(const char *str);
 char		*get_variable_value(t_mshell *data, char *var_name);
 char		*expand_variable(t_mshell *data, const char *str, int *index);
-char		*handle_inside_quote(t_mshell *data, char *str, int *i, char *result);
-char		*expand_double_quote(t_mshell *data, char *str);
+char		*get_exit_status(t_mshell *data);
+/*-Utils-*/
+char		*remove_single_quote(char *str);
+char		*single_quote_helper(char *str);
+char		*expand_double_quote_helper(t_mshell *data, char *str);
+char		*expand_variable_helper(t_mshell *data, char *str);
+
+/*******EXECUTOR*******/
+
+int			executor(t_mshell *data);
+void		execute_single_cmd(t_parser *cmd, t_mshell *data);
+t_parser	*call_expander(t_mshell *data, t_parser *cmd);
+/*-Single Command Execution-*/
+void		execute_command(t_parser *cmd, t_mshell *data);
+int			find_command(t_parser *cmd, t_mshell *data);
+int			check_redirections(t_parser *cmd);
+int			check_infile(char *file);
+int			check_outfile(t_lexer *redirections);
+/*-Single Command Utils-*/
+int			is_main_process_builtin(int (*builtin)(t_mshell *, t_parser *));
+void		wait_for_child(t_mshell *data, int pid);
+char		**normalize_str_array(char **array);
+char		*make_single_str(char **array);
+int			check_append_outfile(t_lexer *redirections);
 
 /*******ERROR HANDLING*******/
 

@@ -18,8 +18,8 @@
 //bash accept multiples -n
 int	mini_echo(t_mshell *minishell, t_parser *commands)
 {
-	int	i;
-	char *temp;
+	int		i;
+	char	*temp;
 
 	(void) minishell;
 	i = 1;

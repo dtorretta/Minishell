@@ -12,7 +12,7 @@
 
 #include "../../includes/header.h" //modifica el nombre
 
-//cd sin ningún argumento cambia el directorio actual al directorio home 
+//cd sin ningún argumento cambia el directorio actual al directorio home
 //home esta en envp
 //podemos usar la funcion chdir(ruta).
 //chdir es una funcion int. retorna 0 si salio todo bien
@@ -30,8 +30,8 @@
 //reemplazo PWD y OLDPWD por sus nuevas rutas
 static void	change_pwd(t_mshell *minishell)
 {
-	char *temp;
-	
+	char	*temp;
+
 	temp = ft_strdup(minishell->pwd);
 	free(minishell->old_pwd);
 	minishell->old_pwd = temp;
@@ -42,24 +42,24 @@ static void	change_pwd(t_mshell *minishell)
 //reescribe en el array envp PWD y OLDPWD.
 static void	change_envp(t_mshell *minishell)
 {
-	int	i;
-	char *temp;
+	int		i;
+	char	*temp;
 
 	i = 0;
 	while (minishell->envp[i])
 	{
 		if (ft_strncmp(minishell->envp[i], "PWD=", 4) == 0)
-		{	
+		{
 			temp = ft_strjoin("PWD=", minishell->pwd);
 			free(minishell->envp[i]);
 			minishell->envp[i] = temp;
-		}	
+		}
 		if (ft_strncmp(minishell->envp[i], "OLDPWD=", 7) == 0)
-		{	
+		{
 			temp = ft_strjoin("OLDPWD=", minishell->old_pwd);
 			free(minishell->envp[i]);
 			minishell->envp[i] = temp;
-		}	
+		}
 		i++;
 	}
 }
@@ -93,20 +93,20 @@ static int	change_directory(char **env, char *str)
 }
 
 //acepta 1 solo argumento que puede ser .. / - / nada / path
-int mini_cd (t_mshell *minishell, t_parser *commands)
-{  
-	if(commands->str[1] && commands->str[2]) //si hay mas de 2 argumentos (si no agrego str[1] cuando solo tengo un argumento me da error de jump)
+int	mini_cd(t_mshell *minishell, t_parser *commands)
+{
+	if (commands->str[1] && commands->str[2]) //si hay mas de 2 argumentos (si no agrego str[1] cuando solo tengo un argumento me da error de jump)
 	{
 		ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
-	
+
 	else if (!commands->str[1]) //si no hay argumentos
 		change_directory(minishell->envp, "HOME");
-		
-	else if (!ft_strncmp(commands->str[1], "-", 1)) 
+
+	else if (!ft_strncmp(commands->str[1], "-", 1))
 		change_directory(minishell->envp, "OLDPWD");
-	
+
 	else
 	{
 		if (chdir(commands->str[1]) != 0) //error en el cambio de directorio
@@ -119,5 +119,5 @@ int mini_cd (t_mshell *minishell, t_parser *commands)
 	}
 	change_pwd(minishell);
 	change_envp (minishell);
-	return(0);
+	return (0);
 }

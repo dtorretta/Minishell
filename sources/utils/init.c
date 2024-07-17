@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 21:10:52 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/14 18:58:08 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/16 14:02:45 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int	init_data(t_mshell *data)
 	data->pid = NULL;
 	data->heredoc = false;
 	data->pipes = 0;
+	data->last_exit_status = 0;
 	//g_global.stop_heredoc = 0;
 	//g_global.in_cmd = 0;
 	//g_global.in_heredoc = 0;

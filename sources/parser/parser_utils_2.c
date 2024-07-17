@@ -38,7 +38,7 @@ int	(*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands)
 		if (str && !ft_strncmp(builtins_array[i][0], str, ft_strlen(builtins_array[i][0])))
 		{
 			if (ft_strlen(str) != ft_strlen(builtins_array[i][0]))
-				return (handle_error(minishell, 5));
+				return (handle_error(minishell, 6));
 			return (builtins_array[i][1]);
 		}
 		else
@@ -57,13 +57,13 @@ char	*expand_builtin(t_mshell *data, const char *str)
 {
 	char	*var_name;
 	char	*var_value;
-	char    *temp;
-	char    *expanded_str;
-	
-	int i = 0;	
-	while(str[i])
+	char	*temp;
+	char	*expanded_str;
+
+	int i = 0;
+	while (str[i])
 	{
-		if(str[i]=='$')
+		if (str[i] == '$')
 		{
 			var_name = ft_substr(str, 0, i);
 			i++;

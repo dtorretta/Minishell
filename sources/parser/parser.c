@@ -45,8 +45,8 @@ static char **built_args(t_mshell *minishell, int i)
 	int     arguments;
 	char    **expanded_array;
 	char	**arg_array;
-	
-	arguments = count_args(minishell->lexer_list, minishell);
+
+	arguments = count_args(minishell->lexer_list, minishell); //al nodo general le a;ade los token WORD
 	arg_array = calloc ((arguments + 1), sizeof(char*));
 	if (!arg_array)
 		return (handle_error(minishell, 0));
@@ -73,13 +73,13 @@ static void built_node(t_parser *commands, t_mshell *minishell)
 	t_lexer	*current;
 	t_lexer	*next_node;
 	t_lexer	*node;
-	
+
 	current = minishell->lexer_list;
 	while (current && current->token != PIPE)
 	{
 		if (current->token != WORD)
 		{
-			node = lexer_new_node(strdup(current->next->str), current->token ); 
+			node = lexer_new_node(strdup(current->next->str), current->token );
 			lexer_add_last(&commands->redirections, node);
 			next_node = current->next->next;
 			ft_delnode(current->next, &minishell->lexer_list);
@@ -90,6 +90,24 @@ static void built_node(t_parser *commands, t_mshell *minishell)
 		else
 			current = current->next;
 	}
+	/*arguments = count_args(minishell->lexer_list, minishell); //al nodo general le a;ade los token WORD
+	arg_array = calloc ((arguments + 1), sizeof(char*));
+	if (!arg_array)
+		return (handle_error(minishell, 0)); //ese necesario poner el return aca?
+
+	current = minishell->lexer_list; //devolvemos el puntero al primer elemento;
+	i = 0;
+	while (i < arguments)
+	{
+		arg_array[i] = strdup(current->str);
+		next_node = current->next;
+		ft_delnode(current, &minishell->lexer_list);
+		i++;
+		current = next_node;
+	}
+
+	expanded_array = expander_builtins(minishell, arg_array); //expander   */
+	//commands->str = expanded_array;
 	commands->str = built_args(minishell, 0);
 	commands->builtins = builtins_handler(commands->str[0]);
 }
