@@ -6,12 +6,47 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 11:36:17 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/17 15:54:49 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/17 20:25:14 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/header_mig.h"
 
+t_parser	*call_expander(t_mshell *data, t_parser *cmd)
+{
+	t_lexer	*start;
+
+	expander(data, cmd->str);
+	start = cmd->redirections;
+	while (cmd->redirections)
+	{
+		if (cmd->redirections->token != HERE_DOC)
+			cmd->redirections->str = expand_str(data, cmd->redirections->str);
+		cmd->redirections = cmd->redirections->next;
+	}
+	cmd->redirections = start;
+	return (cmd);
+}
+
+void	execute_single_cmd(t_parser *cmd, t_mshell *data)
+{
+	t_parser	*expanded_cmds;
+	pid_t		pid;
+
+	expanded_cmds = call_expander(data, cmd);
+	if (cmd->builtins && is_main_process_builtin(cmd->builtins))
+	{
+		data->exit_code = cmd->builtins(data, cmd);
+		return ;
+	}
+	//send_heredoc(data, cmd);
+	pid = fork();
+	if (pid < 0)
+		handle_error(data, 5);
+	else if (pid == 0)
+		execute_command(expanded_cmds, data);
+	wait_for_child(data, pid);
+}
 
 //data->pipes + 1 = cfubre todos los procesos mientras que el +1 adicional es comúnmente utilizado para guardar un valor extra. Puede ser para propósitos de seguridad, alineación de memoria, o para almacenar un valor especial (como un PID extra o un valor sentinela).
 //data->pid sera un array de enteros para los pid de cada proceso + 1 espacio extra
