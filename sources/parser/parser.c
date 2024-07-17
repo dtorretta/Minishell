@@ -41,16 +41,16 @@ static int	count_args(t_lexer *head, t_mshell *minishell)
 //con calloc creo un array para almacenar todos los str (token WORD) + \0
 //los array llevan doble pointer
 
-static char **built_args(t_mshell *minishell, int i)
+static char	**built_args(t_mshell *minishell, int i)
 {
 	t_lexer	*current;
 	t_lexer	*next_node;
 	int		arguments;
-	char    **expanded_array;
+	char	**expanded_array;
 	char	**arg_array;
-	
+
 	arguments = count_args(minishell->lexer_list, minishell); //al nodo general le a;ade los token WORD
-	arg_array = calloc ((arguments + 1), sizeof(char*));
+	arg_array = calloc ((arguments + 1), sizeof(char *));
 	if (!arg_array)
 		return (handle_error(minishell, 0)); //ese necesario poner el return aca?
 	current = minishell->lexer_list; //devolvemos el puntero al primer elemento;
@@ -108,7 +108,7 @@ static t_parser	*built_node(t_parser *commands, t_mshell *minishell)
 		i++;
 		current = next_node;
 	}
-	
+
 	expanded_array = expander_builtins(minishell, arg_array); //expander   */
 	//commands->str = expanded_array;
 	commands->str = built_args(minishell, 0);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 11:36:17 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/14 19:11:59 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/17 15:54:49 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ int	executor(t_mshell *data)
 {
 	signal(SIGQUIT, handle_ctrl_backslash);
 	data->in_cmd = 1; //ver si necesitamos esto
-	if (data-> pipes == 0) // YA LO AGREGUE EN EL PARSER
-		execute_single_cmd(data->commands, data); // (migue) ver si necesitamos crear simple_cmds o si cambiamos la logica - (dani) tenemos la misma variable pero con el nombre commands en vez de simple_cmds
+	if (data-> pipes == 0)
+		execute_single_cmd(data->commands, data);
 	else //(dani's part)
 	{
 		data->pid = (int *)ft_calloc(data->pipes + 2, sizeof(int));

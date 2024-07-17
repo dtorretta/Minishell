@@ -38,7 +38,7 @@ int	(*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands)
 	};
 	int	i;
 	char	*expanded_str;
-	
+
 	i = 0;
 	while (i < 7)
 	{
@@ -59,13 +59,13 @@ char	*expand_builtin(t_mshell *data, const char *str)
 {
 	char	*var_name;
 	char	*var_value;
-	char    *temp;
-	char    *expanded_str;
-	
-	int i = 0;	
-	while(str[i])
+	char	*temp;
+	char	*expanded_str;
+
+	int i = 0;
+	while (str[i])
 	{
-		if(str[i]=='$')
+		if (str[i] == '$')
 		{
 			var_name = ft_substr(str, 0, i);
 			i++;
