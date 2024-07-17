@@ -1402,7 +1402,8 @@ int main(int argc, char **argv, char **env)
     printf("\n************final antes del execute****************\n"); //BORRAR
     print_parser_list(minishell->commands);//BORRAR
     
-    
+    printf("\n************PAAAAATH****************\n"); //BORRAR
+    print_string_array(minishell->paths);
     
     //printf("\n************COMMANDS TESTERS****************\n"); //BORRAR
     // mini_echo(minishell, minishell->commands);
