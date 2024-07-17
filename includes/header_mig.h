@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:29:16 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/14 18:56:38 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/17 20:08:42 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ typedef struct s_mshell
 	int						pipes;
 	int						*pid;
 	int						in_cmd; // nuevo (creamos para señalar que hay un comando activo)
-	bool					heredoc;
+	int						exit_code;  //NUEVO
 	bool					reset;
 }	t_mshell; //t_tools;
 
@@ -70,6 +70,7 @@ typedef struct s_parser
 	int						(*builtins)(t_mshell *, struct s_parser *); //Es un puntero a la funcion builtin que tiene 2 argumentos: Un puntero a t_mshell y Un puntero a t_parser
 	int						num_redirections;
 	char					*hd_file_name; //?
+	bool					heredoc; //BAJAR A LA OTRA ESTRUCTURA
 	t_lexer					*redirections;
 	struct s_parser			*next;
 	struct s_parser			*prev;
@@ -119,7 +120,7 @@ void		parser(t_mshell *minishell);
 t_parser	*parser_new_node(t_mshell *minishell);
 void		parser_add_last(t_parser **head, t_parser *new);
 void		ft_delnode(t_lexer *temp, t_lexer **head);
-int			(*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands);
+int	        (*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands);
 char	    *expand_builtin(t_mshell *data, const char *str);
 char	    **expander_builtins(t_mshell *data, char **str);
 

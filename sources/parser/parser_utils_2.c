@@ -10,23 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/header.h" //modifica el nombre
+#include "../../includes/header_mig.h" //modifica el nombre
 
-//DEBERIMOS ARGEGAR UN CONTROL QUE NO PERMITA PONER COMADOS COMO LS?
-
-//void * es un tipo de dato especial que se utiliza como un "tipo genérico" o "tipo de puntero genérico". Esto significa que puede apuntar a cualquier tipo de dato
-// puede apuntar a cualquier cosa: números, caracteres, matrices, estructuras o incluso funciones
-//Al utilizar void *, el array puede contener punteros a funciones de diferentes tipos de retorno.
-//Cada elemento de la matriz commands_array es una combinación de una cadena (char*) y un puntero a una función.
-
-//builtins_handler es una funcion que toma un argumento (char *str) y devuelve un puntero a una funcion que toma dos argumentos (t_mshell *minishell) & (t_parser *commands)
-//es una función que, cuando se llama con un argumento char *str, devuelve un puntero a otra función.
-//La función devuelta toma dos argumentos (ambos punteros a estructuras) y devuelve un entero
-
+//It takes a string argument str and returns a function pointer that accepts 
+//two arguments: t_mshell *minishell and t_parser *commands
+//Checks if the input string matches a built-in command name.
+//If matched, verifies that the lengths of the strings are equal to avoid 
+//partial matches like "echoo", and returns the function pointer for the 
+//matched built-in command.
+//If no match is found, returns NULL.
 int	(*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands)
 {
-	//el puntero minishel y commands no se usa ahora, si no que es necesario dentro de las funciones
-	// ver si puedo pasar como parametro direecto el string
 	static void *builtins_array [7][2] = {
 		{"echo", mini_echo},
 		{"cd", mini_cd},
@@ -37,16 +31,14 @@ int	(*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands)
 		{"exit", mini_exit},
 	};
 	int	i;
-	char	*expanded_str;
 	
 	i = 0;
 	while (i < 7)
 	{
 		if (str && !ft_strncmp(builtins_array[i][0], str, ft_strlen(builtins_array[i][0])))
 		{
-			if (ft_strlen(str) != ft_strlen(builtins_array[i][0])) //ejemplo si tengo echoo.
-				//add error y ver si contiene un return
-				return(NULL);
+			if (ft_strlen(str) != ft_strlen(builtins_array[i][0]))
+				return (handle_error(minishell, 5));
 			return (builtins_array[i][1]);
 		}
 		else
@@ -55,6 +47,12 @@ int	(*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands)
 	return (NULL);
 }
 
+//Searches the $ in the string.
+//Extracts the variable name up to the $.
+//Copies the remainder of the string after the $.
+//var_value --> searches in the env the value of the variable to expand.
+//Joins the variable name and value into a single string.
+//Returns the expanded string if successful, otherwise returns NULL.
 char	*expand_builtin(t_mshell *data, const char *str)
 {
 	char	*var_name;
@@ -84,6 +82,9 @@ char	*expand_builtin(t_mshell *data, const char *str)
 		return (NULL);
 }
 
+//Checks if the first string in the array contains a $.
+//If found, attempts to expand the variable.
+//If it is successful, replaces the original string with the expanded variable.
 char	**expander_builtins(t_mshell *data, char **str)
 {
 	char	*expanded_str;

@@ -42,7 +42,7 @@ static char **built_args(t_mshell *minishell, int i)
 {
 	t_lexer	*current;
 	t_lexer	*next_node;
-	int		arguments;
+	int     arguments;
 	char    **expanded_array;
 	char	**arg_array;
 	
@@ -68,7 +68,7 @@ static char **built_args(t_mshell *minishell, int i)
 //Increments the number of redirections.
 //Sets the array of WORD-strings using built_args.
 //Assigns the built-in function name and pointer using builtins_handle
-static t_parser	*built_node(t_parser *commands, t_mshell *minishell)
+static void built_node(t_parser *commands, t_mshell *minishell)
 {
 	t_lexer	*current;
 	t_lexer	*next_node;
@@ -92,7 +92,6 @@ static t_parser	*built_node(t_parser *commands, t_mshell *minishell)
 	}
 	commands->str = built_args(minishell, 0);
 	commands->builtins = builtins_handler(commands->str[0]);
-	return ;
 }
 
 //Iterates over each node in the lexer_list until it is empty.
@@ -118,12 +117,12 @@ void	parser(t_mshell *minishell)
 		//current = minishell; //es necesario??? parece que no
 	}
 
-    /*************FREES**********************/
-    //no hay que ponerlo ahora, es solo a fin de chequeo de leaks
-    //free_parser_list(minishell->commands);
-    // if(minishell->envp)
-    //     free_string_array(minishell->envp);
-    //free(minishell);
+	/*************FREES**********************/
+	//no hay que ponerlo ahora, es solo a fin de chequeo de leaks
+	//free_parser_list(minishell->commands);
+	// if(minishell->envp)
+	//     free_string_array(minishell->envp);
+	//free(minishell);
 
 
 	//free_string_array MIGUE YA TIENE ESTA FUNCION EN LIBFT
