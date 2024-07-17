@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 19:45:01 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/17 20:05:36 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/17 22:01:54 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int	find_command(t_parser *cmd, t_mshell *data)
 	char	**normalize_str;
 
 	i = 0;
-	normalize_str = normalize_str_array(cmd->str);
+	normalize_str = normalize_str_array(cmd->str, data);
 	if (!access(normalize_str[0], F_OK))
 		execve(normalize_str[0], normalize_str, data->envp);
 	while (data->paths[i])

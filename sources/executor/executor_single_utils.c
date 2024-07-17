@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 19:50:18 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/17 19:51:04 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/17 22:02:32 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	check_append_outfile(t_lexer *redirections)
 	return (open(redirections->str, flags, 0644));
 }
 
-char	*make_single_str(char **array)
+char	*make_single_str(char **array, t_mshell *data)
 {
 	char	*result;
 	int		total_len;
@@ -36,7 +36,7 @@ char	*make_single_str(char **array)
 	total_len = ft_arraylen(array);
 	result = (char *)malloc(total_len + 1);
 	if (!result)
-		return (NULL);
+		handle_error(data, 0);
 	while (array[i])
 	{
 		ft_strcpy(result + j, array[i]);
@@ -49,12 +49,12 @@ char	*make_single_str(char **array)
 	return (result);
 }
 
-char	**normalize_str_array(char **array)
+char	**normalize_str_array(char **array, t_mshell *data)
 {
 	char	*joined_str;
 	char	**updated_array;
 
-	joined_str = make_single_str(array);
+	joined_str = make_single_str(array, data);
 	ft_free_array(array);
 	updated_array = ft_split(joined_str, ' ');
 	free(joined_str);

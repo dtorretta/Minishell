@@ -6,13 +6,13 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 20:26:59 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/16 21:19:26 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/17 22:21:53 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/header_mig.h"
 
-char	*remove_single_quote(char *str)
+char	*remove_single_quote(char *str, t_mshell *data)
 {
 	char	*result;
 	int		len;
@@ -24,7 +24,7 @@ char	*remove_single_quote(char *str)
 	len = ft_strlen(str);
 	result = ft_calloc(len + 1, sizeof(char));
 	if (!result)
-		return (NULL);
+		handle_error(data, 0);
 	while (i < len)
 	{
 		if (str[i] != '\'')
@@ -34,11 +34,11 @@ char	*remove_single_quote(char *str)
 	return (result);
 }
 
-char	*single_quote_helper(char *str)
+char	*single_quote_helper(char *str, t_mshell *data)
 {
 	char	*result;
 
-	result = remove_single_quote(str);
+	result = remove_single_quote(str, data);
 	return (result);
 }
 
