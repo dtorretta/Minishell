@@ -6,11 +6,11 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 16:19:08 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/17 20:41:49 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/17 21:01:01 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/header_mig.h"
+#include "../../includes/header_mig.h" //modifica el nombre
 
 int	handle_error(t_mshell *data, int error)
 {

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/header.h" //modifica el nombre
+#include "../../includes/header_mig.h" //modifica el nombre
 
 void free_lexer_list(t_lexer *list) 
 {

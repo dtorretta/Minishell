@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/header.h" //modifica el nombre
+#include "../../includes/header_mig.h" //modifica el nombre
 
 //cd sin ningún argumento cambia el directorio actual al directorio home
 //home esta en envp

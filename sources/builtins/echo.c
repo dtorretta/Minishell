@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/header.h" //modifica el nombre
+#include "../../includes/header_mig.h" //modifica el nombre
 
 //echo command prints in the standar output the string passed as argument
 //followed by a new line (ft_putendl_fd)

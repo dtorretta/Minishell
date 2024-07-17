@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/header.h" //modifica el nombre
+#include "../../includes/header_mig.h" //modifica el nombre
 
 int	mini_env(t_mshell *minishell, t_parser *commands)
 {

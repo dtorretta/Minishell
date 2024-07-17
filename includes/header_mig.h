@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   header_mig.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:29:16 by miguandr          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/07/17 20:08:42 by marvin           ###   ########.fr       */
-=======
-/*   Updated: 2024/07/17 20:06:24 by miguandr         ###   ########.fr       */
->>>>>>> d03acbf431fb2e324eb144be8372243512ca1eec
+/*   Updated: 2024/07/17 20:59:55 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,15 +121,9 @@ void		parser(t_mshell *minishell);
 t_parser	*parser_new_node(t_mshell *minishell);
 void		parser_add_last(t_parser **head, t_parser *new);
 void		ft_delnode(t_lexer *temp, t_lexer **head);
-<<<<<<< HEAD
-int	        (*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands);
-char	    *expand_builtin(t_mshell *data, const char *str);
-char	    **expander_builtins(t_mshell *data, char **str);
-=======
 int			(*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands);
 char		*expand_builtin(t_mshell *data, const char *str);
 char		**expander_builtins(t_mshell *data, char **str);
->>>>>>> d03acbf431fb2e324eb144be8372243512ca1eec
 
 /*******FREE*******/
 

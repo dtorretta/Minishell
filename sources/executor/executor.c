@@ -6,11 +6,11 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 11:36:17 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/17 20:49:00 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/17 21:01:11 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/header_mig.h"
+#include "../../includes/header_mig.h" //modifica el nombre
 
 t_parser	*call_expander(t_mshell *data, t_parser *cmd)
 {

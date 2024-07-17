@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/header.h" //modifica el nombre
+#include "../../includes/header_mig.h" //modifica el nombre
 
 //si se ingresa solo export, sin ninguna otra variable, o si esa variable es "" (solo el caracter nulo) imprime el enviroment normal
 //export VAR1
