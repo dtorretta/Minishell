@@ -6,13 +6,13 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 15:39:40 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/17 13:48:49 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/17 22:15:59 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/header_mig.h"
 
-char	*get_variable_name(const char *str)
+char	*get_variable_name(const char *str, t_mshell *data)
 {
 	char	*var_name;
 	int		len;
@@ -22,7 +22,7 @@ char	*get_variable_name(const char *str)
 		len++;
 	var_name = ft_calloc(len + 1, sizeof(char));
 	if (!var_name)
-		return (NULL);
+		handle_error(data, 0);
 	ft_strncpy(var_name, str, len);
 	return (var_name);
 }
@@ -65,9 +65,7 @@ char	*expand_variable(t_mshell *data, const char *str, int *index)
 	}
 	else
 	{
-		var_name = get_variable_name(str + 1);
-		if (!var_name)
-			return (NULL);
+		var_name = get_variable_name(str + 1, data);
 		var_value = get_variable_value(data, var_name);
 		*index += ft_strlen(var_name) + 1;
 		free(var_name);

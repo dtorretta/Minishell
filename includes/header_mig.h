@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:29:16 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/17 22:01:02 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/17 22:55:43 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,13 +155,13 @@ char		*expand_str(t_mshell *data, char *str);
 char		*handle_inside_quote(t_mshell *data, char *s, int *i, char *result);
 char		*expand_double_quote(t_mshell *data, char *str);
 /*-Variables-*/
-char		*get_variable_name(const char *str);
+char		*get_variable_name(const char *str, t_mshell *data);
 char		*get_variable_value(t_mshell *data, char *var_name);
 char		*expand_variable(t_mshell *data, const char *str, int *index);
 char		*get_exit_status(t_mshell *data);
 /*-Utils-*/
-char		*remove_single_quote(char *str);
-char		*single_quote_helper(char *str);
+char		*remove_single_quote(char *str, t_mshell *data);
+char		*single_quote_helper(char *str, t_mshell *data);
 char		*expand_double_quote_helper(t_mshell *data, char *str);
 char		*expand_variable_helper(t_mshell *data, char *str);
 
@@ -179,8 +179,8 @@ int			check_outfile(t_lexer *redirections);
 /*-Single Command Utils-*/
 int			is_main_process_builtin(int (*builtin)(t_mshell *, t_parser *));
 void		wait_for_child(t_mshell *data, int pid);
-char		**normalize_str_array(char **array);
-char		*make_single_str(char **array);
+char		**normalize_str_array(char **array, t_mshell *data);
+char		*make_single_str(char **array, t_mshell *data);
 int			check_append_outfile(t_lexer *redirections);
 
 /*******ERROR HANDLING*******/

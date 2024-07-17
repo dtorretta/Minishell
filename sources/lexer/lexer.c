@@ -6,12 +6,22 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:43:09 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/23 20:42:39 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/17 21:15:39 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/header_mig.h"
 
+/**
+ * Tokenizes the input arguments of the minishell session.
+ * @data: Pointer to the mshell structure containing arguments and lexer list.
+ *
+ * This function processes the arguments provided by the user, skipping spaces
+ * and checking for tokens or words. It calls appropriate handler functions
+ * based on whether a token or a word is encountered. If any handler returns a
+ * negative value, the tokenization fails and the function returns 0. Otherwise,
+ * it returns 1 upon successful tokenization.
+ */
 int	tokenizer(t_mshell *data)
 {
 	int	i;
@@ -33,6 +43,17 @@ int	tokenizer(t_mshell *data)
 	return (1);
 }
 
+/**
+ * Reads user input, processes it, and tokenizes it for the minishell session.
+ * @data: Pointer to the mshell structure containing arguments and lexer list.
+ *
+ * This function prompts the user for input, trims leading and trailing spaces,
+ * and assigns the trimmed input to the mshell structure. If the input is empty,
+ * it resets the data and exits if necessary. The function adds the input to the
+ * command history, checks for balanced quotes, and calls the tokenizer function
+ * to process the input. It also performs error checking on the lexer list.
+ * Returns 1 on successful processing, or handles errors appropriately.
+ */
 int	lexer(t_mshell *data)
 {
 	const char	*prompt;

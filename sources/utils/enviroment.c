@@ -6,12 +6,23 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 19:10:18 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/17 20:44:13 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/17 21:24:34 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/header_mig.h"
 
+/**
+ * Sets the current working directory (PWD) or old working directory (OLDPWD).
+ * @env_var: The environment variable string containing the path.
+ * @pwd: Pointer to the string where the path will be stored.
+ * @prefix_len: Length of the prefix before the actual path in the
+ *  environment variable.
+ *
+ * This function duplicates the path from the environment variable and assigns it
+ * to the pwd pointer. If a previous value exists, it frees the memory.
+ * Returns 1 if successful, otherwise returns 0.
+ */
 static int	set_pwd(char *env_var, char **pwd, int prefix_len)
 {
 	if (*pwd)
@@ -20,6 +31,14 @@ static int	set_pwd(char *env_var, char **pwd, int prefix_len)
 	return (*pwd != NULL);
 }
 
+/**
+ * Retrieves the current and old working directory paths from the environment.
+ * @data: Pointer to the mshell structure containing the environment variables.
+ *
+ * This function iterates through the environment variables to find and set
+ *  the current working directory (PWD) and the old working directory (OLDPWD)
+ * in the mshell structure.
+ */
 void	get_pwd(t_mshell *data)
 {
 	int	i;
@@ -37,6 +56,18 @@ void	get_pwd(t_mshell *data)
 	}
 }
 
+/**
+ * Retrieves the PATH environment variable.
+ * @envp: The environment variables array.
+ *
+ * This function searches for the PATH variable in the
+ * environment variables array.
+ * If found, it returns a substring of the PATH value. If not found,
+ * it returns an empty string.
+ *
+ * Returns: A dynamically allocated string containing the PATH value
+ *  or an empty string.
+ */
 char	*get_path(char **envp)
 {
 	char	*path_var;
@@ -47,13 +78,16 @@ char	*get_path(char **envp)
 	return (ft_substr(path_var + 5, 0, ft_strlen(path_var + 5)));
 }
 
-/*
-Processes the environment variables to extract and store the PATH variable.
-Splits the PATH string into an array of directory paths.
-Ensures that each path in the array ends with a forward slash (/).
-Stores the processed paths in the data structure for later use.
-Returns an error code indicating success or failure.
-*/
+/**
+ * Processes the PATH environment variable and stores paths in mshell structure.
+ * @data: Pointer to the mshell structure containing the environment variables.
+ *
+ * This function retrieves the PATH environment variable, splits it into
+ * individual paths, and stores them in the mshell structure. It also ensures
+ * each path ends with a '/'.
+ *
+ * Returns: EXIT_SUCCESS on success, EXIT_FAILURE on failure.
+ */
 int	handle_envp(t_mshell *data)
 {
 	char	*path;
