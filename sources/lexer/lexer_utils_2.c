@@ -6,13 +6,13 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 22:19:04 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/17 15:37:31 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/17 22:31:53 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/header_mig.h"
 
-/******TEST THESE FUNCTIONS******/
+/******BORRAR LUEGO TODO EL ARCHIVO******/
 
 t_lexer	*lexer_delete_one(t_lexer **list)
 {
