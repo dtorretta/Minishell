@@ -270,7 +270,7 @@ t_lexer *create_lexer_list() {
         perror("malloc");
         exit(EXIT_FAILURE);
     }
-    node_echo->str = strdup("export");
+    node_echo->str = strdup("echo");
     node_echo->token = WORD;
     node_echo->i = 0;
     node_echo->prev = NULL;
@@ -281,7 +281,7 @@ t_lexer *create_lexer_list() {
         perror("malloc");
         exit(EXIT_FAILURE);
     }
-    node_dash_n1->str = strdup("a=ho");
+    node_dash_n1->str = strdup("hello");
     node_dash_n1->token = WORD;
     node_dash_n1->i = 1;
     node_dash_n1->prev = node_echo;
@@ -292,8 +292,8 @@ t_lexer *create_lexer_list() {
         perror("malloc");
         exit(EXIT_FAILURE);
     }
-    node_hello->str = strdup("|");
-    node_hello->token = PIPE;
+    node_hello->str = strdup(">");
+    node_hello->token = GREAT;
     node_hello->i = 2;
     node_hello->prev = node_dash_n1;
     node_hello->next = NULL;
@@ -303,29 +303,29 @@ t_lexer *create_lexer_list() {
         perror("malloc");
         exit(EXIT_FAILURE);
     }
-    node_world->str = strdup("ec$a");
+    node_world->str = strdup("test.txt");
     node_world->token = WORD;
     node_world->i = 3;
     node_world->prev = node_hello;
     node_world->next = NULL;
     
-    t_lexer *node_last = (t_lexer *)malloc(sizeof(t_lexer));
-    if (!node_last) {
-        perror("malloc");
-        exit(EXIT_FAILURE);
-    }
-    node_last->str = strdup("hello");
-    node_last->token = WORD;
-    node_last->i = 4;
-    node_last->prev = node_world;
-    node_last->next = NULL;
+    // t_lexer *node_last = (t_lexer *)malloc(sizeof(t_lexer));
+    // if (!node_last) {
+    //     perror("malloc");
+    //     exit(EXIT_FAILURE);
+    // }
+    // node_last->str = strdup("hello");
+    // node_last->token = WORD;
+    // node_last->i = 4;
+    // node_last->prev = node_world;
+    // node_last->next = NULL;
 
 
     //Enlazar los nodos
     node_echo->next = node_dash_n1;
     node_dash_n1->next = node_hello;
     node_hello->next = node_world;
-    node_world->next = node_last;
+    //node_world->next = node_last;
 
     return node_echo; // Devolvemos el primer nodo de la lista
 }
@@ -578,13 +578,14 @@ t_parser	*ft_parsernew()
     return(new_node);
 }
 
-char *delete_quotes (char *str) //ver si la tiene migue
+char *delete_quotes (char *str, t_mshell *minishell) //ver si la tiene migue
 {
 	char	*result;
 	int		len;
 	int		i;
 	int		j;
 
+	(void)minishell;
 	i = 0;
 	j = 0;
 	len = strlen(str);
@@ -611,12 +612,12 @@ int	mini_echo(t_mshell *minishell, t_parser *commands)
 		{
 			while (commands->str[1] && !strncmp (commands->str[1], "-n", 3)) //puede haber mas de 1
 				i++;//pasa al sigueinte elemento del array
-			temp = delete_quotes (commands->str[i]); //eliminar ""
+			temp = delete_quotes (commands->str[i], minishell); //eliminar ""
 			ft_putstr_fd(temp, 1);
 		}
 		else
 		{
-			temp = delete_quotes (commands->str[i]); //eliminar ""
+			temp = delete_quotes (commands->str[i], minishell); //eliminar ""
 			ft_putendl_fd(temp, 1);
 		}
 	}
@@ -773,6 +774,58 @@ void initshell(t_mshell *minishell, char **env)
 	
 }
 
+static int	n_len(int n)
+{
+	int	len;
+
+	len = 0;
+	if (n <= 0)
+		len++;
+	while (n != 0)
+	{
+		n /= 10;
+		len++;
+	}
+	return (len);
+}
+
+static char	*str_new(int n)
+{
+	char	*new;
+
+	new = (char *)malloc(n * sizeof(char) + 1);
+	if (!new)
+		return (NULL);
+	return (new);
+}
+
+char	*ft_itoa(int n)
+{
+	char	*str;
+	int		len;
+	long	nbr;
+
+	nbr = n;
+	len = n_len(nbr);
+	str = str_new(len);
+	if (str == NULL)
+		return (NULL);
+	if (nbr == 0)
+		str[0] = '0';
+	if (nbr < 0)
+	{
+		str[0] = '-';
+		nbr *= -1;
+	}
+	str[len] = '\0';
+	while (nbr)
+	{
+		str[len - 1] = (nbr % 10) + '0';
+		nbr /= 10;
+		len--;
+	}
+	return (str);
+}
 // static void	change_pwd(t_mshell *minishell)
 // {
 // 	char *temp;
@@ -875,7 +928,7 @@ static int	set_pwd(char *env_var, char **pwd, int prefix_len)
 	return (*pwd != NULL);
 }
 
-int	get_pwd(t_mshell *data) //cambiar a void
+void	get_pwd(t_mshell *data) //cambiar a void
 {
 	int	i;
 
@@ -890,7 +943,6 @@ int	get_pwd(t_mshell *data) //cambiar a void
 			set_pwd(data->envp[i], &(data->old_pwd), 7);
 		i++;
 	}
-	return (1);
 }
 
 void print_array(char **array, int i) //BORRAR, ESTA EN UTILS
@@ -995,7 +1047,7 @@ static char *check_quotes(char *str, char **var_name)
 	char *substr;
 	
 	i = 0;
-	temp = delete_quotes(str);
+	temp = delete_quotes(str, NULL);
 	while (str[i])
 	{
 		if(str[i] == '=')
@@ -1003,7 +1055,7 @@ static char *check_quotes(char *str, char **var_name)
 			i++;
 			//temp = delete_quotes(ft_substr(str, 0, i)); //export varname & =
 			substr = ft_substr(str, 0, i);
-			*var_name = delete_quotes(substr); //export varname & =   ////si uno todo en la mism a linea funciona pero da memory leaks
+			*var_name = delete_quotes(substr, NULL); //export varname & =   ////si uno todo en la mism a linea funciona pero da memory leaks
 			//temp = delete_quotes(str);
 			//*var_name = ft_strdup(temp); //revisar si esto sobrepasa esta funcion
 			//def = delete_quotes(str + i); //lo que viene despues del ==
@@ -1014,7 +1066,7 @@ static char *check_quotes(char *str, char **var_name)
 		else
 			i++;
 	}
-	*var_name = delete_quotes(str); //si no hay = de todos modos hay que darle valor a var name
+	*var_name = delete_quotes(str, NULL); //si no hay = de todos modos hay que darle valor a var name
 	//temp = delete_quotes(str);
 	return(temp);
 }
@@ -1093,13 +1145,13 @@ static char *check_quote(char *str) //no borrar, es distinta a la otra
 		if(str[i] == '=')
 		{
 			substr = ft_substr(str, 0, i);
-			temp = delete_quotes(substr);
+			temp = delete_quotes(substr, NULL);
 			free(substr);
 			return(temp);
 		}
 		i++;
 	}
-	temp = delete_quotes(str); //si no hay = de todos modos hay que darle valor a var name
+	temp = delete_quotes(str, NULL); //si no hay = de todos modos hay que darle valor a var name
 	return(temp);
 }
 
@@ -1171,6 +1223,80 @@ int mini_unset (t_mshell *minishell, t_parser *commands)
     return(EXIT_SUCCESS); 
 }
 
+char	*remove_single_quote(char *str, t_mshell *data)
+{
+	char	*result;
+	int		len;
+	int		i;
+	int		j;
+
+	(void)data;
+	i = 0;
+	j = 0;
+	len = strlen(str);
+	result = calloc(len + 1, sizeof(char));
+	if (!result)
+		return(0);
+	while (i < len)
+	{
+		if (str[i] != '\'')
+			result[j++] = str[i];
+		i++;
+	}
+	return (result);
+}
+
+char	*single_quote_helper(char *str, t_mshell *data)
+{
+	char	*result;
+
+	result = remove_single_quote(str, data);
+	return (result);
+}
+
+char	*expand_double_quote_helper(t_mshell *data, char *str)
+{
+	char	*result;
+
+	result = expand_double_quote(data, str);
+	return (result);
+}
+
+char	*expand_variable_helper(t_mshell *data, char *str)
+{
+	char	*expanded_str;
+	int		expanded_i;
+
+	expanded_i = 0;
+	expanded_str = expand_variable(data, str, &expanded_i);
+	if (expanded_str)
+		return (expanded_str);
+	return (str);
+}
+
+int	ft_isalnum(int c)
+{
+	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
+		|| (c >= '0' && c <= '9'))
+		return (1);
+	return (0);
+}
+
+char	*get_variable_name(const char *str, t_mshell *data)
+{
+	char	*var_name;
+	int		len;
+
+	len = 0;
+	(void)data;
+	while (str[len] && (ft_isalnum(str[len]) || str[len] == '_'))
+		len++;
+	var_name = calloc(len + 1, sizeof(char));
+	if (!var_name)
+		return(0);
+	strncpy(var_name, str, len);
+	return (var_name);
+}
 
 char	*get_variable_value(t_mshell *data, char *var_name)
 {
@@ -1189,20 +1315,133 @@ char	*get_variable_value(t_mshell *data, char *var_name)
 	return (NULL);
 }
 
-char	*expand_variable(t_mshell *data, const char *str)
+char	*get_exit_status(t_mshell *data)
+{
+	char	*status;
+
+	status = ft_itoa(data->exit_code); //revisar cuando en la iniciacion del executor se asigna el valor a exit_code
+	return (status);
+}
+
+char	*expand_variable(t_mshell *data, const char *str, int *index)
 {
 	char	*var_name;
 	char	*var_value;
-	char *temp;
-	char *expanded_str;
-	
-	int i = 0;	
 
-	printf ("2: %s \n", str);
-	
-	while(str[i])
+	if (str[1] == '?')
 	{
-		if(str[i]=='$')
+		var_value = get_exit_status(data);
+		*index += 2;
+		return (var_value);
+	}
+	else
+	{
+		var_name = get_variable_name(str + 1, data);
+		var_value = get_variable_value(data, var_name);
+		*index += strlen(var_name) + 1;
+		free(var_name);
+		if (var_value)
+			return (var_value);
+		else
+			return (NULL);
+	}
+}
+
+
+char	*handle_inside_quote(t_mshell *data, char *s, int *i, char *result)
+{
+	char	*var_value;
+	int		result_len;
+
+	result_len = strlen(result);
+	while (s[*i] && s[*i] != '\"')
+	{
+		if (s[*i] == '$')
+		{
+			var_value = expand_variable(data, s + *i, i);
+			if (var_value)
+			{
+				strcpy(result + result_len, var_value);
+				result_len += strlen(var_value);
+				free (var_value);
+			}
+		}
+		else
+			result[result_len++] = s[(*i)++];
+	}
+	result[result_len] = '\0';
+	return (result);
+}
+
+char	*expand_double_quote(t_mshell *data, char *str)
+{
+	char	*result;
+	int		len;
+	int		i;
+	int		result_len;
+
+	if (ft_strstr(str, "\"export\""))
+		return (strdup(str));
+	i = 0;
+	result_len = 0;
+	len = strlen(str);
+	result = calloc(MAX_EXP_SIZE, sizeof(char));
+	while (i < len)
+	{
+		if (str[i] == '\"')
+		{
+			i++;
+			result = handle_inside_quote(data, str, &i, result);
+			if (str[i] == '\"')
+				i++;
+			result_len += strlen(result);
+		}
+		else
+			result[result_len++] = str[i++];
+	}
+	return (result);
+}
+
+char	*expand_str(t_mshell *data, char *str)
+{
+	if (ft_strchr(str, '\'') != NULL)
+		return (single_quote_helper(str, data));
+	else if (ft_strchr(str, '\"') != NULL)
+		return (expand_double_quote_helper(data, str));
+	else if (ft_strchr(str, '$') != NULL)
+		return (expand_variable_helper(data, str));
+	return (str);
+}
+
+void	expander(t_mshell *data, char **str)
+{
+	char	*expanded_str;
+	int		i;
+
+	i = 0;
+	while (str[i] != NULL)
+	{
+		expanded_str = expand_str(data, str[i]);
+		if (expanded_str != str[i])
+		{
+			free(str[i]);
+			str[i] = expanded_str;
+		}
+		i++;
+	}
+}
+
+char	*expand_builtin(t_mshell *data, const char *str)
+{
+	char	*var_name;
+	char	*var_value;
+	char	*temp;
+	char	*expanded_str;
+
+	int i = 0;
+	while (str[i])
+	{
+		if (str[i] == '$')
 		{
 			var_name = ft_substr(str, 0, i);
 			i++;
@@ -1211,15 +1450,8 @@ char	*expand_variable(t_mshell *data, const char *str)
 		else
 			i++;
 	}
-	printf ("var_name: %s \n", var_name); //ok
-	printf ("temp: %s \n", temp); //ok
-	
 	var_value = get_variable_value(data, temp);
-	printf ("var_value: %s \n", var_value); 
-	
 	expanded_str = ft_strjoin(var_name, var_value);
-	printf ("expanded_str: %s \n", expanded_str);
-	
 	free(var_name);
 	free(var_value);
 	if (expanded_str)
@@ -1228,28 +1460,24 @@ char	*expand_variable(t_mshell *data, const char *str)
 		return (NULL);
 }
 
-
-
-char	**expander(t_mshell *data, char **str) //SEPARAR EN VARIAS FUNCTIONES
+//Checks if the first string in the array contains a $.
+//If found, attempts to expand the variable.
+//If it is successful, replaces the original string with the expanded variable.
+char	**expander_builtins(t_mshell *data, char **str)
 {
 	char	*expanded_str;
-	int		i;
 
-	i = 0;
-	while (str[i] != NULL)
+	if (str[0])
 	{
-		if (ft_strchr(str[i], '$') != NULL)
+		if (ft_strchr(str[0], '$') != NULL)
 		{
-			printf ("\nACA HAY $$$$$$$$$$$$$$$$$$\n");
-			printf ("\n%s \n", str[i]);
-			expanded_str = expand_variable(data, str[i]);
+			expanded_str = expand_builtin(data, str[0]);
 			if (expanded_str)
 			{
-				free(str[i]);
-				str[i] = expanded_str;
+				free(str[0]);
+				str[0] = expanded_str;
 			}
 		}
-		i++;
 	}
 	return (str);
 }
@@ -1312,7 +1540,7 @@ void add_redirection (t_parser *commands, t_mshell *minishell)
 		current = next_node; //aca esta el problema
 	}
 	
-	expanded_array = expander(minishell, arg_array); //expander
+	expanded_array = expander_builtins(minishell, arg_array); //expander
 	commands->str = expanded_array;
 	
 	
@@ -1403,7 +1631,7 @@ int main(int argc, char **argv, char **env)
     print_parser_list(minishell->commands);//BORRAR
     
     printf("\n************PAAAAATH****************\n"); //BORRAR
-    print_string_array(minishell->paths);
+    //print_string_array(minishell->paths);
     
     //printf("\n************COMMANDS TESTERS****************\n"); //BORRAR
     // mini_echo(minishell, minishell->commands);

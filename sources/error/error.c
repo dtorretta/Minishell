@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 16:19:08 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/17 23:18:55 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/19 22:50:50 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ int	handle_error(t_mshell *data, int error)
 		"system error: failed to create child process\n",
 		"syntax error: not a valid builtin\n",
 		"system error: failed to create pipe\n",
+		"system error: error in fd\n",
 	};
 
 	message = error_message[error];
@@ -69,6 +70,11 @@ int	handle_error3(t_mshell *data, int error, char *str)
 	{
 		ft_putstr_fd(str, STDERR_FILENO);
 		ft_putendl_fd(": command not found", STDERR_FILENO);
+	}
+	if (error == 2)
+	{
+		ft_putstr_fd("minishell: no such file or directory: ", STDERR_FILENO);
+		ft_putendl_fd(str, STDERR_FILENO);	
 	}
 	reset_data(data);
 	return(EXIT_FAILURE);
