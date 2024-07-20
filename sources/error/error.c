@@ -6,12 +6,14 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 16:19:08 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/19 22:50:50 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/20 02:22:14 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/header_mig.h" //modifica el nombre
 
+
+//en todas estas funciones no deberiamos agregar el minishell->exit_code???
 int	handle_error(t_mshell *data, int error)
 {
 	const char	*message;

@@ -3,27 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   executor_single_utils.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 19:50:18 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/17 22:02:32 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/20 00:05:28 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/header_mig.h"
 
-int	check_append_outfile(t_lexer *redirections)
-{
-	int	flags;
+// int	check_append_outfile(t_lexer *redirections)
+// {
+// 	int	flags;
 
-	flags = O_CREAT | O_RDWR;
-	if (redirections->token == GREAT_GREAT)
-		flags = O_APPEND;
-	else
-		flags = O_TRUNC;
-	return (open(redirections->str, flags, 0644));
-}
+// 	flags = O_CREAT | O_RDWR;
+// 	if (redirections->token == GREAT_GREAT)
+// 		flags = O_APPEND; //esta sobreescribiendo las anteriores
+// 	else
+// 		flags = O_TRUNC; //esta sobreescribiendo las anteriores
+// 	return (open(redirections->str, flags, 0644));
+// }
 
+//⚠️ VER SI ES NECESARIO ⚠️
 char	*make_single_str(char **array, t_mshell *data)
 {
 	char	*result;
@@ -49,6 +50,7 @@ char	*make_single_str(char **array, t_mshell *data)
 	return (result);
 }
 
+//⚠️ VER SI ES NECESARIO ⚠️
 char	**normalize_str_array(char **array, t_mshell *data)
 {
 	char	*joined_str;
@@ -61,17 +63,39 @@ char	**normalize_str_array(char **array, t_mshell *data)
 	return (updated_array);
 }
 
-void	wait_for_child(t_mshell *data, int pid)
+//⚠️ VER SI ES NECESARIO ⚠️
+int	find_command(t_parser *cmd, t_mshell *data)
 {
-	int	status;
+	int		i;
+	char	*updated_command;
+	char	**normalize_str;
 
-	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-		data->exit_code = WEXITSTATUS(status);
+	i = 0;
+	normalize_str = normalize_str_array(cmd->str, data);
+	if (!access(normalize_str[0], F_OK))
+		execve(normalize_str[0], normalize_str, data->envp);
+	while (data->paths[i])
+	{
+		updated_command = ft_strjoin(data->paths[i], normalize_str[0]);
+		if (!access(updated_command, F_OK))
+			execve(updated_command, normalize_str, data->envp);
+		free(updated_command);
+		i++;
+	}
+	ft_putstr_fd("Minishell: command not found: ", STDERR_FILENO); //falta lo de reset??
+	ft_putendl_fd(cmd->str[0], STDERR_FILENO);
+	ft_free_array(normalize_str);
+	return (127);
 }
 
-int	is_main_process_builtin(int (*builtin)(t_mshell *, t_parser *))
-{
-	return (builtin == mini_cd || builtin == mini_exit
-		|| builtin == mini_export || builtin == mini_unset);
-}
+
+
+
+// void	wait_for_child(t_mshell *data, int pid)
+// {
+// 	int	status;
+
+// 	waitpid(pid, &status, 0);
+// 	if (WIFEXITED(status))
+// 		data->exit_code = WEXITSTATUS(status);
+// }

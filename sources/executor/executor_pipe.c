@@ -12,11 +12,10 @@
 
 #include "../../includes/header_mig.h"
 
-int ft_heredoc (t_parser *commands, t_mshell *minishell)
-{
-
-}
-
+//abrimos el archivo output.txt en modo escritura. Si el archivo no existe, se crea. 
+//O_TRUNC asegura que el archivo se vacía si ya existe.
+//O_APPEND se asegura que se una todo quede inexado, osea no reemplaza
+//0644 es el modo de archivo que da permisos de lectura y escritura al propietario, y sólo de lectura al grupo y a otros.
 int ft_great (t_parser *commands, t_mshell *minishell)
 {
 	char *output;
@@ -36,15 +35,13 @@ int ft_great (t_parser *commands, t_mshell *minishell)
 	}
 	commands->builtins(minishell, commands);	
 	close(file);
-	return(0);
+	return(EXIT_SUCCESS);
 }
 
-int ft_less (t_parser *commands, t_mshell *minishell)
+int ft_less (t_parser *commands, t_mshell *minishell, char *input)
 {
-	char *input;
 	int file;
 			
-	input = commands->str;
 	file = open(input, O_RDONLY);
 	if(file < 0)
 		return(handle_error3(minishell, 2, file));
@@ -58,66 +55,42 @@ int ft_less (t_parser *commands, t_mshell *minishell)
 	return(0);
 }
 
-//return 0 ok / 1 error
-//abrimos el archivo output.txt en modo escritura. Si el archivo no existe, se crea. 
-//O_TRUNC asegura que el archivo se vacía si ya existe.
-//0644 es el modo de archivo que da permisos de lectura y escritura al propietario, y sólo de lectura al grupo y a otros.
-
-
 //test.txt < wc -w (no deberia funcionar)
+//cat < test.txt > borrar.txt (buscar un ejemplo parecido)
 int ft_redirections (t_parser *commands, t_mshell *minishell)
 {
 	t_parser  *temp;
 	temp = commands->redirections;
-	
 	while(temp)
 	{
 		if(commands->redirections->token == GREAT || commands->redirections->token == GREAT_GREAT)
 			return(ft_great(commands, minishell));
 		else if(commands->redirections->token == LESS)
-			return(ft_less(commands, minishell));
+			return(ft_less(commands, minishell, commands->str));
 		else if(commands->redirections->token == HERE_DOC)
-			return(ft_heredoc(commands, minishell));
+			return(ft_less(commands, minishell, commands->hd_file_name));
 		else
 			return(1);
 		temp = temp->next;
 	}
 }
 
-//BORRAR
-/*void handle_cmd(t_mshell *minishell, t_parser *commands)
+//If there is redirections, it executes ft_redirections, if not, executes
+// the builtin and store the exit code in the variable for future expansion.
+void execute_command(t_mshell *minishell, t_parser *commands)
 {
 	if(commands->num_redirections)
-		minishell->exit_code = ft_redirections(commands);
+		minishell->exit_code = ft_redirections(commands, minishell);
+	else if (commands->builtins)
+		minishell->exit_code = commands->builtins(minishell, commands);
 	else
-		minishell->exit_code = commands->builtins(minishell, commands); //ejecuto el builtin y almaceno el codigo de salida en la variable para su futura expansion
-	exit (minishell->exit_code);
-}*/
-
-//Esta función juega un papel crucial al determinar de dónde debe leer el proceso hijo su entrada estándar (STDIN) antes de ejecutar un comando. 
-//Dependiendo de la configuración de tools->heredoc, decide entre leer de un heredoc o del extremo de lectura del pipe (end[0]).
-int	get_fd(t_mshell *minishell, int end[2], t_parser *commands)
-{
-	int fd;
-	
-	if(commands->heredoc)
-	{
-		close(end[0]);
-		fd = open(commands->hd_file_name, O_RDONLY);
-		if (fd < 0)
-			return (handle_error(minishell, 7));
-	}
-	else
-		fd = end[0];
-	return(fd);
+		return (handle_error3(minishell, 1, commands->str[0])); //TEST por ejemplo ls		
 }
 
 //Redirect the file descriptors from which file will be read / stored in 
 // the case of a previous or subsequent command, respectively.
 //Close(fd[0]) to close the read end of the pipe.
 //Close(fd[1]) to close the write end of the pipe.
-//If there is redirections, it executes ft_redirections, if not, executes
-// the builtin and store the exit code in the variable for future expansion.
 //Ends the child process and go back to the parent process
 void child_process(t_mshell *minishell, t_parser *commands, int fd[2], int fd_prev)
 {
@@ -129,13 +102,7 @@ void child_process(t_mshell *minishell, t_parser *commands, int fd[2], int fd_pr
 	close(fd[1]);
 	if(fd_prev)
 		close(fd_prev);
-	//ex  handle_cmd(minishell, commands);
-	if(commands->num_redirections)
-		minishell->exit_code = ft_redirections(commands, minishell); //TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	else if (commands->builtins)
-		minishell->exit_code = commands->builtins(minishell, commands);
-	else
-		return (handle_error3(minishell, 1, commands->str[0])); //TEST por ejemplo ls
+	execute_command(minishell, commands);
 	exit (minishell->exit_code);
 }
 
@@ -176,4 +143,22 @@ void wait_childspid (t_mshell *minishell, int *array)
 	if(WIFEXITED(status))
 		minishell->exit_code = WEXITSTATUS(status);
 	return(EXIT_SUCCESS);
+}
+
+//Esta función juega un papel crucial al determinar de dónde debe leer el proceso hijo su entrada estándar (STDIN) antes de ejecutar un comando. 
+//Dependiendo de la configuración de tools->heredoc, decide entre leer de un heredoc o del extremo de lectura del pipe (end[0]).
+int	get_fd(t_mshell *minishell, int end[2], t_parser *commands)
+{
+	int fd;
+	
+	if(commands->heredoc)
+	{
+		close(end[0]);
+		fd = open(commands->hd_file_name, O_RDONLY);
+		if (fd < 0)
+			return (handle_error(minishell, 7));
+	}
+	else
+		fd = end[0];
+	return(fd);
 }

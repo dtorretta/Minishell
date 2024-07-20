@@ -22,9 +22,9 @@ t_parser	*parser_new_node(t_mshell *minishell)
 	new_node->num_redirections = 0;
 	new_node->redirections = NULL;
 	new_node->heredoc = false;
+	new_node->hd_file_name = NULL;
 	new_node->next = NULL;
 	new_node->prev = NULL;
-	new_node->hd_file_name = NULL;
 	return(new_node);
 }
 
