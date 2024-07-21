@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 11:36:17 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/20 02:51:23 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/21 00:02:06 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,6 @@ static t_parser	*call_expander(t_mshell *data, t_parser *cmd)
 	return (cmd);
 }
 
-static int	is_main_process_builtin(int (*builtin)(t_mshell *, t_parser *))
-{
-	return (builtin == mini_cd || builtin == mini_exit
-		|| builtin == mini_export || builtin == mini_unset);
-}
-
 static void check_heredoc(t_mshell *minishell, t_parser *commands)
 {
 	t_parser *temp;
@@ -52,6 +46,12 @@ static void check_heredoc(t_mshell *minishell, t_parser *commands)
 		}
 		temp = temp->next;
 	}
+}
+
+static int	is_main_process_builtin(int (*builtin)(t_mshell *, t_parser *)) //mejor poner todo junto
+{
+	return (builtin == mini_cd || builtin == mini_exit
+		|| builtin == mini_export || builtin == mini_unset);
 }
 
 void	execute_single_cmd(t_parser *cmd, t_mshell *data)
@@ -75,11 +75,6 @@ void	execute_single_cmd(t_parser *cmd, t_mshell *data)
 	wait_childspid(data, (int[]){pid});
 	//wait_for_child(data, pid);
 }
-
-
-
-
-
 
 //If there are multiple commands, creates a pipe to connect current and next.
 //Every time communication between two processes is needed using a pipe:

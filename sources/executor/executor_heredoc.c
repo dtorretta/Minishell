@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 19:27:45 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/20 03:05:53 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/21 01:48:15 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,28 +22,6 @@ int ft_heredoc (t_parser *commands, t_mshell *minishell)
 	char *expanded_line;
 	
 	delimiter = commands->str;
-	// while(1)
-	// {
-	// 	input_line = readline("> ");
-	// 	if (!input_line) 
-	// 		return(EXIT_FAILURE); //CAMBIAR, HNO HABRIA QUE AGREGARLO EN EL LEXER TAMBIEN?
-	// 	if (!ft_strncmp(input_line, delimiter, ft_strlen(delimiter)) && input_line[ft_strlen(delimiter)] == '\0')
-	// 	{
-	// 		if (!commands->heredoc_content)
-	// 			commands->heredoc_content = "\n";
-	// 		free(input_line); //es necesario??
-	// 		break;
-	// 	}
-	// 	else 
-	// 	{	
-	// 		if (!commands->heredoc_content)
-	// 			commands->heredoc_content = ft_strdup(input_line);
-	// 		else
-	// 			commands->heredoc_content = ft_strjoin (commands->heredoc_content, input_line);
-	// 		commands->heredoc_content = ft_strjoin (commands->heredoc_content, "\n");
-	// 	}
-	// }
-	
 	file = open(commands->hd_file_name, O_RDWR | O_CREAT | O_APPEND, 0644); //abro el hd file para escribirle data
 	if(file < 0)
 		return(handle_error(minishell, 8));
@@ -57,7 +35,7 @@ int ft_heredoc (t_parser *commands, t_mshell *minishell)
 	{
 		input_line = readline("> ");
 		if (!input_line) 
-			return(EXIT_FAILURE); //CAMBIAR, HNO HABRIA QUE AGREGARLO EN EL LEXER TAMBIEN?
+			return(EXIT_FAILURE); //CAMBIAR, NO HABRIA QUE AGREGARLO EN EL LEXER TAMBIEN?
 		if (!ft_strncmp(input_line, delimiter, ft_strlen(delimiter)) && input_line[ft_strlen(delimiter)] == '\0') //si encuentra el limitador se termina
 		{
 			free(input_line);
@@ -66,8 +44,8 @@ int ft_heredoc (t_parser *commands, t_mshell *minishell)
 		else 
 		{	
 			expanded_line = expand_str(minishell, input_line); //revisar
-			ft_putendl_fd(input_line, 1); //o deberia ser putstr? ver bien O_APPEND
-			free(input_line);
+			ft_putendl_fd(expanded_line, 1); //o deberia ser putstr? ver bien O_APPEND
+			free(input_line); //o expanded_line?
 		}	
 	}
 	close(file);

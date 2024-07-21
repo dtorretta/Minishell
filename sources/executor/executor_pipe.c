@@ -12,6 +12,20 @@
 
 #include "../../includes/header_mig.h"
 
+//first executes the redirecction if there are any
+//second executes the builtin if there are any. if not, check is there are 
+//any other command like cat, ls, etc.
+static void execute_command(t_mshell *minishell, t_parser *commands)
+{
+	if (commands->num_redirections)
+		minishell->exit_code = ft_redirections(commands, minishell);
+	if (commands->builtins)
+		minishell->exit_code = commands->builtins(minishell, commands);
+	else if (commands->str[0][0])
+		minishell->exit_code = find_command(commands, minishell);
+	exit(minishell->exit_code); //necesario??
+}
+
 //abrimos el archivo output.txt en modo escritura. Si el archivo no existe, se crea. 
 //O_TRUNC asegura que el archivo se vacía si ya existe.
 //O_APPEND se asegura que se una todo quede inexado, osea no reemplaza
@@ -33,7 +47,6 @@ int ft_great (t_parser *commands, t_mshell *minishell)
 		close(file);
 		return (handle_error(minishell, 8));
 	}
-	commands->builtins(minishell, commands);	
 	close(file);
 	return(EXIT_SUCCESS);
 }
@@ -50,13 +63,10 @@ int ft_less (t_parser *commands, t_mshell *minishell, char *input)
 		close(file);
 		return (handle_error(minishell, 8));
 	}
-	commands->builtins(minishell, commands);
 	close(file);
-	return(0);
+	return(0); 
 }
 
-//test.txt < wc -w (no deberia funcionar)
-//cat < test.txt > borrar.txt (buscar un ejemplo parecido)
 int ft_redirections (t_parser *commands, t_mshell *minishell)
 {
 	t_parser  *temp;
@@ -73,18 +83,6 @@ int ft_redirections (t_parser *commands, t_mshell *minishell)
 			return(1);
 		temp = temp->next;
 	}
-}
-
-//If there is redirections, it executes ft_redirections, if not, executes
-// the builtin and store the exit code in the variable for future expansion.
-void execute_command(t_mshell *minishell, t_parser *commands)
-{
-	if(commands->num_redirections)
-		minishell->exit_code = ft_redirections(commands, minishell);
-	else if (commands->builtins)
-		minishell->exit_code = commands->builtins(minishell, commands);
-	else
-		return (handle_error3(minishell, 1, commands->str[0])); //TEST por ejemplo ls		
 }
 
 //Redirect the file descriptors from which file will be read / stored in 

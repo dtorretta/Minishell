@@ -890,34 +890,34 @@ char	*ft_itoa(int n)
 // 	return (0);
 // }
 
-// int mini_cd (t_mshell *minishell, t_parser *commands)
-// {  
-// 	if(commands->str[1] && commands->str[2]) //si hay mas de 2 argumentos (si no agrego str[1] cuando solo tengo un argumento me da error de jump)
-// 	{
-// 		ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO);
-// 		return (EXIT_FAILURE);
-// 	}
+int mini_cd (t_mshell *minishell, t_parser *commands)
+{  
+	if(commands->str[1] && commands->str[2]) //si hay mas de 2 argumentos (si no agrego str[1] cuando solo tengo un argumento me da error de jump)
+	{
+		ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO);
+		return (EXIT_FAILURE);
+	}
 	
-// 	else if (!commands->str[1]) //si no hay argumentos
-// 		change_directory(minishell->envp, "HOME");
+	else if (!commands->str[1]) //si no hay argumentos
+		change_directory(minishell->envp, "HOME");
 		
-// 	else if (!strncmp(commands->str[1], "-", 1)) 
-// 		change_directory(minishell->envp, "OLDPWD");
+	else if (!strncmp(commands->str[1], "-", 1)) 
+		change_directory(minishell->envp, "OLDPWD");
 	
-// 	else
-// 	{
-// 		if (chdir(commands->str[1]) != 0) //error en el cambio de directorio
-// 		{
-// 			ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
-// 			ft_putstr_fd(commands->str[1], STDERR_FILENO);
-// 			ft_putendl_fd(": No such file or directory", STDERR_FILENO);
-// 			return (EXIT_FAILURE);
-// 		}
-// 	}
-// 	change_pwd(minishell);
-// 	change_envp (minishell);
-// 	return(0);
-// }
+	else
+	{
+		if (chdir(commands->str[1]) != 0) //error en el cambio de directorio
+		{
+			ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
+			ft_putstr_fd(commands->str[1], STDERR_FILENO);
+			ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+			return (EXIT_FAILURE);
+		}
+	}
+	change_pwd(minishell);
+	change_envp (minishell);
+	return(0);
+}
 
 
 static int	set_pwd(char *env_var, char **pwd, int prefix_len)

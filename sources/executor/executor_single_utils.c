@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 19:50:18 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/20 00:05:28 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/21 02:55:05 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@
 // 	return (open(redirections->str, flags, 0644));
 // }
 
-//⚠️ VER SI ES NECESARIO ⚠️
 char	*make_single_str(char **array, t_mshell *data)
 {
 	char	*result;
@@ -50,7 +49,7 @@ char	*make_single_str(char **array, t_mshell *data)
 	return (result);
 }
 
-//⚠️ VER SI ES NECESARIO ⚠️
+
 char	**normalize_str_array(char **array, t_mshell *data)
 {
 	char	*joined_str;
@@ -63,7 +62,9 @@ char	**normalize_str_array(char **array, t_mshell *data)
 	return (updated_array);
 }
 
-//⚠️ VER SI ES NECESARIO ⚠️
+//se revisa que exista el ejecutable del comando standar (ejemplo ls, cat)
+//estos comandos son parte de las utilidades del sistema y se proporciona con el sistema operativo
+//en el while loop se busca la ubicacion del ejecutable del comando.
 int	find_command(t_parser *cmd, t_mshell *data)
 {
 	int		i;
@@ -71,9 +72,9 @@ int	find_command(t_parser *cmd, t_mshell *data)
 	char	**normalize_str;
 
 	i = 0;
-	normalize_str = normalize_str_array(cmd->str, data);
+	normalize_str = normalize_str_array(cmd->str, data); //para que sirve esto? por ejemplo si tengo cat << LIM. 
 	if (!access(normalize_str[0], F_OK))
-		execve(normalize_str[0], normalize_str, data->envp);
+		execve(normalize_str[0], normalize_str, data->envp); //normalize_str[0] es cat por ejemplo. pero no entiendo como funciona con el heredoc.
 	while (data->paths[i])
 	{
 		updated_command = ft_strjoin(data->paths[i], normalize_str[0]);
@@ -82,10 +83,11 @@ int	find_command(t_parser *cmd, t_mshell *data)
 		free(updated_command);
 		i++;
 	}
-	ft_putstr_fd("Minishell: command not found: ", STDERR_FILENO); //falta lo de reset??
-	ft_putendl_fd(cmd->str[0], STDERR_FILENO);
-	ft_free_array(normalize_str);
-	return (127);
+	return (handle_error3(data, 1, cmd->str[0])); //esta bien que resetee?	
+	//ft_putstr_fd("Minishell: command not found: ", STDERR_FILENO); //falta lo de reset??
+	//ft_putendl_fd(cmd->str[0], STDERR_FILENO);
+	ft_free_array(normalize_str); //es necesario? no deberia directamnete resetar todo y por ende esto estaria ahi incluido???
+	return (127); //???
 }
 
 
