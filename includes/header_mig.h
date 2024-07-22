@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:29:16 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/22 17:44:42 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/22 21:10:37 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,7 @@ typedef struct s_mshell
 typedef struct s_parser
 {
 	char			**str;
-	int (*builtins)(t_mshell *, struct s_parser *);
-		// Es un puntero a la funcion builtin que tiene 2 argumentos: Un puntero a t_mshell y Un puntero a t_parser
+	int (*builtins)(t_mshell *, struct s_parser *); // Es un puntero a la funcion builtin que tiene 2 argumentos: Un puntero a t_mshell y Un puntero a t_parser
 	int				num_redirections;
 	char			*hd_file_name;
 	bool			heredoc;
@@ -212,4 +211,7 @@ int					handle_error2(t_mshell *data, int error, char *str,
 						char **array);
 int					handle_error3(t_mshell *data, int error, char *str);
 
+
+/*******MAIN*******/
+int minishell(t_mshell *data);
 #endif

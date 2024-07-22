@@ -287,28 +287,28 @@ t_lexer *create_lexer_list() {
     node_dash_n1->prev = node_echo;
     node_dash_n1->next = NULL;
 
-    t_lexer *node_hello = (t_lexer *)malloc(sizeof(t_lexer));
-    if (!node_hello) {
-        perror("malloc");
-        exit(EXIT_FAILURE);
-    }
-    node_hello->str = strdup(">");
-    node_hello->token = GREAT;
-    node_hello->i = 2;
-    node_hello->prev = node_dash_n1;
-    node_hello->next = NULL;
+    // t_lexer *node_hello = (t_lexer *)malloc(sizeof(t_lexer));
+    // if (!node_hello) {
+    //     perror("malloc");
+    //     exit(EXIT_FAILURE);
+    // }
+    // node_hello->str = strdup(">");
+    // node_hello->token = GREAT;
+    // node_hello->i = 2;
+    // node_hello->prev = node_dash_n1;
+    // node_hello->next = NULL;
 
-    t_lexer *node_world = (t_lexer *)malloc(sizeof(t_lexer));
-    if (!node_world) {
-        perror("malloc");
-        exit(EXIT_FAILURE);
-    }
-    node_world->str = strdup("test.txt");
-    node_world->token = WORD;
-    node_world->i = 3;
-    node_world->prev = node_hello;
-    node_world->next = NULL;
-    
+    // t_lexer *node_world = (t_lexer *)malloc(sizeof(t_lexer));
+    // if (!node_world) {
+    //     perror("malloc");
+    //     exit(EXIT_FAILURE);
+    // }
+    // node_world->str = strdup("test.txt");
+    // node_world->token = WORD;
+    // node_world->i = 3;
+    // node_world->prev = node_hello;
+    // node_world->next = NULL;
+
     // t_lexer *node_last = (t_lexer *)malloc(sizeof(t_lexer));
     // if (!node_last) {
     //     perror("malloc");
@@ -323,8 +323,8 @@ t_lexer *create_lexer_list() {
 
     //Enlazar los nodos
     node_echo->next = node_dash_n1;
-    node_dash_n1->next = node_hello;
-    node_hello->next = node_world;
+    // node_dash_n1->next = node_hello;
+    // node_hello->next = node_world;
     //node_world->next = node_last;
 
     return node_echo; // Devolvemos el primer nodo de la lista
@@ -414,11 +414,11 @@ void free_parser_list(t_parser *list) {
 
 void	ft_delnode(t_lexer *temp, t_lexer  **lexer_list)
 {
-	
+
 	if (temp == NULL) { //argregar
         return;
     }
-	
+
 	if (temp->prev == NULL && temp->next == NULL) //si es el unico elemento
 	{
 	    free(temp->str);
@@ -440,7 +440,7 @@ void	ft_delnode(t_lexer *temp, t_lexer  **lexer_list)
     if (temp->prev && temp->next == NULL) //es el ultimo nodo
     {
         temp->prev->next = NULL;
-    }   
+    }
 	free(temp->str);
 	free(temp); //tambien tengo que borrar la memoria de los string???
 }
@@ -449,9 +449,9 @@ int count_args (t_lexer *lexer_list)
 {
 	int i;
 	t_lexer *current;
-	
+
 	i = 0;
-	current = lexer_list;	
+	current = lexer_list;
 	if (!current)
 	{
 		return (-1);//add error
@@ -462,7 +462,7 @@ int count_args (t_lexer *lexer_list)
 		    return(-1); //add error
 		i++;
 		current = current->next;
-		
+
 	}
 	return (i);
 }
@@ -471,14 +471,14 @@ void borrar (t_mshell *minishell, t_parser *commands)
 {
 	(void) minishell;
 	(void) commands;
-	
+
 	printf("HOLAAAAAAAAAAAAA");
 }
 
 int (*command_handler(char *str))(t_mshell *minishell, t_parser *commands)
 {
-    
-    //el puntero minishel y commands no se usa ahora, si no que es necesario dentro de las funciones 
+
+    //el puntero minishel y commands no se usa ahora, si no que es necesario dentro de las funciones
     // ver si puedo pasar como parametro direecto el string
     static void *commands_array [8][2] = {
         {"echo", borrar}, //TODO function
@@ -487,12 +487,12 @@ int (*command_handler(char *str))(t_mshell *minishell, t_parser *commands)
         {"export", borrar}, //TODO function
         {"unset", borrar}, //TODO function
         {"env", borrar}, //TODO function
-        {"exit", borrar}, //TODO function    
-        {"ls", borrar}, //BORRAR    
+        {"exit", borrar}, //TODO function
+        {"ls", borrar}, //BORRAR
     };
     int i;
-    
-    i = 0;    
+
+    i = 0;
     while(i < 7)
     {
         if (str && !strncmp(commands_array[i][0], str, strlen(commands_array[i][0])))
@@ -502,7 +502,7 @@ int (*command_handler(char *str))(t_mshell *minishell, t_parser *commands)
                 return(NULL); //retorna null en vez de un pointer
             return (commands_array[i][0]);
 		}
-		else    
+		else
             i++;
     }
     return (NULL);
@@ -564,17 +564,17 @@ char	*ft_strchr(const char *str, int c)
 t_parser	*ft_parsernew()
 {
     t_parser *new_node;
-    
+
     new_node = (t_parser *)malloc(sizeof(t_parser));
 	if (!new_node)
 		return (0);
-    
+
 	new_node->num_redirections = 0;
 	new_node->redirections = NULL;
 	new_node->next = NULL;
 	new_node->prev = NULL;
 	new_node->hd_file_name = NULL;
-    
+
     return(new_node);
 }
 
@@ -599,7 +599,7 @@ char *delete_quotes (char *str, t_mshell *minishell) //ver si la tiene migue
 	return (result);
 }
 
-int	mini_echo(t_mshell *minishell, t_parser *commands)
+/*int	mini_echo(t_mshell *minishell, t_parser *commands)
 {
 	int	i;
 	char *temp;
@@ -623,7 +623,7 @@ int	mini_echo(t_mshell *minishell, t_parser *commands)
 	}
 	free (temp);
 	return (EXIT_SUCCESS);
-}
+}*/
 
 char	**ft_arrdup(char **arr)
 {
@@ -654,13 +654,13 @@ int	mini_env(t_mshell *minishell, t_parser *commands)
 	i = 0;
 	if(commands->str[1]) //si tengo algo mas que env
 	{
-		ft_putstr_fd("env: ‘", STDERR_FILENO);                   
+		ft_putstr_fd("env: ‘", STDERR_FILENO);
 		ft_putstr_fd(commands->str[1], STDERR_FILENO);
 		ft_putendl_fd("’: No such file or directory", STDERR_FILENO);
 		//reset_data(data);
 		return(EXIT_FAILURE);
 	}
-	
+
 	while (minishell->envp[i])
 	{
 		ft_putendl_fd(minishell->envp[i], 1);
@@ -703,7 +703,7 @@ int	mini_pwd(t_mshell *minishell, t_parser *commands)
 // 		free(minishell->pid);
 // 	if(minishell->args)
 // 		free(minishell->args);
-// 	free(minishell); 
+// 	free(minishell);
 // }
 
 // int	ft_isdigit(int c)
@@ -733,12 +733,12 @@ int	mini_pwd(t_mshell *minishell, t_parser *commands)
 // int mini_exit(t_mshell *minishell, t_parser *commands)
 // {
 // 	int exit_code;
-	
-// 	if (commands == NULL || minishell == NULL) 
-// 		return EXIT_FAILURE;  	
+
+// 	if (commands == NULL || minishell == NULL)
+// 		return EXIT_FAILURE;
 // 	ft_putendl_fd("exit", STDOUT_FILENO);
 // 	if (!commands->str[1]) //si solo esta exit
-// 		exit_code = 0; 
+// 		exit_code = 0;
 // 	else if (is_num(commands->str[1]) && commands->str[2]) //si hay varios argumentos --> error // solo funciomna si el segundo argumento es numerico
 // 	{
 // 		ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
@@ -755,10 +755,10 @@ int	mini_pwd(t_mshell *minishell, t_parser *commands)
 //         }
 // 		else //si solo son numeros
 // 			exit_code = atoi(commands->str[1]);
-// 	}	
+// 	}
 // 	free_minishell (minishell);
 // 	exit (exit_code); //finaliza el programa con un código de salida específico para el sistema operativo. Puede ser utilizado para determinar cómo terminó el programa
-	
+
 // 	//return (EXIT_SUCCESS); //nunca se va a ejecutar
 // }
 
@@ -771,7 +771,7 @@ void initshell(t_mshell *minishell, char **env)
 	minishell->pwd = NULL;
 	minishell->old_pwd = NULL;
 	minishell->pid = NULL;
-	
+
 }
 
 static int	n_len(int n)
@@ -829,7 +829,7 @@ char	*ft_itoa(int n)
 // static void	change_pwd(t_mshell *minishell)
 // {
 // 	char *temp;
-	
+
 // 	temp = strdup(minishell->pwd);
 // 	free(minishell->old_pwd);
 // 	minishell->old_pwd = temp;
@@ -847,17 +847,17 @@ char	*ft_itoa(int n)
 // 	while (minishell->envp[i])
 // 	{
 // 		if (strncmp(minishell->envp[i], "PWD=", 4) == 0)
-// 		{	
+// 		{
 // 			temp = ft_strjoin("PWD=", minishell->pwd);
 // 			free(minishell->envp[i]);
 // 			minishell->envp[i] = temp;
-// 		}	
+// 		}
 // 		if (strncmp(minishell->envp[i], "OLDPWD=", 7) == 0)
-// 		{	
+// 		{
 // 			temp = ft_strjoin("OLDPWD=", minishell->old_pwd);
 // 			free(minishell->envp[i]);
 // 			minishell->envp[i] = temp;
-// 		}	
+// 		}
 // 		i++;
 // 	}
 // }
@@ -890,20 +890,20 @@ char	*ft_itoa(int n)
 // 	return (0);
 // }
 
-int mini_cd (t_mshell *minishell, t_parser *commands)
-{  
+/*int mini_cd (t_mshell *minishell, t_parser *commands)
+{
 	if(commands->str[1] && commands->str[2]) //si hay mas de 2 argumentos (si no agrego str[1] cuando solo tengo un argumento me da error de jump)
 	{
 		ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
-	
+
 	else if (!commands->str[1]) //si no hay argumentos
 		change_directory(minishell->envp, "HOME");
-		
-	else if (!strncmp(commands->str[1], "-", 1)) 
+
+	else if (!strncmp(commands->str[1], "-", 1))
 		change_directory(minishell->envp, "OLDPWD");
-	
+
 	else
 	{
 		if (chdir(commands->str[1]) != 0) //error en el cambio de directorio
@@ -917,7 +917,7 @@ int mini_cd (t_mshell *minishell, t_parser *commands)
 	change_pwd(minishell);
 	change_envp (minishell);
 	return(0);
-}
+}*/
 
 
 static int	set_pwd(char *env_var, char **pwd, int prefix_len)
@@ -952,7 +952,7 @@ void print_array(char **array, int i) //BORRAR, ESTA EN UTILS
 		ft_putstr_fd(array[i], STDERR_FILENO);
 		i++;
 		if(array[i])
-			write(2, " ", 1);        
+			write(2, " ", 1);
 	}
 }
 
@@ -964,16 +964,16 @@ int	handle_error2(t_mshell *data, int error, char *str, char **array)
 	{
 		ft_putstr_fd("minishell: export: `", STDERR_FILENO);
 		if(error == 1)
-			print_array(array, 2); //que imprima del dos en adelante  
+			print_array(array, 2); //que imprima del dos en adelante
 		else if(error == 2 || error == 4)
 			ft_putstr_fd(str, STDERR_FILENO);
 		ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
 	}
 	else if (error == 3)
 	{
-		ft_putstr_fd("minishell: ", STDERR_FILENO);                   
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
 		ft_putstr_fd(str, STDERR_FILENO);
-		ft_putendl_fd(": event not found", STDERR_FILENO); 
+		ft_putendl_fd(": event not found", STDERR_FILENO);
 	}
 	else if (error == 5)
 	{
@@ -989,7 +989,7 @@ char **new_array(char **array, char *str) //BORRAR, ESTA EN UTILS
 {
 	char **new_array;
 	int i;
-	
+
 	i = 0;
 	while(array[i])
 		i++;
@@ -997,7 +997,7 @@ char **new_array(char **array, char *str) //BORRAR, ESTA EN UTILS
 	if (!new_array)
 		return (NULL);
 	i = 0;
-	
+
 	while(array[i])
 	{
 		new_array[i] = strdup(array[i]);
@@ -1010,8 +1010,8 @@ char **new_array(char **array, char *str) //BORRAR, ESTA EN UTILS
 
 static int check_coincidence (t_mshell *minishell, int i, char *var_name, char *add_var)
 {
-	
-	if(!strncmp(minishell->envp[i], var_name, strlen(var_name))) 
+
+	if(!strncmp(minishell->envp[i], var_name, strlen(var_name)))
 	{
 		free(minishell->envp[i]);
 		minishell->envp[i] = add_var;
@@ -1028,14 +1028,14 @@ static int check_coincidence (t_mshell *minishell, int i, char *var_name, char *
 // //array[3]--> null
 // //si recorre todo el while loop y no encontro nada, crea un array de 2 elementos donde el primero es todo el str y el 2do es NULL.
 
-static bool check_valid_identifier(char c) 
+static bool check_valid_identifier(char c)
 {
 	if ((c >= 'a' && c <= 'z') ||
 		(c >= 'A' && c <= 'Z') ||
 		(c >= '0' && c <= '9') ||
 		c == '_' )
 		return true;
-	else 
+	else
 		return false;
 }
 
@@ -1045,7 +1045,7 @@ static char *check_quotes(char *str, char **var_name)
 	int i;
 	char *temp;
 	char *substr;
-	
+
 	i = 0;
 	temp = delete_quotes(str, NULL);
 	while (str[i])
@@ -1074,10 +1074,10 @@ static char *check_quotes(char *str, char **var_name)
 static int error_check (t_mshell *minishell, t_parser *commands)
 {
 	int i;
-	
+
 	i = 0;
 	if (commands->str[1] && commands->str[2]) //si tengo mas de 3
-		return(handle_error2(minishell, 1, NULL, commands->str));		
+		return(handle_error2(minishell, 1, NULL, commands->str));
 	else if (commands->str[1])
 	{
 		if (isdigit(commands->str[1][0]) || commands->str[1][0] == '=')
@@ -1085,9 +1085,9 @@ static int error_check (t_mshell *minishell, t_parser *commands)
 		    printf("ACA HAY =========================\n");
 			return(handle_error2(minishell, 2, commands->str[1], NULL));
         }
-		while (commands->str[1][i] != '=' && commands->str[1][i]) 
+		while (commands->str[1][i] != '=' && commands->str[1][i])
 		{
-			if (!check_valid_identifier(commands->str[1][i])) 
+			if (!check_valid_identifier(commands->str[1][i]))
 			{
 				if (commands->str[1][i] == '!')
 					return(handle_error2(minishell, 3, commands->str[1] + i, NULL));
@@ -1109,7 +1109,7 @@ int mini_export (t_mshell *minishell, t_parser *commands)
 	char **temp;
 	char *add_var;
 	char *var_name;
-	
+
 	i = -1;
 	if(error_check(minishell, commands)) //success 0 . failure 1
 		return(EXIT_FAILURE);
@@ -1121,12 +1121,12 @@ int mini_export (t_mshell *minishell, t_parser *commands)
 		while(minishell->envp[++i])
 		{
 			if(check_coincidence(minishell, i, var_name, add_var) == 0)
-			{	
-			    return(EXIT_SUCCESS);	
+			{
+			    return(EXIT_SUCCESS);
             }
 		}
 		temp = new_array(minishell->envp, add_var);
-		free_string_array(minishell->envp);		
+		free_string_array(minishell->envp);
 		minishell->envp = temp;
 		free(var_name);
 	}
@@ -1138,7 +1138,7 @@ static char *check_quote(char *str) //no borrar, es distinta a la otra
 	int i;
 	char *temp;
 	char *substr;
-	
+
 	i = 0;
 	while (str[i])
 	{
@@ -1160,7 +1160,7 @@ static char **newarray(char **array, char *str)
 	char **new_array;
 	int i;
 	int j;
-	
+
 	i = 0;
 	while(array[i])
 		i++;
@@ -1187,7 +1187,7 @@ int mini_unset (t_mshell *minishell, t_parser *commands)
 	char *env_var;
 	char *unset_var;
 	char **temp;
-	
+
 	i = -1;
 	if(commands->str[1] && minishell->envp)
 	{
@@ -1220,7 +1220,7 @@ int mini_unset (t_mshell *minishell, t_parser *commands)
 		free(unset_var); //si no lo encuentra
 		return(EXIT_SUCCESS); //si no hay coincidencia no pasa nada
 	}
-    return(EXIT_SUCCESS); 
+    return(EXIT_SUCCESS);
 }
 
 char	*remove_single_quote(char *str, t_mshell *data)
@@ -1493,11 +1493,11 @@ void add_redirection (t_parser *commands, t_mshell *minishell)
 	char **arg_array;
 	int i;
 	char    **expanded_array;
-	
+
 	arguments = count_args(minishell->lexer_list); //BORRAR
 	printf("\nCANTIDAD DE ARGUMENTOS: %d\n", arguments); //BORRAR
-	
-	current = minishell->lexer_list;	
+
+	current = minishell->lexer_list;
 	while(current && current->token != PIPE)
 	{
 		if(current->token != WORD)
@@ -1508,29 +1508,29 @@ void add_redirection (t_parser *commands, t_mshell *minishell)
 			ft_delnode(current->next, &minishell->lexer_list);
 			ft_delnode(current, &minishell->lexer_list);
 			current = next_node;
-			
+
 			commands->num_redirections++;
 		}
 		else
 			current = current->next;
 	}
-	
+
 	arguments = count_args(minishell->lexer_list); //al nodo general le a;ade los token WORD
 	printf("\nCANTIDAD DE ARGUMENTOS: %d\n", arguments); //BORRAR esta bien que de 1 que son los word que quedan despues de las eliminaciones
-	
-	
+
+
 	arg_array = calloc ((arguments + 1), sizeof(char*));
 	if (!arg_array) //ver
 		return; //no puedo hacer retur exit failor (1/4)
 	current = minishell->lexer_list; //devolvemos el puntero al primer elemento;
 	i = 0;
-	
+
 	printf("\nLEXER LIST antes de array:\n"); //BORRAR 1 elemento ls
 	print_lexer_list(minishell->lexer_list); //BORRAR
-	
+
 	printf("\nCOMMAND LIST con las redirections:\n"); //BORRAR 2 elementos > y salida.txt
 	print_lexer_list(commands->redirections); //BORRAR
-        
+
 	while (i < arguments)
 	{
 		arg_array[i] = strdup(current->str);
@@ -1539,16 +1539,16 @@ void add_redirection (t_parser *commands, t_mshell *minishell)
 		i++;
 		current = next_node; //aca esta el problema
 	}
-	
+
 	expanded_array = expander_builtins(minishell, arg_array); //expander
 	commands->str = expanded_array;
-	
-	
-	
+
+
+
 	print_string_array (expanded_array); //1 solo elemento ls
 	printf("\nLEXER LIST despues de array:\n"); //BORRAR
     print_lexer_list(minishell->lexer_list); //BORRAR
-    
+
 
     //commands->str = arg_array;
 	commands->builtins = command_handler(arg_array[0]);
@@ -1557,50 +1557,50 @@ void add_redirection (t_parser *commands, t_mshell *minishell)
 
 
 
-int main(int argc, char **argv, char **env) 
+int main(int argc, char **argv, char **env)
 {
     (void)argc;
     (void)argv;
     t_mshell *minishell;
     t_parser *node;
-    
+
     minishell = (t_mshell *)malloc(sizeof(t_mshell));
     if (!minishell) {
         perror("malloc");
         exit(EXIT_FAILURE);
     }
-          
-    
+
+
     minishell->lexer_list = create_lexer_list(); //hard codding
     initshell(minishell, env);
-    
-    
+
+
     get_pwd(minishell);
 
-    
-    
+
+
     t_mshell *current = minishell;
-    
-    
-    
+
+
+
     // Imprimir la lista de lexer
     printf("*********lista original************\n");
     print_lexer_list(minishell->lexer_list);
-    
+
     int limite = 0;
     int borrar = 0;
-    
+
     while(current->lexer_list && limite < 5)
 	{
 		node = ft_parsernew(); //aca aloco memoria al nuevo nodo
 		add_redirection (node, minishell);//parser
-		
-		ft_parseradd_back(&minishell->commands, node); 
-		
+
+		ft_parseradd_back(&minishell->commands, node);
+
 		if (borrar == 0)
 		{
 			printf("\n************COMMANDS TESTERS export****************\n"); //BORRAR
-			mini_export(minishell, minishell->commands);
+			//mini_export(minishell, minishell->commands);
 			printf("\n***IMRPIMIR ARRAY**\n"); //BORRAR
             print_string_array(minishell->envp);
             printf("\n");
@@ -1608,15 +1608,15 @@ int main(int argc, char **argv, char **env)
 		if (borrar == 1)
 		{
 			printf("\n************COMMANDS TESTERS echo****************\n"); //BORRAR
-			
-			mini_echo(minishell, minishell->commands); 
+
+			//mini_echo(minishell, minishell->commands);
 		}
-		if(current->lexer_list && current->lexer_list->token == PIPE)	
+		if(current->lexer_list && current->lexer_list->token == PIPE)
 		{
 			printf("\n*********PIPE************\n");
 			ft_delnode(current->lexer_list, &minishell->lexer_list);
 			//break;
-		}	
+		}
 		limite++;
 		borrar++;
 		//current = minishell; //es necesario??? parece que no
@@ -1625,26 +1625,26 @@ int main(int argc, char **argv, char **env)
     // Imprimir la lista de lexer después de la llamada a prueba
     printf("\nfinal original\n"); //BORRAR
     print_lexer_list(minishell->lexer_list);//BORRAR
-    
-    
+
+
     printf("\n************final antes del execute****************\n"); //BORRAR
     print_parser_list(minishell->commands);//BORRAR
-    
+
     printf("\n************PAAAAATH****************\n"); //BORRAR
     //print_string_array(minishell->paths);
-    
+
     //printf("\n************COMMANDS TESTERS****************\n"); //BORRAR
     // mini_echo(minishell, minishell->commands);
     // printf("\nCHECK\n");
-    
+
     // printf("\n***ANTES TEST**\n"); //BORRAR
     // printf("PWD: %s\n", minishell->pwd);
     // printf("OLD PWD: %s\n", minishell->old_pwd);
-    
+
     // printf("\n***IMRPIMIR ARRAY**\n"); //BORRAR
     // print_string_array(env);
     // printf("\n");
-    
+
     //printf("\n***POST TEST**\n"); //BORRAR
     //mini_export(minishell, minishell->commands);
     //mini_echo(minishell, minishell->commands);
@@ -1653,28 +1653,28 @@ int main(int argc, char **argv, char **env)
     //mini_cd(minishell, minishell->commands);
     //mini_exit(minishell, minishell->commands);
     //mini_unset(minishell, minishell->commands);
-    
-    
+
+
     /*printf("\n***IMRPIMIR ARRAY**\n"); //BORRAR
     print_string_array(minishell->envp);
     printf("\n");*/
-    
+
     //printf("PWD: %s\n", minishell->pwd);
     //printf("OLD PWD: %s\n", minishell->old_pwd);
-    
+
     // /*************FREES**********************/
     // //⚠️ no hay que ponerlo ahora, es solo a fin de chequeo de leaks. ponerlo al final de todo cuando este todo terminado
- 
-    
+
+
     free_parser_list(minishell->commands);
-    /*  
+    /*
         free_string_array(temp->str);
         free_lexer_list(temp->redirections);
         free(temp);
     */
 	free_lexer_list(minishell->lexer_list);
 	free_string_array(minishell->paths);
-	if (minishell->envp) 
+	if (minishell->envp)
 	    free_string_array(minishell->envp);
 	/*
 	    free(array[i]); // Liberar cada string en el array
@@ -1682,14 +1682,14 @@ int main(int argc, char **argv, char **env)
 	*/
 	if (minishell->pwd)
 	    free(minishell->pwd);
-	if (minishell->old_pwd) 
+	if (minishell->old_pwd)
 	    free(minishell->old_pwd);
 	if(minishell->pid)
 		free(minishell->pid);
 	if(minishell->args)
 		free(minishell->args);
-	free(minishell); 
-	
+	free(minishell);
+
 
     return 0;
 }

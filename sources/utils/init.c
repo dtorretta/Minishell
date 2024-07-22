@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 21:10:52 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/17 21:04:38 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/22 21:10:13 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,39 @@ int	init_data(t_mshell *data)
 	return (1);
 }
 
+void	ft_commands_clear(t_parser **lst)
+{
+	t_parser	*tmp;
+	t_lexer			*redirections_tmp;
+
+	if (!*lst)
+		return ;
+	while (*lst)
+	{
+		tmp = (*lst)->next;
+		redirections_tmp = (*lst)->redirections;
+		free_lexer_list(redirections_tmp);
+		if ((*lst)->str)
+			ft_free_array((*lst)->str);
+		if ((*lst)->hd_file_name)
+			free((*lst)->hd_file_name);
+		free(*lst);
+		*lst = tmp;
+	}
+	*lst = NULL;
+}
+
 int	reset_data(t_mshell *data)
 {
-	//ft_commands_clear(&data->commands); // MAKE
+	ft_commands_clear(&data->commands); // MAKE
 	free(data->args);
 	if (data->pid)
 		free(data->pid);
 	ft_free_array(data->paths);
+
 	init_data(data);
 	data->reset = true;
-	lexer(data);
+	minishell(data);
 	return (1);
 }
 

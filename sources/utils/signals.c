@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 18:31:02 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/17 21:09:19 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/22 19:36:15 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	init_signals(void)
 {
 	signal(SIGINT, handle_ctrl_c);
 	signal(SIGQUIT, SIG_IGN);
-	//signal(SIGQUIT, handle_ctrl_backslash); /*esta se usara cuando se inicie un proceso*/
+	signal(SIGQUIT, handle_ctrl_backslash); /*esta se usara cuando se inicie un proceso*/
 }
 
 /*

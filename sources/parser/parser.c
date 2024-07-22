@@ -46,6 +46,7 @@ static char	**built_args(t_mshell *minishell, int i)
 	char    **expanded_array;
 	char	**arg_array;
 
+	current = minishell->lexer_list;
 	arguments = count_args(minishell->lexer_list, minishell); //al nodo general le a;ade los token WORD
 	arg_array = calloc ((arguments + 1), sizeof(char*));
 	if (!arg_array)
@@ -61,6 +62,7 @@ static char	**built_args(t_mshell *minishell, int i)
 		i++;
 		current = next_node;
 	}
+	minishell->lexer_list = current;
 	expanded_array = expander_builtins(minishell, arg_array);
 	return(expanded_array);
 }
