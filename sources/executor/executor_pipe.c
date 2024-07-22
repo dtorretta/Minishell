@@ -13,9 +13,9 @@
 #include "../../includes/header_mig.h"
 
 //first executes the redirecction if there are any
-//second executes the builtin if there are any. if not, check is there are 
+//second executes the builtin if there are any. if not, check is there are
 //any other command like cat, ls, etc.
-static void execute_command(t_mshell *minishell, t_parser *commands)
+void execute_command(t_mshell *minishell, t_parser *commands)
 {
 	if (commands->num_redirections)
 		minishell->exit_code = ft_redirections(commands, minishell);
@@ -26,7 +26,7 @@ static void execute_command(t_mshell *minishell, t_parser *commands)
 	exit(minishell->exit_code); //necesario??
 }
 
-//abrimos el archivo output.txt en modo escritura. Si el archivo no existe, se crea. 
+//abrimos el archivo output.txt en modo escritura. Si el archivo no existe, se crea.
 //O_TRUNC asegura que el archivo se vacía si ya existe.
 //O_APPEND se asegura que se una todo quede inexado, osea no reemplaza
 //0644 es el modo de archivo que da permisos de lectura y escritura al propietario, y sólo de lectura al grupo y a otros.
@@ -34,16 +34,16 @@ int ft_great (t_parser *commands, t_mshell *minishell)
 {
 	char *output;
 	int file;
-	
-	output = commands->str;
+
+	output = commands->redirections->str;
 	if(commands->redirections->token == GREAT)
 		file = open(output, O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if(commands->redirections->token == GREAT_GREAT)
-		file = open(output, O_RDWR | O_CREAT | O_APPEND, 0644); 
+		file = open(output, O_RDWR | O_CREAT | O_APPEND, 0644);
 	if(file < 0)
 		return(handle_error(minishell, 8));
 	if (dup2(file, STDOUT_FILENO) < 0)
-	{	
+	{
 		close(file);
 		return (handle_error(minishell, 8));
 	}
@@ -51,46 +51,47 @@ int ft_great (t_parser *commands, t_mshell *minishell)
 	return(EXIT_SUCCESS);
 }
 
-int ft_less (t_parser *commands, t_mshell *minishell, char *input)
+int ft_less (t_mshell *minishell, char *input)
 {
 	int file;
-			
+
 	file = open(input, O_RDONLY);
 	if(file < 0)
-		return(handle_error3(minishell, 2, file));
+		return(handle_error(minishell, 8));
 	if (dup2(file, STDIN_FILENO) < 0)
-	{	
+	{
 		close(file);
 		return (handle_error(minishell, 8));
 	}
 	close(file);
-	return(0); 
+	return(0);
 }
 
 int ft_redirections (t_parser *commands, t_mshell *minishell)
 {
-	t_parser  *temp;
+	t_lexer  *temp;
 	temp = commands->redirections;
 	while(temp)
 	{
 		if(commands->redirections->token == GREAT || commands->redirections->token == GREAT_GREAT)
 			return(ft_great(commands, minishell));
 		else if(commands->redirections->token == LESS)
-			return(ft_less(commands, minishell, commands->str));
+			return(ft_less(minishell, commands->redirections->str));
 		else if(commands->redirections->token == HERE_DOC)
-			return(ft_less(commands, minishell, commands->hd_file_name));
+			return(ft_less(minishell, commands->hd_file_name));
 		else
 			return(1);
 		temp = temp->next;
 	}
+	return(EXIT_SUCCESS);
 }
 
-//Redirect the file descriptors from which file will be read / stored in 
+//Redirect the file descriptors from which file will be read / stored in
 // the case of a previous or subsequent command, respectively.
 //Close(fd[0]) to close the read end of the pipe.
 //Close(fd[1]) to close the write end of the pipe.
 //Ends the child process and go back to the parent process
-void child_process(t_mshell *minishell, t_parser *commands, int fd[2], int fd_prev)
+int child_process(t_mshell *minishell, t_parser *commands, int fd[2], int fd_prev)
 {
 	if (commands->prev && dup2(fd_prev, STDIN_FILENO) < 0)
 		return (handle_error(minishell, 7));
@@ -108,7 +109,7 @@ void child_process(t_mshell *minishell, t_parser *commands, int fd[2], int fd_pr
 int ft_fork(t_mshell *minishell, t_parser *commands, int fd[2], int fd_prev)
 {
 	static int i;
-	
+
 	i = 0;
 	if (minishell->reset == 1)
 		i = 0;
@@ -122,33 +123,33 @@ int ft_fork(t_mshell *minishell, t_parser *commands, int fd[2], int fd_prev)
 	return(EXIT_SUCCESS);
 }
 
-//Recorre todos los PIDs de los procesos hijos y espera a que terminen 
+//Recorre todos los PIDs de los procesos hijos y espera a que terminen
 //Esto asegura que el proceso padre espere a que todos los procesos hijos terminen antes de continuar.
 //El código de salida refleja el estado del último comando ejecutado.
 //WIFEXITED(status): Verifica si el hijo terminó normalmente.
 //WEXITSTATUS(status): Obtiene el código de salida del hijo.
-void wait_childspid (t_mshell *minishell, int *array)
+int wait_childspid (t_mshell *minishell, int *array)
 {
 	int i;
 	int status;
-	
+
 	i = 0;
 	while(array[i])
 	{
 		waitpid(array[i], &status, 0);
-		i++;	
+		i++;
 	}
 	if(WIFEXITED(status))
 		minishell->exit_code = WEXITSTATUS(status);
 	return(EXIT_SUCCESS);
 }
 
-//Esta función juega un papel crucial al determinar de dónde debe leer el proceso hijo su entrada estándar (STDIN) antes de ejecutar un comando. 
+//Esta función juega un papel crucial al determinar de dónde debe leer el proceso hijo su entrada estándar (STDIN) antes de ejecutar un comando.
 //Dependiendo de la configuración de tools->heredoc, decide entre leer de un heredoc o del extremo de lectura del pipe (end[0]).
 int	get_fd(t_mshell *minishell, int end[2], t_parser *commands)
 {
 	int fd;
-	
+
 	if(commands->heredoc)
 	{
 		close(end[0]);

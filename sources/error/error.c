@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 16:19:08 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/20 02:22:14 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/22 17:33:20 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	handle_error2(t_mshell *data, int error, char *str, char **array)
 		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
 	}
 	reset_data(data);
-	return(EXIT_FAILURE);
+	return (EXIT_FAILURE);
 }
 
 int	handle_error3(t_mshell *data, int error, char *str)
@@ -76,7 +76,7 @@ int	handle_error3(t_mshell *data, int error, char *str)
 	if (error == 2)
 	{
 		ft_putstr_fd("minishell: no such file or directory: ", STDERR_FILENO);
-		ft_putendl_fd(str, STDERR_FILENO);	
+		ft_putendl_fd(str, STDERR_FILENO);
 	}
 	reset_data(data);
 	return(EXIT_FAILURE);

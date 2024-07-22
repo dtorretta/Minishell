@@ -22,6 +22,7 @@ int	mini_echo(t_mshell *minishell, t_parser *commands)
 	char	*temp;
 
 	(void) minishell;
+	temp = NULL;
 	i = 1;
 	if (commands->str)
 	{

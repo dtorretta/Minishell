@@ -12,35 +12,37 @@
 
 #include "../../includes/header_mig.h" //modifica el nombre
 
-//It takes a string argument str and returns a function pointer that accepts 
+//It takes an argument str and returns a function pointer that accepts
 //two arguments: t_mshell *minishell and t_parser *commands
 //Checks if the input string matches a built-in command name.
-//If matched, verifies that the lengths of the strings are equal to avoid 
-//partial matches like "echoo", and returns the function pointer for the 
+//If matched, verifies that the lengths of the strings are equal to avoid
+//partial matches like "echoo", and returns the function pointer for the
 //matched built-in command.
 //If no match is found, returns NULL.
+
 int	(*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands)
 {
-	static void *builtins_array [7][2] = {
-		{"echo", mini_echo},
-		{"cd", mini_cd},
-		{"pwd", mini_pwd},
-		{"export", mini_export},
-		{"unset", mini_unset},
-		{"env", mini_env},
-		{"exit", mini_exit},
+	static void	*builtins_array [7][2] = {
+	{"echo", mini_echo},
+	{"cd", mini_cd},
+	{"pwd", mini_pwd},
+	{"export", mini_export},
+	{"unset", mini_unset},
+	{"env", mini_env},
+	{"exit", mini_exit},
 	};
-	int	i;
-	
+	int			i;
+
 	i = 0;
 	while (i < 7)
 	{
 		if (str && !ft_strncmp(builtins_array[i][0], str, ft_strlen(builtins_array[i][0])))
-		{
-			if (ft_strlen(str) != ft_strlen(builtins_array[i][0]))
-				return (handle_error(minishell, 6));
 			return (builtins_array[i][1]);
-		}
+		// {
+		// 	// if (ft_strlen(str) != ft_strlen(builtins_array[i][0]))
+		// 	// 	return (handle_error(minishell, 6));
+		// 	return (builtins_array[i][1]);
+		// }
 		else
 			i++;
 	}
@@ -59,8 +61,9 @@ char	*expand_builtin(t_mshell *data, const char *str)
 	char	*var_value;
 	char	*temp;
 	char	*expanded_str;
+	int		i;
 
-	int i = 0;
+	i = 0;
 	while (str[i])
 	{
 		if (str[i] == '$')

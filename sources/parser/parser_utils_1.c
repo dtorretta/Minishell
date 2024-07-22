@@ -15,10 +15,10 @@
 t_parser	*parser_new_node(t_mshell *minishell)
 {
 	t_parser *new_node;
-	
+
 	new_node = (t_parser *)malloc(sizeof(t_parser));
 	if (!new_node)
-		return (handle_error(minishell, 0));
+		handle_error(minishell, 0);
 	new_node->num_redirections = 0;
 	new_node->redirections = NULL;
 	new_node->heredoc = false;

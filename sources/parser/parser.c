@@ -38,7 +38,7 @@ static int	count_args(t_lexer *head, t_mshell *minishell)
 //Allocates memory with calloc for the arguments array.
 //Copies str from lexer L to the argument array, deleting nodes from lexer L.
 //Expands the first element of the array (builtin name).
-static char **built_args(t_mshell *minishell, int i)
+static char	**built_args(t_mshell *minishell, int i)
 {
 	t_lexer	*current;
 	t_lexer	*next_node;
@@ -49,7 +49,10 @@ static char **built_args(t_mshell *minishell, int i)
 	arguments = count_args(minishell->lexer_list, minishell); //al nodo general le a;ade los token WORD
 	arg_array = calloc ((arguments + 1), sizeof(char*));
 	if (!arg_array)
-		return (handle_error(minishell, 0));
+	{
+		handle_error (minishell, 0);
+		return (NULL);
+	}
 	while (i < arguments)
 	{
 		arg_array[i] = strdup(current->str);
@@ -104,7 +107,7 @@ void	parser(t_mshell *minishell)
 
 	current = minishell;
 	minishell->commands = NULL;
-	
+
 	while (current->lexer_list)
 	{
 		node = parser_new_node(minishell);
