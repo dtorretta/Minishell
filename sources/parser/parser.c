@@ -42,8 +42,8 @@ static char	**built_args(t_mshell *minishell, int i)
 {
 	t_lexer	*current;
 	t_lexer	*next_node;
-	int     arguments;
-	char    **expanded_array;
+	int		arguments;
+	char	**expanded_array;
 	char	**arg_array;
 
 	current = minishell->lexer_list;
@@ -64,7 +64,7 @@ static char	**built_args(t_mshell *minishell, int i)
 	}
 	minishell->lexer_list = current;
 	expanded_array = expander_builtins(minishell, arg_array);
-	return(expanded_array);
+	return (expanded_array);
 }
 
 //Iterates over each node in the lexer_list until a PIPE token is found.
@@ -73,7 +73,7 @@ static char	**built_args(t_mshell *minishell, int i)
 //Increments the number of redirections.
 //Sets the array of WORD-strings using built_args.
 //Assigns the built-in function name and pointer using builtins_handle
-static void built_node(t_parser *commands, t_mshell *minishell)
+static void	built_node(t_parser *commands, t_mshell *minishell)
 {
 	t_lexer	*current;
 	t_lexer	*next_node;

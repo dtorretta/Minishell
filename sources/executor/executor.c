@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 11:36:17 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/22 17:29:24 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/22 21:41:59 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,21 +28,21 @@ static t_parser	*call_expander(t_mshell *data, t_parser *cmd)
 	return (cmd);
 }
 
-static void check_heredoc(t_mshell *minishell, t_parser *commands)
+static void	check_heredoc(t_mshell *minishell, t_parser *commands)
 {
-	t_parser *temp;
+	t_parser	*temp;
 
 	temp = commands;
 	while (temp->redirections)
 	{
-		if(temp->redirections->token == HERE_DOC)
+		if (temp->redirections->token == HERE_DOC)
 		{
 			if (temp->hd_file_name)
 				free(temp->hd_file_name);
 			temp->hd_file_name = generate_name();
 			minishell->exit_code = ft_heredoc(temp, minishell); //si se ejecuta bien exit_code tendra valor 0, esta bien que almacene codigos de exito?
 			temp->heredoc = true;
-			break;
+			break ;
 		}
 		temp = temp->next;
 	}

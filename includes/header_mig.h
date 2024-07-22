@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:29:16 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/22 21:10:37 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/22 21:32:18 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ typedef enum s_tokens
 	GREAT,
 	GREAT_GREAT,
 	LESS,
-	HERE_DOC, // antes era LESS_LESS
+	HERE_DOC,
 }					t_tokens;
 
 typedef struct s_lexer
@@ -55,15 +55,15 @@ typedef struct s_mshell
 	char			*args;
 	char			**paths;
 	char			**envp;
-	struct s_parser *commands;
+	struct s_parser	*commands;
 		// aca agrego para cada nodo del parser las redirecciones/builtins/str
 	t_lexer			*lexer_list;
 	char			*pwd;
 	char			*old_pwd;
 	int				pipes;
 	int				*pid;
-	int in_cmd;    // nuevo (creamos para señalar que hay un comando activo)
-	int exit_code;
+	int				in_cmd;// nuevo (creamos para señalar que hay un comando activo)
+	int				exit_code;
 		// nuevo (creamos para señalar si el ultimo pipeline se ejecutó con o sin errores)
 	bool			reset;
 } t_mshell; // t_tools;
@@ -148,6 +148,7 @@ int	mini_unset(t_mshell *minishell, t_parser *commands);
 
 /*-Utils-*/
 
+void				ft_commands_clear(t_parser **lst);
 void				print_array(char **array, int i);
 char				**new_array(char **array, char *str);
 char				*delete_quotes(char *str, t_mshell *minishell);
@@ -213,5 +214,6 @@ int					handle_error3(t_mshell *data, int error, char *str);
 
 
 /*******MAIN*******/
-int minishell(t_mshell *data);
+int					minishell(t_mshell *data);
+
 #endif

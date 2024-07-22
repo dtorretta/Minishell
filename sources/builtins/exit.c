@@ -15,7 +15,7 @@
 //el bash real hace distincion sobre si despues del exit viene un numero, una letra etc.
 //pero las instrucciones al decir que tenemos que implementar exit sin ninguna opcion, no agregue ese manejo de errores,
 //esta bien?
-void free_minishell (t_mshell *minishell) //lo necesito para alguna otra funcion?
+void	free_minishell(t_mshell *minishell) //lo necesito para alguna otra funcion?
 {
 	free_lexer_list(minishell->commands->redirections);
 	//free_string_array(minishell->commands->str);
@@ -52,10 +52,10 @@ static int	is_num(char *num)
 }
 
 //en bash cuando tenes ; deja de leer --> exit a;b --> bash: exit: a: numeric argument required (no lo agregue)
-int mini_exit(t_mshell *minishell, t_parser *commands)
+int	mini_exit(t_mshell *minishell, t_parser *commands)
 {
 	if (commands == NULL || minishell == NULL)
-		return EXIT_FAILURE;
+		return (EXIT_FAILURE);
 	ft_putendl_fd("exit", STDOUT_FILENO);
 	if (!commands->str[1]) //si solo esta exit
 		minishell->exit_code = 0;
