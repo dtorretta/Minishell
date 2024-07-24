@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 20:59:12 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/24 21:54:51 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/24 22:53:03 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,11 +72,12 @@ int	handle_word(char *str, int start, t_lexer **lexer_list)
 
 	len = 0;
 	word_len = 0;
+	(*lexer_list)->is_single = false;
 	while (str[start + len] && (!check_token(str[start + len])
 			&& !ft_iswhitespace(str[start + len])))
 	{
-		len += skip_quotes(str, start + len, '\'');
-		len += skip_quotes(str, start + len, '\"');
+		len += skip_quotes(str, start + len, '\'', lexer_list);
+		len += skip_quotes(str, start + len, '\"', NULL);
 		if (str[start + len] && (!check_token(str[start + len])
 				&& !ft_iswhitespace(str[start + len])))
 			len++;

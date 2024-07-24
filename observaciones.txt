@@ -6,12 +6,6 @@ expander: echo $f no deberia de imprimir nada
 
 exit    exit 255   retona el error 255. a partir de 256 el contador se reinicia en 0
 
-true
-exit
-
-false
-exit
-
 exit hello: chequear si el bash del campus sale o no sale (en el nuestro sale)
 chequear si despues de testear la linea de arriba, el terminal imprime una \n
 
@@ -20,5 +14,36 @@ testear expr $? + $?. Preguntar a alguien como lo hizo
 signals
 ctrl+C: ^C deberia aparecerme la signal ingresada en la terminal??
 ctrl+D: depediendo de la version lo imprime en nueva linea o no
+
+unset "": no deberia salir nada
+cd "": no deberia salir nada
+exit "": error numerico falta
+
+'$USER' (o cualquier env variable) con single_qoute no debe expandir: en tokenizer agregar un
+bool flag = true si es single quote que se revisa en el parser en caso de ser verdad no expande
+
+Nos quedamos en single quotes
+
+Expander: tiene que evitar expandir cuando es single_quote
+-minishell> echo ' hola $HOME  '
+hola $HOME
+Expander: tiene que expandir con double_quote
+-bash-3.2$ echo " hola $HOME  "
+hola /Users/miguandr
+-bash-3.2$ echo " hola '$HOME'  "
+ hola '/Users/miguandr'
+
+agregar al parser la eliminacion de quotes:
+	word = ft_substr(str, start, len);
+	if (!word)
+		return (-1);
+	word_len = ft_strlen(word);
+	if (word_len > 1 && ((word[0] == '\'' && word[word_len - 1] == '\'')
+			|| (word[0] == '\"' && word[word_len - 1] == '\"')))
+	{
+		trimmed_word = ft_substr(word, 1, word_len - 2);
+		free(word);
+		word = trimmed_word;
+	}
 
 

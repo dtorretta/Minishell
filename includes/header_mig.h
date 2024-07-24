@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:29:16 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/24 21:32:04 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/24 22:53:32 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct s_lexer
 	char			*str;
 	t_tokens		token;
 	int				i;
+	bool			is_single;
 	struct s_lexer	*next;
 	struct s_lexer	*prev;
 }					t_lexer;
@@ -107,7 +108,7 @@ int					handle_token(char *str, int i, t_lexer **lexer_list);
 int					handle_word(char *str, int start, t_lexer **lexer_list);
 /*-Quote handling-*/
 int					count_quotes(char *str);
-int					skip_quotes(const char *str, int start, char quote);
+int					skip_quotes(const char *str, int start, char quote, t_lexer **lexer);
 /*-Utils-*/
 int					skip_space(char *str, int i);
 int					add_node(char *str, t_tokens token, t_lexer **lexer_list);
