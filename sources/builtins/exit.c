@@ -67,7 +67,7 @@ int	mini_exit(t_mshell *minishell, t_parser *commands)
 	else //si solo hay un argumento --> ok
 	{
 		if (!is_num(commands->str[1])) //si algun caracter NO es numero //solo tiene en cuenta un + o - --> error // en bash cuando pasa esto sale del tipo bash, probar en el campus
-			return(handle_error2(minishell, 4, commands->str[1], NULL));
+			minishell->exit_code = handle_error2(minishell, 5, commands->str[1], NULL);
 		else //si solo son numeros
 			minishell->exit_code = ft_atoi(commands->str[1]);
 	}

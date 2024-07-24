@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 11:36:17 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/22 21:41:59 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/24 20:52:11 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,7 @@ int	execute_pipe_cmd(t_mshell *minishell)
 //data->pid sera un array de enteros para los pid de cada proceso + 1 espacio extra
 int	executor(t_mshell *data)
 {
+	signal(SIGINT, handle_ctrl_c_child);
 	signal(SIGQUIT, handle_ctrl_backslash);
 	data->in_cmd = 1; //ver si necesitamos esto
 	if (data-> pipes == 0)

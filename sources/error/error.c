@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 16:19:08 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/22 20:56:36 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/24 19:36:30 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	handle_error(t_mshell *data, int error)
 	message = error_message[error];
 	ft_putstr_fd("minishell: ", 1);
 	ft_putstr_fd(message, 1);
-	//reset_data(data);
+	reset_data(data);
 	return (EXIT_FAILURE);
 }
 
@@ -60,8 +60,9 @@ int	handle_error2(t_mshell *data, int error, char *str, char **array)
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
 		ft_putstr_fd(str, STDERR_FILENO);
 		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
+		return (2);
 	}
-	//reset_data(data);
+	reset_data(data);
 	return (EXIT_FAILURE);
 }
 
@@ -79,6 +80,6 @@ int	handle_error3(t_mshell *data, int error, char *str)
 		ft_putstr_fd("minishell: no such file or directory: ", STDERR_FILENO);
 		ft_putendl_fd(str, STDERR_FILENO);
 	}
-	//reset_data(data);
+	reset_data(data);
 	return(EXIT_FAILURE);
 }

@@ -137,10 +137,3 @@ int	mini_export(t_mshell *minishell, t_parser *commands)
 	}
 	return (EXIT_SUCCESS);
 }
-
-//export ZZZ=\"hello\"
-//expected:
-//env: ZZZ="hello"
-//reality:
-//minishell: syntax error: unable to find closing quotation
-

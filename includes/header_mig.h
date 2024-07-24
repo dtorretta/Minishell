@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:29:16 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/22 21:32:18 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/24 21:32:04 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,15 @@
 
 # include "../libft/includes/libft.h"
 # include <fcntl.h>
+# include <stdio.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
 # include <stdbool.h>
-# include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <sys/wait.h>
+# include <termios.h>
 
 # define MAX_EXP_SIZE 1024 // buffer for expanded variables "expander.c"
 
@@ -92,8 +93,9 @@ int					init_data(t_mshell *data);
 int					reset_data(t_mshell *data);
 /*-Signals-*/
 void				init_signals(void);
-void	handle_ctrl_backslash(int sig); // Chequear si se necesita por fuera
-void	handle_ctrl_c(int sig);         // Chequear si se necesita por fuera
+void				handle_ctrl_backslash(int sig); // Chequear si se necesita por fuera
+void				handle_ctrl_c(int sig);         // Chequear si se necesita por fuera
+void				handle_ctrl_c_child(int sig);
 
 /*******LEXER*******/
 
@@ -215,5 +217,7 @@ int					handle_error3(t_mshell *data, int error, char *str);
 
 /*******MAIN*******/
 int					minishell(t_mshell *data);
+
+void	lala(int sig);
 
 #endif

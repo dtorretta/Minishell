@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 15:39:40 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/17 22:15:59 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/24 19:06:59 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,6 @@ char	*get_variable_value(t_mshell *data, char *var_name)
 	return (NULL);
 }
 
-char	*get_exit_status(t_mshell *data)
-{
-	char	*status;
-
-	status = ft_itoa(data->exit_code); //revisar cuando en la iniciacion del executor se asigna el valor a exit_code
-	return (status);
-}
 
 char	*expand_variable(t_mshell *data, const char *str, int *index)
 {
@@ -59,7 +52,7 @@ char	*expand_variable(t_mshell *data, const char *str, int *index)
 
 	if (str[1] == '?')
 	{
-		var_value = get_exit_status(data);
+		var_value = ft_itoa(data->exit_code);
 		*index += 2;
 		return (var_value);
 	}

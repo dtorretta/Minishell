@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 21:10:52 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/22 21:31:33 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/24 19:22:41 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ int	init_data(t_mshell *data)
 	data->reset = false;
 	data->pid = NULL;
 	data->pipes = 0;
-	data->exit_code = 0;
 	//g_global.stop_heredoc = 0;
 	//g_global.in_cmd = 0;
 	//g_global.in_heredoc = 0;
