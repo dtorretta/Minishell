@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 17:29:08 by miguandr          #+#    #+#             */
-/*   Updated: 2024/06/14 19:03:17 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/22 21:31:46 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,26 @@ char	**dup_str(char **array)
 		i++;
 	}
 	return (result);
+}
+
+void	ft_commands_clear(t_parser **lst)
+{
+	t_parser	*tmp;
+	t_lexer		*redirections_tmp;
+
+	if (!*lst)
+		return ;
+	while (*lst)
+	{
+		tmp = (*lst)->next;
+		redirections_tmp = (*lst)->redirections;
+		free_lexer_list(redirections_tmp);
+		if ((*lst)->str)
+			ft_free_array((*lst)->str);
+		if ((*lst)->hd_file_name)
+			free((*lst)->hd_file_name);
+		free(*lst);
+		*lst = tmp;
+	}
+	*lst = NULL;
 }

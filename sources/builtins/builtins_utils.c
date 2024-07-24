@@ -57,7 +57,10 @@ char	*delete_quotes(char *str, t_mshell *minishell)
 	len = ft_strlen(str);
 	result = ft_calloc((len + 1), sizeof(char));
 	if (!result)
-		return (handle_error(minishell, 0));
+	{
+		handle_error(minishell, 0);
+		return (NULL);
+	}
 	while (i < len)
 	{
 		if (str[i] != '\'' && str[i] != '\"')

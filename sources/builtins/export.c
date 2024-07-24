@@ -26,45 +26,45 @@
 //si lo encuentra, actualizar el valor
 //si no lo encuentra lo a;axde al final
 
-static int check_coincidence (t_mshell *minishell, int i, char *var_name, char *add_var)
+static int	check_coincidence(t_mshell *minishell, int i, char *var_name, char *add_var)
 {
-	
-	if(!ft_strncmp(minishell->envp[i], var_name, ft_strlen(var_name))) 
+
+	if (!ft_strncmp(minishell->envp[i], var_name, ft_strlen(var_name)))
 	{
 		free(minishell->envp[i]);
 		minishell->envp[i] = add_var;
-		return(0);
+		return (0);
 	}
-	return(1);
+	return (1);
 }
 
 // Verifica si el carácter c es válido como parte de un identificador de variable en Bash
-static bool check_valid_identifier(char c) 
+static bool	check_valid_identifier(char c)
 {
 	if ((c >= 'a' && c <= 'z') ||
 		(c >= 'A' && c <= 'Z') ||
 		(c >= '0' && c <= '9') ||
 		c == '_' )
-		return true;
-	else 
-		return false;
+		return (true);
+	else
+		return (false);
 }
 
 //elimina todos los quotes
 //si encuentra =, almacena el nombre de la variable sin quotes en var_name
-static char *check_quotes(char *str, char **var_name, t_mshell *minishell)
+static char	*check_quotes(char *str, char **var_name, t_mshell *minishell)
 {
-	int i;
-	char *temp;
+	int		i;
+	char	*temp;
 	//char *def;
-	
+
 	i = 0;
 	temp = delete_quotes(str, minishell);
 	while (str[i])
 	{
-		if(str[i] == '=')
+		if (str[i] == '=')
 		{
-			i++;
+			//i++;
 			//temp = delete_quotes(ft_substr(str, 0, i)); //export varname & =
 			*var_name = delete_quotes(ft_substr(str, 0, i), minishell); //export varname & =
 			//temp = delete_quotes(str);
@@ -81,46 +81,46 @@ static char *check_quotes(char *str, char **var_name, t_mshell *minishell)
 	return(temp);
 }
 
-static int error_check (t_mshell *minishell, t_parser *commands)
+static int	error_check(t_mshell *minishell, t_parser *commands)
 {
-	int i;
-	
+	int	i;
+
 	i = 0;
 	if (commands->str[1] && commands->str[2])
-		return(handle_error2(minishell, 1, NULL, commands->str));		
+		return (handle_error2(minishell, 1, NULL, commands->str));
 	else if (commands->str[1])
 	{
 		if (ft_isdigit(commands->str[1][0]) || commands->str[1][0] == '=')
-			return(handle_error2(minishell, 2, commands->str[1], NULL));
-		while (commands->str[1][i] != '=' && commands->str[1][i]) 
+			return (handle_error2(minishell, 2, commands->str[1], NULL));
+		while (commands->str[1][i] != '=' && commands->str[1][i])
 		{
-			if (!check_valid_identifier(commands->str[1][i])) 
+			if (!check_valid_identifier(commands->str[1][i]))
 			{
 				if (commands->str[1][i] == '!')
-					return(handle_error2(minishell, 3, commands->str[1] + i, NULL));
+					return (handle_error2(minishell, 3, commands->str[1] + i, NULL));
 				else
-					return(handle_error2(minishell, 4, commands->str[1], NULL));
+					return (handle_error2(minishell, 4, commands->str[1], NULL));
 			}
 			i++;
 		}
 	}
-	return(EXIT_SUCCESS);
+	return (EXIT_SUCCESS);
 }
 
 //str[0] --> export
 //str[1] --> nombre de la variable (puede incluir la definicion)
 //str[2] --> error ya que significa que el comando original tenia espacios
-int mini_export (t_mshell *minishell, t_parser *commands)
+int	mini_export(t_mshell *minishell, t_parser *commands)
 {
-	int i;
-	char **temp;
-	char *add_var;
-	char *var_name;
-	
+	int		i;
+	char	**temp;
+	char	*add_var;
+	char	*var_name;
+
 	i = -1;
-	if(error_check(minishell, commands))
-		return(EXIT_FAILURE);
-	if(!commands->str[1] || commands->str[1][0] == '\0') //deberia imprimir algo mas que el enviroment???????
+	if (error_check(minishell, commands))
+		return (EXIT_FAILURE);
+	if (!commands->str[1] || commands->str[1][0] == '\0') //deberia imprimir algo mas que el enviroment???????
 		mini_env(minishell, commands);
 	else
 	{
@@ -128,17 +128,19 @@ int mini_export (t_mshell *minishell, t_parser *commands)
 		while(minishell->envp[++i])
 		{
 			if(check_coincidence(minishell, i, var_name, add_var) == 0)
-				return(EXIT_SUCCESS);	
+				return(EXIT_SUCCESS);
 		}
 		temp = new_array(minishell->envp, add_var);
-		free_string_array(minishell->envp);		
+		free_string_array(minishell->envp);
 		minishell->envp = temp;
 		free(var_name);
 	}
-	return(EXIT_SUCCESS);
+	return (EXIT_SUCCESS);
 }
 
-
 //export ZZZ=\"hello\"
-// --> ZZZ="hello"       --> no me reconoce que no debe borrarlas. ver funcion de migue      
+//expected:
+//env: ZZZ="hello"
+//reality:
+//minishell: syntax error: unable to find closing quotation
 

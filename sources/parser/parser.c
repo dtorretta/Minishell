@@ -38,18 +38,22 @@ static int	count_args(t_lexer *head, t_mshell *minishell)
 //Allocates memory with calloc for the arguments array.
 //Copies str from lexer L to the argument array, deleting nodes from lexer L.
 //Expands the first element of the array (builtin name).
-static char **built_args(t_mshell *minishell, int i)
+static char	**built_args(t_mshell *minishell, int i)
 {
 	t_lexer	*current;
 	t_lexer	*next_node;
-	int     arguments;
-	char    **expanded_array;
+	int		arguments;
+	char	**expanded_array;
 	char	**arg_array;
 
+	current = minishell->lexer_list;
 	arguments = count_args(minishell->lexer_list, minishell); //al nodo general le a;ade los token WORD
 	arg_array = calloc ((arguments + 1), sizeof(char*));
 	if (!arg_array)
-		return (handle_error(minishell, 0));
+	{
+		handle_error (minishell, 0);
+		return (NULL);
+	}
 	while (i < arguments)
 	{
 		arg_array[i] = strdup(current->str);
@@ -58,8 +62,9 @@ static char **built_args(t_mshell *minishell, int i)
 		i++;
 		current = next_node;
 	}
+	minishell->lexer_list = current;
 	expanded_array = expander_builtins(minishell, arg_array);
-	return(expanded_array);
+	return (expanded_array);
 }
 
 //Iterates over each node in the lexer_list until a PIPE token is found.
@@ -68,7 +73,7 @@ static char **built_args(t_mshell *minishell, int i)
 //Increments the number of redirections.
 //Sets the array of WORD-strings using built_args.
 //Assigns the built-in function name and pointer using builtins_handle
-static void built_node(t_parser *commands, t_mshell *minishell)
+static void	built_node(t_parser *commands, t_mshell *minishell)
 {
 	t_lexer	*current;
 	t_lexer	*next_node;
@@ -104,7 +109,7 @@ void	parser(t_mshell *minishell)
 
 	current = minishell;
 	minishell->commands = NULL;
-	
+
 	while (current->lexer_list)
 	{
 		node = parser_new_node(minishell);

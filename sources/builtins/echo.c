@@ -16,26 +16,64 @@
 //followed by a new line (ft_putendl_fd)
 //echo -n doesn't print a new line (ft_putstr_fd)
 //bash accept multiples -n
+
+// int	mini_echo(t_mshell *minishell, t_parser *commands)
+// {
+// 	int		i;
+// 	char	*temp;
+
+// 	(void) minishell;
+// 	temp = NULL;
+// 	i = 1;
+// 	if (commands->str)
+// 	{
+// 		if (!ft_strncmp (commands->str[1], "-n", 3))
+// 		{
+// 			while (commands->str[1] && !ft_strncmp (commands->str[1], "-n", 3))
+// 				i++;
+// 			temp = delete_quotes (commands->str[i], minishell);
+// 			ft_putstr_fd(temp, 1);
+// 		}
+// 		else
+// 		{
+// 			temp = delete_quotes (commands->str[i], minishell);
+// 			ft_putendl_fd(temp, 1);
+// 		}
+// 	}
+// 	free(temp);
+// 	return (EXIT_SUCCESS);
+// }
+
+
 int	mini_echo(t_mshell *minishell, t_parser *commands)
 {
 	int		i;
 	char	*temp;
 
 	(void) minishell;
+	temp = NULL;
 	i = 1;
-	if (commands->str)
+	while (commands->str[i])
 	{
 		if (!ft_strncmp (commands->str[1], "-n", 3))
 		{
-			while (commands->str[1] && !ft_strncmp (commands->str[1], "-n", 3))
+			while (commands->str[i] && !ft_strncmp (commands->str[i], "-n", 3))
 				i++;
 			temp = delete_quotes (commands->str[i], minishell);
 			ft_putstr_fd(temp, 1);
+			i++;
+			if (commands->str[i])
+				write(1, " ", 1);
 		}
 		else
 		{
 			temp = delete_quotes (commands->str[i], minishell);
-			ft_putendl_fd(temp, 1);
+			ft_putstr_fd(temp, 1);
+			i++;
+			if (commands->str[i])
+				write(1, " ", 1);
+			else
+				write(1, "\n", 1);
 		}
 	}
 	free(temp);

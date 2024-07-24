@@ -15,21 +15,23 @@
 //el bash real hace distincion sobre si despues del exit viene un numero, una letra etc.
 //pero las instrucciones al decir que tenemos que implementar exit sin ninguna opcion, no agregue ese manejo de errores,
 //esta bien?
-void free_minishell (t_mshell *minishell) //lo necesito para alguna otra funcion?
+void	free_minishell(t_mshell *minishell) //lo necesito para alguna otra funcion?
 {
+	free_lexer_list(minishell->commands->redirections);
+	//free_string_array(minishell->commands->str);
 	free_parser_list(minishell->commands);
 	free_lexer_list(minishell->lexer_list);
 	free_string_array(minishell->paths);
 	free_string_array(minishell->envp);
 	if (minishell->pwd)
-	    free(minishell->pwd);
+		free(minishell->pwd);
 	if (minishell->old_pwd)
-	    free(minishell->old_pwd);
-	if(minishell->pid)
+		free(minishell->old_pwd);
+	if (minishell->pid)
 		free(minishell->pid);
-	if(minishell->args)
+	if (minishell->args)
 		free(minishell->args);
-	free(minishell); 
+	// free(minishell);
 }
 
 static int	is_num(char *num)
@@ -50,13 +52,13 @@ static int	is_num(char *num)
 }
 
 //en bash cuando tenes ; deja de leer --> exit a;b --> bash: exit: a: numeric argument required (no lo agregue)
-int mini_exit(t_mshell *minishell, t_parser *commands)
+int	mini_exit(t_mshell *minishell, t_parser *commands)
 {
-	if (commands == NULL || minishell == NULL) 
-		return EXIT_FAILURE;  	
+	if (commands == NULL || minishell == NULL)
+		return (EXIT_FAILURE);
 	ft_putendl_fd("exit", STDOUT_FILENO);
 	if (!commands->str[1]) //si solo esta exit
-		minishell->exit_code = 0; 
+		minishell->exit_code = 0;
 	else if (is_num(commands->str[1]) && commands->str[2]) //si hay varios argumentos --> error
 	{
 		ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
@@ -68,9 +70,9 @@ int mini_exit(t_mshell *minishell, t_parser *commands)
 			return(handle_error2(minishell, 4, commands->str[1], NULL));
 		else //si solo son numeros
 			minishell->exit_code = ft_atoi(commands->str[1]);
-	}	
+	}
 	free_minishell (minishell);
 	exit (minishell->exit_code); //finaliza el programa con un código de salida específico para el sistema operativo. Puede ser utilizado para determinar cómo terminó el programa
-	
+
 	//return (EXIT_SUCCESS); //nunca se va a ejecutar
 }

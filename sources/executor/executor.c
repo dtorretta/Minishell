@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 11:36:17 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/21 00:02:06 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/22 21:41:59 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,21 +28,21 @@ static t_parser	*call_expander(t_mshell *data, t_parser *cmd)
 	return (cmd);
 }
 
-static void check_heredoc(t_mshell *minishell, t_parser *commands)
+static void	check_heredoc(t_mshell *minishell, t_parser *commands)
 {
-	t_parser *temp;
-	
+	t_parser	*temp;
+
 	temp = commands;
 	while (temp->redirections)
-	{	
-		if(temp->redirections->token == HERE_DOC)
+	{
+		if (temp->redirections->token == HERE_DOC)
 		{
 			if (temp->hd_file_name)
 				free(temp->hd_file_name);
 			temp->hd_file_name = generate_name();
 			minishell->exit_code = ft_heredoc(temp, minishell); //si se ejecuta bien exit_code tendra valor 0, esta bien que almacene codigos de exito?
 			temp->heredoc = true;
-			break;
+			break ;
 		}
 		temp = temp->next;
 	}
@@ -81,7 +81,7 @@ void	execute_single_cmd(t_parser *cmd, t_mshell *data)
 // - Declare an array of two int to store the read and write ends of the pipe.
 // - Use the pipe() function to initialize the pipe.
 //If there is a PIPE token, spawns a child process.
-void	execute_pipe_cmd(t_mshell *minishell)
+int	execute_pipe_cmd(t_mshell *minishell)
 {
 	int			fd[2];
 	int			fd_prev;
@@ -95,7 +95,7 @@ void	execute_pipe_cmd(t_mshell *minishell)
 		expanded_cmds = call_expander(minishell, temp_commands);
 		if (expanded_cmds->next)
 		{
-			if(pipe(fd) == -1)
+			if (pipe(fd) == -1)
 				return (handle_error(minishell, 7));
 		}
 		check_heredoc(minishell, expanded_cmds);
