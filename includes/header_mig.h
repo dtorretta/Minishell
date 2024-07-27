@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:29:16 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/24 22:53:32 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/27 21:04:16 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,18 +38,25 @@ typedef enum s_tokens
 	HERE_DOC,
 }					t_tokens;
 
+/*typedef struct s_quotes
+{
+	bool			is_single;
+	bool			is_double;
+}					t_quotes;*/
+
 typedef struct s_lexer
 {
 	char			*str;
 	t_tokens		token;
 	int				i;
 	bool			is_single;
+	bool			is_double;
 	struct s_lexer	*next;
 	struct s_lexer	*prev;
 }					t_lexer;
 
-struct s_parser;
-struct s_mshell;
+struct	s_parser;
+struct	s_mshell;
 
 // ESTA ES LA ESTRUCTURA FINAL QUE SE PASA AL EXECUTABLE
 typedef struct s_mshell
@@ -108,7 +115,7 @@ int					handle_token(char *str, int i, t_lexer **lexer_list);
 int					handle_word(char *str, int start, t_lexer **lexer_list);
 /*-Quote handling-*/
 int					count_quotes(char *str);
-int					skip_quotes(const char *str, int start, char quote, t_lexer **lexer);
+int					skip_quotes(const char *str, int start, char quote);
 /*-Utils-*/
 int					skip_space(char *str, int i);
 int					add_node(char *str, t_tokens token, t_lexer **lexer_list);
@@ -160,8 +167,8 @@ char				*delete_quotes(char *str, t_mshell *minishell);
 
 void				expander(t_mshell *data, char **str);
 char				*expand_str(t_mshell *data, char *str);
-char				*handle_inside_quote(t_mshell *data, char *s, int *i,
-						char *result);
+//char				*handle_inside_quote(t_mshell *data, char *s, int *i,
+//						char *result);
 char				*expand_double_quote(t_mshell *data, char *str);
 /*-Variables-*/
 char				*get_variable_name(const char *str, t_mshell *data);

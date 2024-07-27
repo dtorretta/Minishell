@@ -6,13 +6,13 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 11:36:17 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/24 20:52:11 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/27 19:25:47 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/header_mig.h" //modifica el nombre
 
-static t_parser	*call_expander(t_mshell *data, t_parser *cmd)
+/*static t_parser	*call_expander(t_mshell *data, t_parser *cmd)
 {
 	t_lexer	*start;
 
@@ -26,7 +26,7 @@ static t_parser	*call_expander(t_mshell *data, t_parser *cmd)
 	}
 	cmd->redirections = start;
 	return (cmd);
-}
+}*/
 
 static void	check_heredoc(t_mshell *minishell, t_parser *commands)
 {
@@ -56,10 +56,10 @@ static int	is_main_process_builtin(int (*builtin)(t_mshell *, t_parser *)) //mej
 
 void	execute_single_cmd(t_parser *cmd, t_mshell *data)
 {
-	t_parser	*expanded_cmds;
+	//t_parser	*expanded_cmds; no es necesario porque ya se expandio
 	pid_t		pid;
 
-	expanded_cmds = call_expander(data, cmd);
+	//expanded_cmds = call_expander(data, cmd);
 	if (cmd->builtins && is_main_process_builtin(cmd->builtins)) //mejor poner todo aca junto
 	{
 		data->exit_code = cmd->builtins(data, cmd);
@@ -70,7 +70,7 @@ void	execute_single_cmd(t_parser *cmd, t_mshell *data)
 	if (pid < 0)
 		handle_error(data, 5);
 	else if (pid == 0)
-		execute_command(data, expanded_cmds);
+		execute_command(data, cmd);
 		//execute_command(expanded_cmds, data);
 	wait_childspid(data, (int[]){pid});
 	//wait_for_child(data, pid);
@@ -86,25 +86,25 @@ int	execute_pipe_cmd(t_mshell *minishell)
 	int			fd[2];
 	int			fd_prev;
 	t_parser	*temp_commands;
-	t_parser	*expanded_cmds;
+	//t_parser	*expanded_cmds; ahora: minishell->commands
 
 	temp_commands = minishell->commands;
 	fd_prev = STDIN_FILENO;
 	while (temp_commands)
 	{
-		expanded_cmds = call_expander(minishell, temp_commands);
-		if (expanded_cmds->next)
+		//expanded_cmds = call_expander(minishell, temp_commands);
+		if (minishell->commands->next)
 		{
 			if (pipe(fd) == -1)
 				return (handle_error(minishell, 7));
 		}
-		check_heredoc(minishell, expanded_cmds);
-		ft_fork(minishell, expanded_cmds, fd, fd_prev);
+		check_heredoc(minishell, minishell->commands);
+		ft_fork(minishell, minishell->commands, fd, fd_prev);
 		close(fd[1]);
-		if (expanded_cmds->prev)
+		if (minishell->commands->prev)
 			close(fd_prev);
-		fd_prev = get_fd(minishell, fd, expanded_cmds);
-		expanded_cmds = expanded_cmds->next;
+		fd_prev = get_fd(minishell, fd, minishell->commands);
+		minishell->commands = minishell->commands->next;
 	}
 	wait_childspid(minishell, minishell->pid);
 	return (EXIT_SUCCESS);

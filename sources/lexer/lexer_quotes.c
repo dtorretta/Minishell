@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 17:19:25 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/24 22:52:36 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/27 21:01:00 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int	count_quotes(char *str)
 	return (0);
 }
 
-int	skip_quotes(const char *str, int start, char quote, t_lexer **lexer)
+int	skip_quotes(const char *str, int start, char quote)
 {
 	int	len;
 
@@ -67,8 +67,6 @@ int	skip_quotes(const char *str, int start, char quote, t_lexer **lexer)
 			len++;
 		if (str[start + len] == quote)
 			len++;
-		if (quote == '\'')
-			(*lexer)->is_single = true;
 	}
 	return (len);
 }

@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:43:09 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/24 21:13:33 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/26 20:54:11 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ int	lexer(t_mshell *data)
 	if (*data->args == '\0')
 		return (reset_data(data));
 	add_history(data->args);
+	data->lexer_list = NULL;
 	if (!count_quotes(data->args))
 		return (handle_error(data, 1));
 	if (!tokenizer(data))

@@ -43,7 +43,7 @@ static char	**built_args(t_mshell *minishell, int i)
 	t_lexer	*current;
 	t_lexer	*next_node;
 	int		arguments;
-	char	**expanded_array;
+	//char	**expanded_array;
 	char	**arg_array;
 
 	current = minishell->lexer_list;
@@ -63,8 +63,9 @@ static char	**built_args(t_mshell *minishell, int i)
 		current = next_node;
 	}
 	minishell->lexer_list = current;
-	expanded_array = expander_builtins(minishell, arg_array);
-	return (expanded_array);
+	expander(minishell, arg_array);
+	//expanded_array = expander_builtins(minishell, arg_array);
+	return (arg_array);
 }
 
 //Iterates over each node in the lexer_list until a PIPE token is found.

@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 20:59:12 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/24 22:53:03 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/27 21:00:49 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,6 @@ static int	process_double(char *str, int i, t_tokens token, t_lexer **list)
 	return (2);
 }
 
-static int	process_single(t_tokens token, t_lexer **list)
-{
-	if (!add_node(NULL, token, list))
-		return (-1);
-	return (1);
-}
-
 int	handle_token(char *str, int i, t_lexer **lexer_list)
 {
 	t_tokens	token;
@@ -59,41 +52,28 @@ int	handle_token(char *str, int i, t_lexer **lexer_list)
 			return (result);
 	}
 	if (token)
-		return (process_single(token, lexer_list));
+	{
+		if (!add_node(NULL, token, lexer_list))
+			return (-1);
+	}
 	return (0);
 }
 
 int	handle_word(char *str, int start, t_lexer **lexer_list)
 {
-	char	*trimmed_word;
-	char	*word;
-	int		len;
-	int		word_len;
+	int	len;
 
 	len = 0;
-	word_len = 0;
-	(*lexer_list)->is_single = false;
 	while (str[start + len] && (!check_token(str[start + len])
 			&& !ft_iswhitespace(str[start + len])))
 	{
-		len += skip_quotes(str, start + len, '\'', lexer_list);
-		len += skip_quotes(str, start + len, '\"', NULL);
+		len += skip_quotes(str, start + len, '\'');
+		len += skip_quotes(str, start + len, '\"');
 		if (str[start + len] && (!check_token(str[start + len])
 				&& !ft_iswhitespace(str[start + len])))
 			len++;
 	}
-	word = ft_substr(str, start, len);
-	if (!word)
-		return (-1);
-	word_len = ft_strlen(word);
-	if (word_len > 1 && ((word[0] == '\'' && word[word_len - 1] == '\'')
-			|| (word[0] == '\"' && word[word_len - 1] == '\"')))
-	{
-		trimmed_word = ft_substr(word, 1, word_len - 2);
-		free(word);
-		word = trimmed_word;
-	}
-	if (!add_node(word, WORD, lexer_list))
+	if (!add_node(ft_substr(str, start, len), WORD, lexer_list))
 		return (-1);
 	return (len);
 }

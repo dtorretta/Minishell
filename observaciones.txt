@@ -24,6 +24,7 @@ bool flag = true si es single quote que se revisa en el parser en caso de ser ve
 
 Nos quedamos en single quotes
 
+MIGUE
 Expander: tiene que evitar expandir cuando es single_quote
 -minishell> echo ' hola $HOME  '
 hola $HOME
