@@ -53,17 +53,25 @@ $(LIBFT):
 $(NAME):		$(OBJ)
 				@echo "Compiling Minishell..."
 				@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT) $(LDFLAGS) $(LINKS)
-				@echo "Minishell ready."
+				@echo "\n------------------------------------------\n"
+				@echo "📟 Minishell Ready!\n"
+				@echo "------------------------------------------\n"
 
 clean:
 				@echo "Removing .o object files..."
 				@rm -rf $(OBJ_DIR)
 				@make clean -C $(LIBFT_DIR)
+				@echo "\n------------------------------------------\n"
+				@echo "💧 Clean: Removed all the \".o\" files \n"
+				@echo "------------------------------------------\n"
 
 fclean:			clean
 				@echo "Removing Minishell..."
 				@rm -f $(NAME)
 				@make fclean -C $(LIBFT_DIR)
+				@echo "\n------------------------------------------\n"
+				@echo "🧼 Fclean: Removed the executables \n"
+				@echo "------------------------------------------\n"
 
 re:				fclean all
 
