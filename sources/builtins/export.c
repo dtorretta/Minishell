@@ -59,14 +59,16 @@ static char	*check_quotes(char *str, char **var_name, t_mshell *minishell)
 	//char *def;
 
 	i = 0;
-	temp = delete_quotes(str, minishell);
+	//temp = delete_quotes(str, minishell);
+	temp = str; //aacar el temp
 	while (str[i])
 	{
 		if (str[i] == '=')
 		{
 			//i++;
 			//temp = delete_quotes(ft_substr(str, 0, i)); //export varname & =
-			*var_name = delete_quotes(ft_substr(str, 0, i), minishell); //export varname & =
+			//*var_name = delete_quotes(ft_substr(str, 0, i), minishell); //export varname & =
+			*var_name = ft_substr(str, 0, i); //VER
 			//temp = delete_quotes(str);
 			//*var_name = ft_strdup(temp); //revisar si esto sobrepasa esta funcion
 			//def = delete_quotes(str + i); //lo que viene despues del ==
@@ -76,7 +78,8 @@ static char	*check_quotes(char *str, char **var_name, t_mshell *minishell)
 		else
 			i++;
 	}
-	*var_name = delete_quotes(str, minishell); //si no hay = de todos modos hay que darle valor a var name
+	//*var_name = delete_quotes(str, minishell); //si no hay = de todos modos hay que darle valor a var name
+	*var_name = str; //si no hay = de todos modos hay que darle valor a var name
 	//temp = delete_quotes(str);
 	return(temp);
 }

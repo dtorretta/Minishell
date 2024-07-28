@@ -43,7 +43,8 @@ static char	*rm_quote(char *str, t_mshell *minishell, int flag) //no borrar, es 
 			if (flag == 1)
 			{
 				substr = ft_substr(str, 0, i);
-				temp = delete_quotes(substr, minishell); //si uno todo en la mism a linea funciona pero da memory leaks
+				//temp = delete_quotes(substr, minishell); //si uno todo en la mism a linea funciona pero da memory leaks
+				temp = substr; //elimintar el temp
 				free(substr);
 				return (temp);
 			}
@@ -52,7 +53,8 @@ static char	*rm_quote(char *str, t_mshell *minishell, int flag) //no borrar, es 
 		}
 		i++;
 	}
-	temp = delete_quotes(str, minishell); //si no hay = de todos modos hay que darle valor a var name
+	//temp = delete_quotes(str, minishell); //si no hay = de todos modos hay que darle valor a var name
+	temp = str; //elimintar el temp
 	return (temp);
 }
 

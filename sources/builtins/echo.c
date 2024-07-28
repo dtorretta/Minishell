@@ -59,7 +59,8 @@ int	mini_echo(t_mshell *minishell, t_parser *commands)
 		{
 			while (commands->str[i] && !ft_strncmp (commands->str[i], "-n", 3))
 				i++;
-			temp = delete_quotes (commands->str[i], minishell);
+			//temp = delete_quotes (commands->str[i], minishell);
+			temp = commands->str[i]; //quitar el temp
 			ft_putstr_fd(temp, 1);
 			i++;
 			if (commands->str[i])
@@ -67,7 +68,8 @@ int	mini_echo(t_mshell *minishell, t_parser *commands)
 		}
 		else
 		{
-			temp = delete_quotes (commands->str[i], minishell);
+			//temp = delete_quotes (commands->str[i], minishell);
+			temp = commands->str[i]; //quitar el temp
 			ft_putstr_fd(temp, 1);
 			i++;
 			if (commands->str[i])
