@@ -76,75 +76,7 @@ re:				fclean all
 
 # Phony targets represent actions not files
 .PHONY: all clean fclean re
-
-
-
-
-//cosas que no entiendo de single_cmd
-
-void	single_cmd(t_simple_cmds *cmd, t_tools *tools)
-{
-	int	pid;
-	int	status;
-
-	tools->simple_cmds = call_expander(tools, tools->simple_cmds);
-	
-	//Si el comando es un built-in (como cd, exit, export o unset), se ejecuta directamente en el proceso actual. No se crea un nuevo proceso.
-	
-	if (cmd->builtin == mini_cd || cmd->builtin == mini_exit || cmd->builtin == mini_export || cmd->builtin == mini_unset)
-	{
-		g_global.error_num = cmd->builtin(tools, cmd);
-		return ;
-	}
-	
-	send_heredoc(tools, cmd); //(⚠️ QUE PASA CON EL <<???)
-	
-	//(ECHO, ENV, PWD) Aquí es donde fork() entra en juego. fork() crea un nuevo proceso duplicado del proceso actual. Después de fork(), hay dos procesos: el proceso padre y el proceso hijo.
-	
-	pid = fork(); //Almacena el PID del proceso hijo
-	
-	if (pid < 0)
-		ft_error(5, tools);
-	if (pid == 0) //significa que estamos en el proceso hijo, y se ejecuta handle_cmd(cmd, tools); para manejar y ejecutar el comando.
-		handle_cmd(cmd, tools);
-		
-	waitpid(pid, &status, 0); //El proceso padre espera a que el proceso hijo termine usando waitpid().
-	
-	
-	
-	//El proceso padre espera a que el proceso hijo termine y luego recoge su estado de salida para determinar si el comando se ejecutó correctamente o si hubo algún error.
-	
-	if (WIFEXITED(status)) // if num no es cero //Esta macro extrae el código de salida del proceso hijo. Es el valor que el proceso hijo pasó a exit o el valor de retorno de la función principal del hijo.. 
-	//Devuelve un valor distinto de cero (verdadero) si el hijo terminó normalmente, es decir, mediante una llamada a exit o regresando desde la función principal.
-	//Devuelve 0 (falso) si el proceso hijo no terminó normalmente (por ejemplo, si fue terminado por una señal).
-	
-		g_global.error_num = WEXITSTATUS(status); //Extrae el código de salida del proceso hijo. //Este código de salida es 0 si el hijo terminó correctamente y distinto de 0 si hubo algún error.
-}
-//Redirección de Entrada/Salida: Muchos comandos de shell requieren redireccionar su entrada o salida. Esto se puede manejar fácilmente en un proceso hijo sin afectar al proceso padre.
-//Pipes: En una tubería (pipeline), múltiples comandos se ejecutan simultáneamente y su salida/entrada se conecta mediante pipes. Esto se implementa creando múltiples procesos hijos, uno para cada comando en la tubería.
-//Distinción Clara: Los built-ins a menudo necesitan modificar el estado del shell (por ejemplo, cd cambia el directorio de trabajo, export modifica variables de entorno). Ejecutar built-ins en el proceso actual permite que estos cambios persistan. En cambio, los comandos externos no necesitan modificar el estado del shell y se ejecutan en procesos hijos.
-
-
-
-
 	
 	
 	
 	
-	
-	t_simple_cmds	*call_expander(t_tools *tools, t_simple_cmds *cmd)
-{
-	t_lexer	*start;
-
-	cmd->str = expander(tools, cmd->str);       (⚠️ REESCRIBE EL ARRAY STR????)
-	start = cmd->redirections;
-	while (cmd->redirections)
-	{
-		if (cmd->redirections->token != LESS_LESS)
-			cmd->redirections->str
-				= expander_str(tools, cmd->redirections->str);
-		cmd->redirections = cmd->redirections->next;
-	}
-	cmd->redirections = start;
-	return (cmd);
-}

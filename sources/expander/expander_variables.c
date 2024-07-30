@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander_variables.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 15:39:40 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/24 19:06:59 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/30 21:34:20 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,27 +44,28 @@ char	*get_variable_value(t_mshell *data, char *var_name)
 	return (NULL);
 }
 
+//lo puse en expander_utils
 
-char	*expand_variable(t_mshell *data, const char *str, int *index)
-{
-	char	*var_name;
-	char	*var_value;
+// char	*expand_variable(t_mshell *data, const char *str, int *index)
+// {
+// 	char	*var_name;
+// 	char	*var_value;
 
-	if (str[1] == '?')
-	{
-		var_value = ft_itoa(data->exit_code);
-		*index += 2;
-		return (var_value);
-	}
-	else
-	{
-		var_name = get_variable_name(str + 1, data);
-		var_value = get_variable_value(data, var_name);
-		*index += ft_strlen(var_name) + 1;
-		free(var_name);
-		if (var_value)
-			return (var_value);
-		else
-			return (NULL);
-	}
-}
+// 	if (str[1] == '?')
+// 	{
+// 		var_value = ft_itoa(data->exit_code);
+// 		*index += 2;
+// 		return (var_value);
+// 	}
+// 	else
+// 	{
+// 		var_name = get_variable_name(str + 1, data);
+// 		var_value = get_variable_value(data, var_name);
+// 		*index += ft_strlen(var_name) + 1;
+// 		free(var_name);
+// 		if (var_value)
+// 			return (var_value);
+// 		else
+// 			return (NULL);
+// 	}
+// }

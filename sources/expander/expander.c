@@ -3,128 +3,128 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 14:54:25 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/27 21:10:00 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/31 00:45:43 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/header_mig.h"
 
 
-char	*expand_double_quote(t_mshell *data, char *str)
-{
-	char	*result;
-	int		len;
-	int		i;
-	int		result_len;
-	char	*var_value;
+// char	*expand_double_quote(t_mshell *data, char *str)
+// {
+// 	char	*result;
+// 	int		len;
+// 	int		i;
+// 	int		result_len;
+// 	char	*var_value;
 
-	i = 0;
-	result_len = 0;
-	len = ft_strlen(str);
-	result = ft_calloc(MAX_EXP_SIZE, sizeof(char));
-	if (!result)
-		handle_error(data, 0);
+// 	i = 0;
+// 	result_len = 0;
+// 	len = ft_strlen(str);
+// 	result = ft_calloc(MAX_EXP_SIZE, sizeof(char));
+// 	if (!result)
+// 		handle_error(data, 0);
 
-	while (i < len)
-	{
-		if (str[i] == '\"')
-		{
-			i++;
-			while (i < len && str[i] != '\"')
-			{
-				if (str[i] == '$')
-				{
-					var_value = expand_variable(data, str + i, &i);
-					if (var_value)
-					{
-						ft_strcpy(result + result_len, var_value);
-						result_len += ft_strlen(var_value);
-						free(var_value);
-					}
-				}
-				else if (str[i] == '\'')
-				{
-					result[result_len] = str[i];
-					result_len++;
-					i++;
-					while (i < len && str[i] != '\'')
-					{
-						if (str[i] == '$')
-						{
-							var_value = expand_variable(data, str + i, &i);
-							if (var_value)
-							{
-								ft_strcpy(result + result_len, var_value);
-								result_len += ft_strlen(var_value);
-								free(var_value);
-							}
-						}
-						else
-						{
-							result[result_len] = str[i];
-							result_len++;
-							i++;
-						}
-					}
-					if (str[i] == '\'')
-					{
-						result[result_len] = str[i];
-						result_len++;
-						i++;
-					}
-				}
-				else
-				{
-					result[result_len] = str[i];
-					result_len++;
-					i++;
-				}
-			}
-			if (str[i] == '\"')
-				i++;
-		}
-		else
-		{
-			result[result_len] = str[i];
-			result_len++;
-			i++;
-		}
-	}
-	result[result_len] = '\0';
-	return (result);
-}
+// 	while (i < len)
+// 	{
+// 		if (str[i] == '\"')
+// 		{
+// 			i++;
+// 			while (i < len && str[i] != '\"')
+// 			{
+// 				if (str[i] == '$')
+// 				{
+// 					var_value = expand_variable(data, str + i, &i);
+// 					if (var_value)
+// 					{
+// 						ft_strcpy(result + result_len, var_value);
+// 						result_len += ft_strlen(var_value);
+// 						free(var_value);
+// 					}
+// 				}
+// 				else if (str[i] == '\'')
+// 				{
+// 					result[result_len] = str[i];
+// 					result_len++;
+// 					i++;
+// 					while (i < len && str[i] != '\'')
+// 					{
+// 						if (str[i] == '$')
+// 						{
+// 							var_value = expand_variable(data, str + i, &i);
+// 							if (var_value)
+// 							{
+// 								ft_strcpy(result + result_len, var_value);
+// 								result_len += ft_strlen(var_value);
+// 								free(var_value);
+// 							}
+// 						}
+// 						else
+// 						{
+// 							result[result_len] = str[i];
+// 							result_len++;
+// 							i++;
+// 						}
+// 					}
+// 					if (str[i] == '\'')
+// 					{
+// 						result[result_len] = str[i];
+// 						result_len++;
+// 						i++;
+// 					}
+// 				}
+// 				else
+// 				{
+// 					result[result_len] = str[i];
+// 					result_len++;
+// 					i++;
+// 				}
+// 			}
+// 			if (str[i] == '\"')
+// 				i++;
+// 		}
+// 		else
+// 		{
+// 			result[result_len] = str[i];
+// 			result_len++;
+// 			i++;
+// 		}
+// 	}
+// 	result[result_len] = '\0';
+// 	return (result);
+// }
 
-char	*expand_str(t_mshell *data, char *str)
-{
-	if (ft_strchr(str, '\'') != NULL)
-		return (single_quote_helper(str, data));
-	else if (ft_strchr(str, '\"') != NULL)
-		return (expand_double_quote_helper(data, str));
-	else if (ft_strchr(str, '$') != NULL)
-		return (expand_variable_helper(data, str));
-	return (str);
-}
+// char	*expand_str(t_mshell *data, char *str)
+// {
+// 	if (ft_strchr(str, '\'') != NULL)
+// 		return (single_quote_helper(str, data));
+// 	else if (ft_strchr(str, '\"') != NULL)
+// 		return (expand_double_quote_helper(data, str));
+// 	else if (ft_strchr(str, '$') != NULL)
+// 		return (expand_variable_helper(data, str));
+// 	return (str);
+// }
 
-void	expander(t_mshell *data, char **str)
-{
-	char	*expanded_str;
-	int		i;
+// void	expander(t_mshell *data, char **str)
+// {
+// 	char	*expanded_str;
+// 	int		i;
 
-	i = 0;
-	while (str[i] != NULL)
-	{
-		expanded_str = expand_str(data, str[i]);
-		if (expanded_str != str[i])
-		{
-			free(str[i]);
-			str[i] = expanded_str;
-		}
-		i++;
-	}
-}
+// 	i = 0;
+// 	while (str[i] != NULL)
+// 	{
+// 		expanded_str = expand_str(data, str[i]);
+// 		if (expanded_str != str[i])
+// 		{
+// 			free(str[i]);
+// 			str[i] = expanded_str;
+// 		}
+// 		i++;
+// 	}
+// }
 
 /*
 char	*handle_inside_quote(t_mshell *data, char *s, int *i, char *result)
@@ -312,26 +312,27 @@ char	*expand_double_quote(t_mshell *data, char *str)
 	return (result);
 }
 
-char	*expand_str(t_mshell *data, char *str)
+char	*expand_str(t_mshell *data, char *str, bool *flag)
 {
 	if (ft_strchr(str, '\"') != NULL)
 		return (expand_double_quote(data, str));
 	else if (ft_strchr(str, '$') != NULL)
-		return (expand_variable_helper(data, str));
+		return (expand_variable_helper(data, str, flag));
 	else if (ft_strchr(str, '\'') != NULL)
-		return (single_quote_helper(str, data));
+		return (remove_single_quote(str, data));
 	return (str);
 }
 
-void	expander(t_mshell *data, char **str)
+void	expander(t_mshell *data, char **str, bool *flag)
 {
 	char	*expanded_str;
 	int		i;
 
+	
 	i = 0;
 	while (str[i] != NULL)
 	{
-		expanded_str = expand_str(data, str[i]);
+		expanded_str = expand_str(data, str[i], flag);
 		if (expanded_str != str[i])
 		{
 			free(str[i]);

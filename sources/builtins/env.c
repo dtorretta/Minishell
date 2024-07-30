@@ -25,7 +25,6 @@ int	mini_env(t_mshell *minishell, t_parser *commands)
 		reset_data(minishell);
 		return (EXIT_FAILURE);
 	}
-
 	i = 0;
 	while (minishell->envp[i])
 	{

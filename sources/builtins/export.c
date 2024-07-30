@@ -56,31 +56,23 @@ static char	*check_quotes(char *str, char **var_name, t_mshell *minishell)
 {
 	int		i;
 	char	*temp;
-	//char *def;
+	char	*substr;
 
 	i = 0;
-	//temp = delete_quotes(str, minishell);
-	temp = str; //aacar el temp
+	temp = delete_quotes(str, minishell);
 	while (str[i])
 	{
 		if (str[i] == '=')
 		{
-			//i++;
-			//temp = delete_quotes(ft_substr(str, 0, i)); //export varname & =
-			//*var_name = delete_quotes(ft_substr(str, 0, i), minishell); //export varname & =
-			*var_name = ft_substr(str, 0, i); //VER
-			//temp = delete_quotes(str);
-			//*var_name = ft_strdup(temp); //revisar si esto sobrepasa esta funcion
-			//def = delete_quotes(str + i); //lo que viene despues del ==
-			//temp = ft_strjoin(temp, def); //varname & = & def
+			substr = ft_substr(str, 0, i);
+			*var_name = delete_quotes(substr, minishell); //export varname & =
+			free(substr);
 			return(temp);
 		}
 		else
 			i++;
 	}
-	//*var_name = delete_quotes(str, minishell); //si no hay = de todos modos hay que darle valor a var name
-	*var_name = str; //si no hay = de todos modos hay que darle valor a var name
-	//temp = delete_quotes(str);
+	*var_name = delete_quotes(str, minishell); //si no hay = de todos modos hay que darle valor a var name
 	return(temp);
 }
 
@@ -123,11 +115,11 @@ int	mini_export(t_mshell *minishell, t_parser *commands)
 	i = -1;
 	if (error_check(minishell, commands))
 		return (EXIT_FAILURE);
-	if (!commands->str[1] || commands->str[1][0] == '\0') //deberia imprimir algo mas que el enviroment???????
+	if (!commands->str[1] || commands->str[1][0] == '\0')
 		mini_env(minishell, commands);
 	else
 	{
-		add_var = check_quotes(commands->str[1], &var_name, minishell);//elimina los quotes de la variable (lo que esta antes de =)
+		add_var = check_quotes(commands->str[1], &var_name, minishell); //elimina los quotes de la variable (lo que esta antes de =)
 		while(minishell->envp[++i])
 		{
 			if(check_coincidence(minishell, i, var_name, add_var) == 0)

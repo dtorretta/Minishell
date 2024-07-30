@@ -38,7 +38,7 @@ static int	count_args(t_lexer *head, t_mshell *minishell)
 //Allocates memory with calloc for the arguments array.
 //Copies str from lexer L to the argument array, deleting nodes from lexer L.
 //Expands the first element of the array (builtin name).
-static char	**built_args(t_mshell *minishell, int i)
+static char	**built_args(t_mshell *minishell, int i, bool *flag)
 {
 	t_lexer	*current;
 	t_lexer	*next_node;
@@ -63,7 +63,8 @@ static char	**built_args(t_mshell *minishell, int i)
 		current = next_node;
 	}
 	minishell->lexer_list = current;
-	expander(minishell, arg_array);
+	//minishell->commands->flag = false; //ver
+	expander(minishell, arg_array, flag);
 	//expanded_array = expander_builtins(minishell, arg_array);
 	return (arg_array);
 }
@@ -74,7 +75,7 @@ static char	**built_args(t_mshell *minishell, int i)
 //Increments the number of redirections.
 //Sets the array of WORD-strings using built_args.
 //Assigns the built-in function name and pointer using builtins_handle
-static void	built_node(t_parser *commands, t_mshell *minishell)
+static void	built_node(t_parser *commands, t_mshell *minishell, bool *flag)
 {
 	t_lexer	*current;
 	t_lexer	*next_node;
@@ -96,7 +97,7 @@ static void	built_node(t_parser *commands, t_mshell *minishell)
 		else
 			current = current->next;
 	}
-	commands->str = built_args(minishell, 0);
+	commands->str = built_args(minishell, 0, flag);
 	commands->builtins = builtins_handler(commands->str[0]);
 }
 
@@ -114,7 +115,7 @@ void	parser(t_mshell *minishell)
 	while (current->lexer_list)
 	{
 		node = parser_new_node(minishell);
-		built_node (node, minishell);
+		built_node (node, minishell, &node->flag);
 		parser_add_last(&minishell->commands, node);
 		if (current->lexer_list && current->lexer_list->token == PIPE)
 		{

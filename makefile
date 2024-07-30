@@ -1,9 +1,8 @@
 # Name
 NAME	= minishell
-
 # Compiler and Flags
 CC		= cc
-CFLAGS	= -Wall -Wextra -Werror -g -MMD -MP
+CFLAGS	= -Wall -Wextra -Werror -g
 
 # OS-specific flags
 UNAME_S := $(shell uname -s)
@@ -17,7 +16,7 @@ else
 	LDFLAGS = -L/usr/lib
 endif
 
-LINKS = -lft -lreadline
+LINKS = -L$(LIBFT_DIR) -lft -lreadline
 
 # Libft
 LIBFT_DIR		= libft/
@@ -31,12 +30,44 @@ INC	=	-I ./includes/header_mig.h \
 
 # Source files
 SRC_DIR	=	sources/
-SRC_SUBDIRS	=  $(shell find $(SRC_DIR) -type d)
-SRC := $(foreach dir, $(SRC_SUBDIRS), $(wildcard $(dir)/*.c))
+SRC_SUBDIRS	=	$(shell find $(SRC_DIR) -type d)
+SRC			=	$(SRC_DIR)/executor/executor.c \
+				$(SRC_DIR)/executor/executor_heredoc.c \
+				$(SRC_DIR)/executor/executor_pipe.c \
+				$(SRC_DIR)/executor/executor_single.c \
+				$(SRC_DIR)/executor/executor_single_utils.c \
+				$(SRC_DIR)/lexer/lexer.c \
+				$(SRC_DIR)/lexer/lexer_error_check.c \
+				$(SRC_DIR)/lexer/lexer_quotes.c \
+				$(SRC_DIR)/lexer/lexer_tokens.c \
+				$(SRC_DIR)/lexer/lexer_utils_1.c \
+				$(SRC_DIR)/lexer/lexer_utils_2.c \
+				$(SRC_DIR)/parser/parser.c \
+				$(SRC_DIR)/parser/parser_utils_1.c \
+				$(SRC_DIR)/parser/parser_utils_2.c \
+				$(SRC_DIR)/builtins/builtins_utils.c \
+				$(SRC_DIR)/builtins/cd.c \
+				$(SRC_DIR)/builtins/echo.c \
+				$(SRC_DIR)/builtins/env.c \
+				$(SRC_DIR)/builtins/exit.c \
+				$(SRC_DIR)/builtins/export.c \
+				$(SRC_DIR)/builtins/pwd.c \
+				$(SRC_DIR)/builtins/unset.c \
+				$(SRC_DIR)/error/error.c \
+				$(SRC_DIR)/expander/expander_utils.c \
+				$(SRC_DIR)/expander/expander_variables.c \
+				$(SRC_DIR)/expander/expander.c \
+				$(SRC_DIR)/utils/enviroment.c \
+				$(SRC_DIR)/utils/free.c \
+				$(SRC_DIR)/utils/init.c \
+				$(SRC_DIR)/utils/signals.c \
+				$(SRC_DIR)/utils/utils.c \
+				$(SRC_DIR)/main.c
 
 # Object files
 OBJ_DIR	= obj/
-OBJ		= $(patsubst $(SRC_DIR)%.c, $(OBJ_DIR)%.o, $(SRC))
+OBJ = $(SRC:.c=.o)
+
 
 # Build rules
 all:			$(LIBFT) $(NAME)
@@ -44,7 +75,7 @@ all:			$(LIBFT) $(NAME)
 # Compile object files from source files
 $(OBJ_DIR)%.o:	$(SRC_DIR)%.c
 				@mkdir -p $(dir $@)
-				@$(CC) $(CFLAGS) -c $< -o $@ $(INC)
+				@$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@ $(INC)
 
 $(LIBFT):
 				@echo "Making Libft..."
@@ -53,27 +84,19 @@ $(LIBFT):
 $(NAME):		$(OBJ)
 				@echo "Compiling Minishell..."
 				@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT) $(LDFLAGS) $(LINKS)
-				@echo "\n------------------------------------------\n"
-				@echo "📟 Minishell Ready!\n"
-				@echo "------------------------------------------\n"
+				@echo "Minishell ready."
 
 clean:
 				@echo "Removing .o object files..."
 				@rm -rf $(OBJ_DIR)
 				@make clean -C $(LIBFT_DIR)
-				@echo "\n------------------------------------------\n"
-				@echo "💧 Clean: Removed all the \".o\" files \n"
-				@echo "------------------------------------------\n"
 
 fclean:			clean
 				@echo "Removing Minishell..."
 				@rm -f $(NAME)
 				@make fclean -C $(LIBFT_DIR)
-				@echo "\n------------------------------------------\n"
-				@echo "🧼 Fclean: Removed the executables \n"
-				@echo "------------------------------------------\n"
 
 re:				fclean all
 
 # Phony targets represent actions not files
-.PHONY: all clean fclean re test
+.PHONY: all clean fclean re

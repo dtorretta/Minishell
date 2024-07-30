@@ -25,6 +25,7 @@ t_parser	*parser_new_node(t_mshell *minishell)
 	new_node->hd_file_name = NULL;
 	new_node->next = NULL;
 	new_node->prev = NULL;
+	new_node->flag = false;
 	return (new_node);
 }
 

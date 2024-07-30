@@ -17,60 +17,47 @@
 //echo -n doesn't print a new line (ft_putstr_fd)
 //bash accept multiples -n
 
-// int	mini_echo(t_mshell *minishell, t_parser *commands)
-// {
-// 	int		i;
-// 	char	*temp;
 
-// 	(void) minishell;
-// 	temp = NULL;
-// 	i = 1;
-// 	if (commands->str)
-// 	{
-// 		if (!ft_strncmp (commands->str[1], "-n", 3))
-// 		{
-// 			while (commands->str[1] && !ft_strncmp (commands->str[1], "-n", 3))
-// 				i++;
-// 			temp = delete_quotes (commands->str[i], minishell);
-// 			ft_putstr_fd(temp, 1);
-// 		}
-// 		else
-// 		{
-// 			temp = delete_quotes (commands->str[i], minishell);
-// 			ft_putendl_fd(temp, 1);
-// 		}
-// 	}
-// 	free(temp);
-// 	return (EXIT_SUCCESS);
-// }
+static int no_nl(t_parser *commands, int i)
+{
+	while (commands->str[i] && !ft_strncmp (commands->str[i], "-n", 3))
+		i++;
+	while(commands->str[i])
+	{
+		ft_putstr_fd(commands->str[i], 1);
+		i++;
+		if (commands->str[i])
+			write(1, " ", 1);
+	}
+	return(i);
+}
 
-
+int flag (int i, t_parser *commands)
+{
+	i++;
+	commands->flag == false;
+	if (!commands->str[i])
+		write(1, "\n", 1);
+	return(i);
+	
+}
 int	mini_echo(t_mshell *minishell, t_parser *commands)
 {
 	int		i;
-	char	*temp;
-
 	(void) minishell;
-	temp = NULL;
+	
 	i = 1;
-	while (commands->str[i])
+	if(!commands->str[1]) //solo tengo echo
+		write(1, "\n", 1);	
+	while (commands->str[i]) //str = array
 	{
 		if (!ft_strncmp (commands->str[1], "-n", 3))
-		{
-			while (commands->str[i] && !ft_strncmp (commands->str[i], "-n", 3))
-				i++;
-			//temp = delete_quotes (commands->str[i], minishell);
-			temp = commands->str[i]; //quitar el temp
-			ft_putstr_fd(temp, 1);
-			i++;
-			if (commands->str[i])
-				write(1, " ", 1);
-		}
+			i = no_nl(commands, i);
 		else
 		{
-			//temp = delete_quotes (commands->str[i], minishell);
-			temp = commands->str[i]; //quitar el temp
-			ft_putstr_fd(temp, 1);
+			if(commands->flag == true) //si no logro expandir y no habian single quotes, no tiene que imprimirlo
+				i = flag(i, commands);
+			ft_putstr_fd(commands->str[i], 1);
 			i++;
 			if (commands->str[i])
 				write(1, " ", 1);
@@ -78,6 +65,5 @@ int	mini_echo(t_mshell *minishell, t_parser *commands)
 				write(1, "\n", 1);
 		}
 	}
-	free(temp);
 	return (EXIT_SUCCESS);
 }

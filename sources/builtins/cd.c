@@ -15,7 +15,6 @@
 
 #include "../../includes/header_mig.h" //modifica el nombre
 
-
 // Rewrites the PWD and OLDPWD variables in the t_mshell struct
 static void	change_pwd(t_mshell *minishell)
 {
@@ -137,5 +136,3 @@ int	mini_cd(t_mshell *minishell, t_parser *commands)
 	change_envp(minishell);
 	return (0);
 }
-
-// minishell: cd: /Minishell: No such file or directory

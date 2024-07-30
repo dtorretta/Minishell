@@ -18,7 +18,7 @@
 void	free_minishell(t_mshell *minishell) //lo necesito para alguna otra funcion?
 {
 	free_lexer_list(minishell->commands->redirections);
-	//free_string_array(minishell->commands->str);
+	//free_string_array(minishell->commands->str); //si agrego, me da segfault en todos los casos de exit
 	free_parser_list(minishell->commands);
 	free_lexer_list(minishell->lexer_list);
 	free_string_array(minishell->paths);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 20:26:59 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/27 21:07:13 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/07/31 00:52:54 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,16 @@ char	*remove_single_quote(char *str, t_mshell *data)
 	return (result);
 }
 
-char	*single_quote_helper(char *str, t_mshell *data)
-{
-	char	*result;
 
-	result = remove_single_quote(str, data);
-	return (result);
-}
+// char	*single_quote_helper(char *str, t_mshell *data)
+// {
+// 	char	*result;
 
-char	*expand_double_quote_helper(t_mshell *data, char *str)
+// 	result = remove_single_quote(str, data);
+// 	return (result);
+// }
+
+char	*expand_double_quote_helper(t_mshell *data, char *str) //creo que ya no la estas usando en ningun lado
 {
 	char	*result;
 
@@ -50,14 +51,41 @@ char	*expand_double_quote_helper(t_mshell *data, char *str)
 	return (result);
 }
 
-char	*expand_variable_helper(t_mshell *data, char *str)
+char	*expand_variable(t_mshell *data, char *str, int *index)
 {
-	char	*expanded_str;
+	char	*var_name;
+	char	*var_value;
+
+	if (str[1] == '?')
+	{
+		var_value = ft_itoa(data->exit_code);
+		*index += 2;
+		return (var_value);
+	}
+	else
+	{
+		var_name = get_variable_name(str + 1, data);
+		var_value = get_variable_value(data, var_name);
+		*index += ft_strlen(var_name) + 1; //estas usando el index en algun lado???
+		free(var_name);
+		if (var_value)
+			return (var_value);
+		else
+			return (NULL);
+	}
+}
+char	*expand_variable_helper(t_mshell *data, char *str, bool *flag)
+{
+	char	*expanded_str; //esta en expand_variable
 	int		expanded_i;
 
 	expanded_i = 0;
 	expanded_str = expand_variable(data, str, &expanded_i);
+	if(str[0] == '\'') //new
+	 	expanded_str = (remove_single_quote(str, data)); //new
 	if (expanded_str)
 		return (expanded_str);
+	else if (ft_strchr(str, '\'') == NULL) //new //si no hay nada que expandir y no hay single quotes
+		*flag = true; //new
 	return (str);
 }

@@ -1,40 +1,39 @@
-/bin/ls -> esta bien que funcione asi o deberia funcionar solo con "ls"?
-echo: echo solo tiene que imprimir una nueva linea
-/bin/echo: imprime una nueva linea
-echo: siempre que haya $ si no hay variable que expandir, imprime \n
-expander: echo $f no deberia de imprimir nada
+⚠️ /bin/ls -> esta bien que funcione asi o deberia funcionar solo con "ls"?
+✅ echo: echo solo tiene que imprimir una nueva linea (fixed, igual rechequear que hace en la compu del campus)
+✅ /bin/echo: imprime una nueva linea
+✅ echo: siempre que haya $ si no hay variable que expandir, imprime \n (perdi a;os de vida pero ya esta)
+✅ expander: echo $f no deberia de imprimir nada
 
-exit    exit 255   retona el error 255. a partir de 256 el contador se reinicia en 0
+✅ (tener en cuenta) exit    exit 255   retona el error 255. a partir de 256 el contador se reinicia en 0
 
-exit hello: chequear si el bash del campus sale o no sale (en el nuestro sale)
-chequear si despues de testear la linea de arriba, el terminal imprime una \n
+⚠️ exit hello: chequear si el bash del campus sale o no sale (en el nuestro sale)
+⚠️ chequear si despues de testear la linea de arriba, el terminal imprime una \n
 
-testear expr $? + $?. Preguntar a alguien como lo hizo
+⚠️ testear expr $? + $?. Preguntar a alguien como lo hizo
 
-signals
-ctrl+C: ^C deberia aparecerme la signal ingresada en la terminal??
-ctrl+D: depediendo de la version lo imprime en nueva linea o no
+⚠️ signals
+	ctrl+C: ^C deberia aparecerme la signal ingresada en la terminal??
+	ctrl+D: depediendo de la version lo imprime en nueva linea o no
 
-unset "": no deberia salir nada
-cd "": no deberia salir nada
-exit "": error numerico falta
+✅ unset "": no deberia salir nada (no se que cambie pero ahora funciona. elijo creer)
+❌ cd "": no deberia salir nada     /      minishell: cd: : No such file or directory
+❌ exit "": bash: exit: : numeric argument required        // ver como hacer, solo se me ocurre crear mas flags indicando que habia "" o ''
 
-'$USER' (o cualquier env variable) con single_qoute no debe expandir: en tokenizer agregar un
-bool flag = true si es single quote que se revisa en el parser en caso de ser verdad no expande
+✅'$USER' (o cualquier env variable) con single_qoute no debe expandir
 
-Nos quedamos en single quotes
+⚠️ Nos quedamos en single quotes
 
 MIGUE
-Expander: tiene que evitar expandir cuando es single_quote
--minishell> echo ' hola $HOME  '
-hola $HOME
-Expander: tiene que expandir con double_quote
--bash-3.2$ echo " hola $HOME  "
-hola /Users/miguandr
--bash-3.2$ echo " hola '$HOME'  "
- hola '/Users/miguandr'
+✅ Expander: tiene que evitar expandir cuando es single_quote
+✅ -minishell> echo ' hola $HOME  '
+✅ hola $HOME
+✅ Expander: tiene que expandir con double_quote
+✅ -bash-3.2$ echo " hola $HOME  "
+✅ hola /Users/miguandr
+✅-bash-3.2$ echo " hola '$HOME'  "
+✅ hola '/Users/miguandr' (no entiendo como co;o funciona, pero funciona)
 
-agregar al parser la eliminacion de quotes:
+✅ agregar al parser la eliminacion de quotes:
 	word = ft_substr(str, start, len);
 	if (!word)
 		return (-1);
@@ -48,3 +47,9 @@ agregar al parser la eliminacion de quotes:
 	}
 
 
+general errors to check que tuvieron en la evaluacion
+❌ Gotta fix pipes .. exit 32 | exit w3e2 | exit      prints exit.            /    cada vez que se usa pipes, queda esperando, pausado. sin hacer nada.
+❌  Pipe at the end generate segfaults.      / directamente se traba
+✅ echo " 'string' " should print the single quotes. 
+✅ variables shouldn't extend with single quotes. 
+⚠️ If you unset the PATH, ALL the commands still works, not just the build-ins
