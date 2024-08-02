@@ -103,6 +103,48 @@ static void	ft_previous(t_mshell *minishell)
 	free(prev);
 }
 
+int	cd(char *str, t_mshell *minishell)
+{
+	int i;
+	char *temp;
+	
+	i = 0;
+	temp = NULL;
+	if (!ft_strncmp(str, "..", 2))
+	{
+		i += 2;
+		ft_previous(minishell);
+		if (str[i] && str[i] == '/') //puede venir despues path como ..
+			{
+				change_pwd(minishell);
+				change_envp(minishell);
+				i++; //aca etsamos en lo que viene post slash
+				if (str[i])
+				{	
+					temp = ft_strdup(str + i);
+					cd(temp, minishell);					
+				}
+			}
+	}
+	else
+	{
+		if (ft_strncmp(str, ".", 1) && chdir(str) != 0) //volver a empezar
+		{
+			ft_putstr_fd("minishell: cd: ", 2);
+			ft_putstr_fd(str, 2);
+			ft_putendl_fd(": No such file or directory", 2);
+			if(temp)
+				free(temp);
+			return (EXIT_FAILURE);
+		}
+	}
+	if(temp)
+		free(temp);
+	return (EXIT_SUCCESS);
+
+
+}
+
 // CD only acepts one additional argument, if there are more, error.
 // if no arguments, changes directoy to HOME.
 // if '-' argument, changes directoy to the OLD PWD.
@@ -119,19 +161,11 @@ int	mini_cd(t_mshell *minishell, t_parser *commands)
 		change_directory(minishell->envp, "HOME=");
 	else if (!ft_strncmp(commands->str[1], "-", 1))
 		change_directory(minishell->envp, "OLDPWD=");
-	else if (!ft_strncmp(commands->str[1], "..", 2))
-		ft_previous(minishell);
 	else
 	{
-		if (ft_strncmp(commands->str[1], ".", 1)
-			&& chdir(commands->str[1]) != 0)
-		{
-			ft_putstr_fd("minishell: cd: ", 2);
-			ft_putstr_fd(commands->str[1], 2);
-			ft_putendl_fd(": No such file or directory", 2);
-			return (EXIT_FAILURE);
-		}
-	}
+		if (cd(commands->str[1], minishell) == EXIT_FAILURE)
+			return(EXIT_FAILURE);
+	}	
 	change_pwd(minishell);
 	change_envp(minishell);
 	return (0);
