@@ -60,11 +60,3 @@ general errors to check que tuvieron en la evaluacion
 ⚠️ If you unset the PATH, ALL the commands still works, not just the build-ins
 
 
-❌'$HOME'
-		$HOME: command not found
-❌$HOME
-		bash: /home/dtorretta: Is a directory	
-❌ hehde
-		hehde: command not found
-❌ echo '      "hell"      '
-		     "hell"       // el nuestro imprime   '      hell     '

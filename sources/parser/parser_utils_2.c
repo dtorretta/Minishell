@@ -36,7 +36,7 @@ int	(*builtins_handler(char *str))(t_mshell *minishell, t_parser *commands)
 	i = 0;
 	while (i < 7)
 	{
-		if (str && !ft_strncmp(builtins_array[i][0], str, ft_strlen(builtins_array[i][0])))
+		if (str && !ft_strncmp(builtins_array[i][0], str, ft_strlen(str)))
 			return (builtins_array[i][1]);
 		// {
 		// 	// if (ft_strlen(str) != ft_strlen(builtins_array[i][0]))
