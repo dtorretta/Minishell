@@ -86,7 +86,9 @@ static int	error_check(t_mshell *minishell, t_parser *commands)
 	else if (commands->str[1])
 	{
 		if (ft_isdigit(commands->str[1][0]) || commands->str[1][0] == '=')
-			return (handle_error2(minishell, 2, commands->str[1], NULL));
+		{
+			return (handle_error2(minishell, 2, commands->str[1], NULL)); //sacar las llaves
+		}
 		while (commands->str[1][i] != '=' && commands->str[1][i])
 		{
 			if (!check_valid_identifier(commands->str[1][i]))
@@ -114,7 +116,9 @@ int	mini_export(t_mshell *minishell, t_parser *commands)
 
 	i = -1;
 	if (error_check(minishell, commands))
-		return (EXIT_FAILURE);
+	{
+		return (EXIT_FAILURE); //wsacar las llaves
+	}
 	if (!commands->str[1] || commands->str[1][0] == '\0')
 		mini_env(minishell, commands);
 	else

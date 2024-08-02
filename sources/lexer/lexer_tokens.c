@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_tokens.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 20:59:12 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/27 21:00:49 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/08/02 20:06:07 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	handle_token(char *str, int i, t_lexer **lexer_list)
 		if (!add_node(NULL, token, lexer_list))
 			return (-1);
 	}
-	return (0);
+	return (1);
 }
 
 int	handle_word(char *str, int start, t_lexer **lexer_list)

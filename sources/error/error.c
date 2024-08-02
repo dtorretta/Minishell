@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 16:19:08 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/24 19:36:30 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/08/02 20:05:27 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,21 +19,22 @@ int	handle_error(t_mshell *data, int error)
 	(void)data;
 	const char	*message;
 	const char	*error_message[] = {
-		"memory error: unable to allocate memory\n",
-		"syntax error: unable to find closing quotation\n",
-		"syntax error: command line can not begin/end with a token\n",
-		"syntax error: too many consecutive tokens\n",
-		"syntax error: wrong token handling\n",
-		"system error: failed to create child process\n",
-		"syntax error: not a valid builtin\n",
-		"system error: failed to create pipe\n",
-		"system error: error in fd\n",
+		"memory error: unable to allocate memory\n", //ok
+		"syntax error: unable to find closing quotation\n", //ok
+		"syntax error: command line can not begin/end with a token\n", //ok
+		"syntax error: too many consecutive tokens\n", //ok
+		"syntax error: wrong token handling\n", //ok
+		"system error: failed to create child process\n", //ok
+		"syntax error: not a valid builtin\n", //NOOOO
+		"system error: failed to create pipe\n",  //ok
+		"system error: error in fd\n",  //ok
 	};
 
 	message = error_message[error];
 	ft_putstr_fd("minishell: ", 1);
 	ft_putstr_fd(message, 1);
-	reset_data(data);
+	data->exit_code = 2;
+	reset_data(data);	
 	return (EXIT_FAILURE);
 }
 
@@ -62,7 +63,7 @@ int	handle_error2(t_mshell *data, int error, char *str, char **array)
 		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
 		return (2);
 	}
-	reset_data(data);
+	//reset_data(data); //reessetea todo y no me guarda el codigo de error
 	return (EXIT_FAILURE);
 }
 
@@ -80,6 +81,6 @@ int	handle_error3(t_mshell *data, int error, char *str)
 		ft_putstr_fd("minishell: no such file or directory: ", STDERR_FILENO);
 		ft_putendl_fd(str, STDERR_FILENO);
 	}
-	reset_data(data);
+	//reset_data(data); //no creo que sea necesario
 	return(EXIT_FAILURE);
 }

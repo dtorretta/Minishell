@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:29:16 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/31 00:47:56 by marvin           ###   ########.fr       */
+/*   Updated: 2024/08/02 19:42:31 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,6 +226,6 @@ int					handle_error3(t_mshell *data, int error, char *str);
 /*******MAIN*******/
 int					minishell(t_mshell *data);
 
-void	lala(int sig);
+void	lala(int sig); //borrar
 
 #endif

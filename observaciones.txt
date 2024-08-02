@@ -59,4 +59,11 @@ general errors to check que tuvieron en la evaluacion
 ✅ variables shouldn't extend with single quotes. 
 ⚠️ If you unset the PATH, ALL the commands still works, not just the build-ins
 
-
+probar en el campus
+⚠️'$HOME'
+		$HOME: command not found
+⚠️ $HOME
+		bash: /home/dtorretta: Is a directory
+⚠️ minishell> dvdvfd
+		dvdvfd: command not found
+⚠️ Execute commands but this time without any path (ls, wc, awk and so forth).

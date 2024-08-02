@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_single_utils.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 19:50:18 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/22 22:27:13 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/08/02 19:19:00 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,21 @@ int	find_command(t_parser *cmd, t_mshell *data)
 	//printf("chech2\n"); //bborrar
 	//printf("normalize_str: %s\n", normalize_str[0]); //bborrar
 
-
+	while (data->envp[i])
+	{
+		if (ft_strncmp(data->envp[i], "PATH", 4) == 0)
+		{
+			i = -42;
+			break;
+		}
+		i++;
+	}
+	if(i != -42)
+	{
+		printf("no hay path\n");
+		ft_putendl_fd("minishell: no such file or directory", STDERR_FILENO);
+		return (127);
+	}
 
 	if (!access(normalize_str[0], F_OK))
 	{
