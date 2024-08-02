@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 14:54:25 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/31 00:45:43 by marvin           ###   ########.fr       */
+/*   Updated: 2024/08/02 16:49:28 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -314,12 +314,18 @@ char	*expand_double_quote(t_mshell *data, char *str)
 
 char	*expand_str(t_mshell *data, char *str, bool *flag)
 {
-	if (ft_strchr(str, '\"') != NULL)
+	if (ft_strchr(str, '\"') != NULL && str[0] != '\'')
+	{
+		//printf("no entreeeees 2 \n");
 		return (expand_double_quote(data, str));
+	}
 	else if (ft_strchr(str, '$') != NULL)
 		return (expand_variable_helper(data, str, flag));
 	else if (ft_strchr(str, '\'') != NULL)
+	{	
+		//printf("no entreeeees 1 \n");
 		return (remove_single_quote(str, data));
+	}
 	return (str);
 }
 

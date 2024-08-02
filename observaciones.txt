@@ -6,7 +6,13 @@
 
 ✅ (tener en cuenta) exit    exit 255   retona el error 255. a partir de 256 el contador se reinicia en 0
 
-⚠️ exit hello: chequear si el bash del campus sale o no sale (en el nuestro sale)
+
+⚠️ export '': ver que error tira (deberia ser minishell: export: ` ': not a valid identifier ????)
+⚠️ cd '': no tiene que hacer nada, ni tirar error ni nada.
+⚠️ unset " " && unset ' ' && unset ''  && unset "": chequear si el bash del campus tira error (en el nuestro no)
+⚠️ exit '': chequear si el bash del campus sale o no sale y si tira error (en el nuestro no se sale y no tira error)
+⚠️ exit " " && exit ' ': chequear si el bash del campus sale o no sale (en el nuestro no se sale)
+⚠️ exit hello: chequear si el bash del campus sale o no sale (en el nuestro no se sale)
 ⚠️ chequear si despues de testear la linea de arriba, el terminal imprime una \n
 
 ⚠️ testear expr $? + $?. Preguntar a alguien como lo hizo
@@ -23,7 +29,6 @@
 
 ⚠️ Nos quedamos en single quotes
 
-MIGUE
 ✅ Expander: tiene que evitar expandir cuando es single_quote
 ✅ -minishell> echo ' hola $HOME  '
 ✅ hola $HOME
@@ -49,7 +54,17 @@ MIGUE
 
 general errors to check que tuvieron en la evaluacion
 ❌ Gotta fix pipes .. exit 32 | exit w3e2 | exit      prints exit.            /    cada vez que se usa pipes, queda esperando, pausado. sin hacer nada.
-❌  Pipe at the end generate segfaults.      / directamente se traba
+❌ Pipe at the end generate segfaults.      / directamente se traba
 ✅ echo " 'string' " should print the single quotes. 
 ✅ variables shouldn't extend with single quotes. 
 ⚠️ If you unset the PATH, ALL the commands still works, not just the build-ins
+
+
+❌'$HOME'
+		$HOME: command not found
+❌$HOME
+		bash: /home/dtorretta: Is a directory	
+❌ hehde
+		hehde: command not found
+❌ echo '      "hell"      '
+		     "hell"       // el nuestro imprime   '      hell     '

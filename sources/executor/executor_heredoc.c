@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_heredoc.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 19:27:45 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/22 17:31:26 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/08/02 16:09:51 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int ft_heredoc (t_parser *commands, t_mshell *minishell)
 		}
 		else
 		{
-			expanded_line = expand_str(minishell, input_line); //revisar
+			expanded_line = expand_str(minishell, input_line, 0); //revisar flag
 			ft_putendl_fd(expanded_line, 1); //o deberia ser putstr? ver bien O_APPEND
 			free(input_line); //o expanded_line?
 		}

@@ -35,7 +35,7 @@ static int no_nl(t_parser *commands, int i)
 int flag (int i, t_parser *commands)
 {
 	i++;
-	commands->flag == false;
+	commands->flag = false;
 	if (!commands->str[i])
 		write(1, "\n", 1);
 	return(i);
