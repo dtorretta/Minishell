@@ -6,7 +6,7 @@
 /*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 11:36:17 by miguandr          #+#    #+#             */
-/*   Updated: 2024/07/27 19:25:47 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/08/05 19:13:58 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static void	check_heredoc(t_mshell *minishell, t_parser *commands)
 	t_parser	*temp;
 
 	temp = commands;
-	while (temp->redirections)
+	while (temp && temp->redirections)
 	{
 		if (temp->redirections->token == HERE_DOC)
 		{
@@ -60,7 +60,7 @@ void	execute_single_cmd(t_parser *cmd, t_mshell *data)
 	pid_t		pid;
 
 	//expanded_cmds = call_expander(data, cmd);
-	if (cmd->builtins && is_main_process_builtin(cmd->builtins)) //mejor poner todo aca junto
+	if (cmd && cmd->builtins && is_main_process_builtin(cmd->builtins)) //mejor poner todo aca junto
 	{
 		data->exit_code = cmd->builtins(data, cmd);
 		return ;
