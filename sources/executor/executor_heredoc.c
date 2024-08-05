@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_heredoc.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 19:27:45 by miguandr          #+#    #+#             */
-/*   Updated: 2024/08/05 19:58:09 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/08/05 20:11:41 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,22 +19,22 @@ int ft_heredoc (t_parser *commands, t_mshell *minishell)
 	char *input_line;
 	char *delimiter;
 	int file;
-	char *expanded_line;
+	//char *expanded_line;
 
-	printf("entro a heredoc");
+	//printf("entro a heredoc");
 	delimiter = commands->redirections->str;
-	file = open(commands->hd_file_name, O_RDWR | O_CREAT | O_APPEND, 0644); //abro el hd file para escribirle data
+	file = open(commands->hd_file_name, O_RDWR | O_CREAT | O_TRUNC, 0644); //abro el hd file para escribirle data
 	if (file < 0)
 		return (handle_error(minishell, 8));
-	if (dup2(file, STDOUT_FILENO) < 0)
-	{
-		close(file);
-		return (handle_error(minishell, 8));
-	}
-	printf("afuera del loop");
+	// if (dup2(file, STDOUT_FILENO) < 0)
+	// {
+	// 	close(file);
+	// 	return (handle_error(minishell, 8));
+	// }
+	//printf("afuera del loop");
 	while(1) //a;adir expander aca (ver si esta bien el que a;adi) // ver manejo de quotes, supuestamente habria que eliminarlas
 	{
-		printf("entro al loop");
+		//printf("entro al loop");
 		input_line = readline("> ");
 		if (!input_line)
 			return(EXIT_FAILURE); //CAMBIAR, NO HABRIA QUE AGREGARLO EN EL LEXER TAMBIEN?
@@ -45,10 +45,10 @@ int ft_heredoc (t_parser *commands, t_mshell *minishell)
 		}
 		else
 		{
-			expanded_line = expand_str(minishell, input_line, 0); //revisar flag
-			ft_putendl_fd(expanded_line, 1); //o deberia ser putstr? ver bien O_APPEND
-			free(input_line); //o expanded_line?
-			free(expanded_line);
+			//expanded_line = expand_str(minishell, input_line, 0); //revisar flag
+			ft_putendl_fd(input_line, file); //o deberia ser putstr? ver bien O_APPEND
+			//free(input_line); //o expanded_line?
+			free(input_line);
 		}
 	}
 	close(file);
