@@ -5,13 +5,13 @@ CC		= cc
 CFLAGS	= -Wall -Wextra -Werror -g
 
 # OS-specific flags
-UNAME_S := $(shell uname -s)
+UNAME_S	:= $(shell uname -s)
 ifeq ($(UNAME_S), Darwin)
-    # macOS settings
+	# macOS settings
 	CPPFLAGS += -I/opt/homebrew/opt/readline/include
 	LDFLAGS = -L/opt/homebrew/opt/readline/lib
 else
-    # Linux settings
+	# Linux settings
 	CPPFLAGS += -I/usr/include/readline
 	LDFLAGS = -L/usr/lib
 endif
@@ -29,8 +29,8 @@ INC	=	-I ./includes/header_mig.h \
 		$(CPPFLAGS)
 
 # Source files
-SRC_DIR	=	sources/
-SRC_SUBDIRS	=	$(shell find $(SRC_DIR) -type d)
+SRC_DIR		=	sources/
+SRC_SUBDIRS =	$(shell find $(SRC_DIR) -type d)
 SRC			=	$(SRC_DIR)/executor/executor.c \
 				$(SRC_DIR)/executor/executor_heredoc.c \
 				$(SRC_DIR)/executor/executor_pipe.c \
@@ -65,15 +65,15 @@ SRC			=	$(SRC_DIR)/executor/executor.c \
 				$(SRC_DIR)/main.c
 
 # Object files
-OBJ_DIR	= obj/
-OBJ = $(SRC:.c=.o)
+OBJ_DIR = obj/
+OBJ	= $(SRC:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
 
 
 # Build rules
 all:			$(LIBFT) $(NAME)
 
 # Compile object files from source files
-$(OBJ_DIR)%.o:	$(SRC_DIR)%.c
+$(OBJ_DIR)%.o:  $(SRC_DIR)%.c
 				@mkdir -p $(dir $@)
 				@$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@ $(INC)
 
