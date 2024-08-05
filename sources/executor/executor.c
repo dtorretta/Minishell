@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 11:36:17 by miguandr          #+#    #+#             */
-/*   Updated: 2024/08/05 19:13:58 by miguandr         ###   ########.fr       */
+/*   Updated: 2024/08/05 22:32:58 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,18 +93,18 @@ int	execute_pipe_cmd(t_mshell *minishell)
 	while (temp_commands)
 	{
 		//expanded_cmds = call_expander(minishell, temp_commands);
-		if (minishell->commands->next)
+		if (temp_commands->next)
 		{
 			if (pipe(fd) == -1)
 				return (handle_error(minishell, 7));
 		}
-		check_heredoc(minishell, minishell->commands);
-		ft_fork(minishell, minishell->commands, fd, fd_prev);
+		check_heredoc(minishell, temp_commands);
+		ft_fork(minishell, temp_commands, fd, fd_prev);
 		close(fd[1]);
-		if (minishell->commands->prev)
+		if (temp_commands->prev)
 			close(fd_prev);
-		fd_prev = get_fd(minishell, fd, minishell->commands);
-		minishell->commands = minishell->commands->next;
+		fd_prev = get_fd(minishell, fd, temp_commands);
+		temp_commands = temp_commands->next;
 	}
 	wait_childspid(minishell, minishell->pid);
 	return (EXIT_SUCCESS);

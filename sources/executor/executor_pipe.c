@@ -23,7 +23,7 @@ void execute_command(t_mshell *minishell, t_parser *commands)
 		minishell->exit_code = commands->builtins(minishell, commands);
 	else if (commands->str[0][0])
 		minishell->exit_code = find_command(commands, minishell);
-	exit(minishell->exit_code); //necesario??
+	//exit(minishell->exit_code); //necesario??
 }
 
 //abrimos el archivo output.txt en modo escritura. Si el archivo no existe, se crea.

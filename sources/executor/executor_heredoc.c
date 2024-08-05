@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 19:27:45 by miguandr          #+#    #+#             */
-/*   Updated: 2024/08/05 20:11:41 by marvin           ###   ########.fr       */
+/*   Updated: 2024/08/05 22:28:02 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int ft_heredoc (t_parser *commands, t_mshell *minishell)
 	char *input_line;
 	char *delimiter;
 	int file;
-	//char *expanded_line;
+	char *expanded_line;
 
 	//printf("entro a heredoc");
 	delimiter = commands->redirections->str;
@@ -45,9 +45,9 @@ int ft_heredoc (t_parser *commands, t_mshell *minishell)
 		}
 		else
 		{
-			//expanded_line = expand_str(minishell, input_line, 0); //revisar flag
-			ft_putendl_fd(input_line, file); //o deberia ser putstr? ver bien O_APPEND
-			//free(input_line); //o expanded_line?
+			expanded_line = expand_str(minishell, input_line, 0); //revisar flag
+			ft_putendl_fd(expanded_line, file); //o deberia ser putstr? ver bien O_APPEND
+			free(expanded_line);
 			free(input_line);
 		}
 	}
