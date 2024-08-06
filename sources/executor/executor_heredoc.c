@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_heredoc.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 19:27:45 by miguandr          #+#    #+#             */
-/*   Updated: 2024/08/05 22:28:02 by marvin           ###   ########.fr       */
+/*   Updated: 2024/08/06 21:18:56 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,8 @@ int ft_heredoc (t_parser *commands, t_mshell *minishell)
 	// 	close(file);
 	// 	return (handle_error(minishell, 8));
 	// }
-	//printf("afuera del loop");
 	while(1) //a;adir expander aca (ver si esta bien el que a;adi) // ver manejo de quotes, supuestamente habria que eliminarlas
 	{
-		//printf("entro al loop");
 		input_line = readline("> ");
 		if (!input_line)
 			return(EXIT_FAILURE); //CAMBIAR, NO HABRIA QUE AGREGARLO EN EL LEXER TAMBIEN?
@@ -47,8 +45,8 @@ int ft_heredoc (t_parser *commands, t_mshell *minishell)
 		{
 			expanded_line = expand_str(minishell, input_line, 0); //revisar flag
 			ft_putendl_fd(expanded_line, file); //o deberia ser putstr? ver bien O_APPEND
-			free(expanded_line);
-			free(input_line);
+			//free(expanded_line);
+			//free(input_line);
 		}
 	}
 	close(file);

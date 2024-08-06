@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: miguandr <miguandr@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 11:36:17 by miguandr          #+#    #+#             */
-/*   Updated: 2024/08/05 22:32:58 by marvin           ###   ########.fr       */
+/*   Updated: 2024/08/06 21:17:01 by miguandr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ int	execute_pipe_cmd(t_mshell *minishell)
 			if (pipe(fd) == -1)
 				return (handle_error(minishell, 7));
 		}
-		check_heredoc(minishell, temp_commands);
+		//check_heredoc(minishell, temp_commands);
 		ft_fork(minishell, temp_commands, fd, fd_prev);
 		close(fd[1]);
 		if (temp_commands->prev)
