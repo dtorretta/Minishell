@@ -12,19 +12,7 @@
 
 #include "../../includes/header_mig.h"
 
-//first executes the redirecction if there are any
-//second executes the builtin if there are any. if not, check is there are
-//any other command like cat, ls, etc.
-void execute_command(t_mshell *minishell, t_parser *commands)
-{
-	if (commands->num_redirections)
-		minishell->exit_code = ft_redirections(commands, minishell);
-	if (commands->builtins)
-		minishell->exit_code = commands->builtins(minishell, commands);
-	else if (commands->str[0][0])
-		minishell->exit_code = find_command(commands, minishell);
-	//exit(minishell->exit_code); //necesario??
-}
+
 
 //abrimos el archivo output.txt en modo escritura. Si el archivo no existe, se crea.
 //O_TRUNC asegura que el archivo se vacía si ya existe.
@@ -58,33 +46,92 @@ int ft_less (t_mshell *minishell, char *input)
 	file = open(input, O_RDONLY);
 	if(file < 0)
 		return(handle_error(minishell, 8));
-	if (dup2(file, STDIN_FILENO) < 0)
+	if (dup2(file, STDIN_FILENO) < 0) //file > 0 
 	{
 		close(file);
 		return (handle_error(minishell, 8));
 	}
 	close(file);
-	return(0);
+	return(EXIT_SUCCESS);
 }
+
+// void print_lexer_list(t_lexer *head) { //borrar
+//     t_lexer *current = head;
+//     if(!current){
+//         printf("NULL EN LA LEXER LIST\n");
+//         return;
+//     }
+//     while (current != NULL) {
+
+//         printf("Str: %s, Token: %d, Index: %d\n", current->str, current->token, current->i);
+//         current = current->next;
+//     }
+// }
+
 
 int ft_redirections (t_parser *commands, t_mshell *minishell)
 {
 	t_lexer  *temp;
+	//printf("num of red: %d\n", commands->num_redirections); //borrar
 	temp = commands->redirections;
+	//print_lexer_list(temp); //borrar
+	//printf("num of red: %d\n", commands->num_redirections); //borrar
 	while(temp)
 	{
 		if(commands->redirections->token == GREAT || commands->redirections->token == GREAT_GREAT)
-			return(ft_great(commands, minishell));
-		else if(commands->redirections->token == LESS)
-			return(ft_less(minishell, commands->redirections->str));
+		{
+			//printf("ft_great\n"); //borrar
+			if(ft_great(commands, minishell) != 0)
+				return(EXIT_FAILURE);
+		}
+		else if(commands->redirections->token == LESS) //no la puedo probar bien porque no esta funcionando cat
+		{
+			if(ft_less(minishell, commands->redirections->str))
+				return(EXIT_FAILURE);
+		}
 		else if(commands->redirections->token == HERE_DOC)
-			return(ft_less(minishell, commands->hd_file_name));
+		{
+			if(ft_less(minishell, commands->hd_file_name))
+				return(EXIT_FAILURE);
+		}
 		else
 			return(1);
-		temp = temp->next;
+		
+		//temp = temp->next;
+		if (temp->next)
+		{
+			printf("hay next\n"); //borrar
+			//temp = temp->next;
+		}
+		else
+		{
+			//printf("no hay next???\n"); //borrar //ATENCION no esta detectando cuando hay mas de una redireccion. entonces ejecuta la misma redireccion una y otra vez si no le pongo el break
+			break; //no entiendo porque es necesario hacer if (temp->next). si no hay, directamnete pasaria a ser null y DEBERIA salir solo del while, pero no pasa
+		}
 	}
+	//printf("salio del while\n"); //borrar
 	return(EXIT_SUCCESS);
 }
+
+
+//first executes the redirecction if there are any
+//second executes the builtin if there are any. if not, check is there are
+//any other command like cat, ls, etc.
+void execute_command(t_mshell *minishell, t_parser *commands)
+{
+	//printf("num_redirections: %d\n", commands->num_redirections); //borrar
+	if (commands->num_redirections) // antes estaba commands->num_redirections
+	{
+		minishell->exit_code = ft_redirections(commands, minishell);
+	}
+	if (commands->builtins)
+		minishell->exit_code = commands->builtins(minishell, commands);
+	else if (commands->str[0][0])
+		minishell->exit_code = find_command(commands, minishell);
+	//printf("previo al exit\n"); //borrar
+	exit(minishell->exit_code); //es necesario, este exit es parte del proceso hijo y solo lo afecta a el
+}
+
 
 //Redirect the file descriptors from which file will be read / stored in
 // the case of a previous or subsequent command, respectively.

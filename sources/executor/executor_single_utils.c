@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 19:50:18 by miguandr          #+#    #+#             */
-/*   Updated: 2024/08/02 19:19:00 by marvin           ###   ########.fr       */
+/*   Updated: 2024/08/07 02:17:50 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,45 +72,35 @@ int	find_command(t_parser *cmd, t_mshell *data)
 	char	**normalize_str;
 
 	i = 0;
-	//printf("chech1\n"); //bborrar
 	normalize_str = normalize_str_array(cmd->str, data); //para que sirve esto? por ejemplo si tengo cat << LIM.
-	//printf("chech2\n"); //bborrar
-	//printf("normalize_str: %s\n", normalize_str[0]); //bborrar
-
-	while (data->envp[i])
+	while (data->envp[i]) //revisa si esta path
 	{
 		if (ft_strncmp(data->envp[i], "PATH", 4) == 0)
 		{
-			i = -42;
+			i = -42; //si lo encuentra i = -42 
 			break;
 		}
 		i++;
 	}
-	if(i != -42)
+	if(i != -42) //si no lo encuentra
 	{
-		printf("no hay path\n");
 		ft_putendl_fd("minishell: no such file or directory", STDERR_FILENO);
 		return (127);
 	}
-
-	if (!access(normalize_str[0], F_OK))
+	if (!access(normalize_str[0], F_OK)) //! --> devuelve 0, significa que el archivo existe
 	{
-		//printf("chech3\n"); //bborrar
-		if (execve(normalize_str[0], normalize_str, data->envp)) //normalize_str[0] es cat por ejemplo. pero no entiendo como funciona con el heredoc.
+		if (execve(normalize_str[0], normalize_str, data->envp)) //$HOME no es un archivo ejecutable, es un directorio. Así que execve() fallará y entra en el if
 		{
-			//printf("entrooo\n"); //bborrar
-			ft_putstr_fd(cmd->str[0], 1);
-			ft_putendl_fd(": is a directoy", 1);
-			return (EXIT_SUCCESS);
+			ft_putstr_fd(cmd->str[0], 2);
+			ft_putendl_fd(": is a directoy", 2);
+			return (126);
 		}
 	}
 	while (data->paths[i]) ///home/miguandr --> /home/home/miguandr:
 	{
 		updated_command = ft_strjoin(data->paths[i], normalize_str[0]); //--> /home/home/miguandr:
-		//printf("updated_command: %s\n", updated_command); //bborrar
 		if (!access(updated_command, F_OK))
 		{
-			//printf("HOlIWI"); //bborrar
 			execve(updated_command, normalize_str, data->envp);
 			free(updated_command);
 			return (EXIT_SUCCESS);
